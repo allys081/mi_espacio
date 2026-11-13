@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Curricular - Ingeniería en Informática</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236366f1'/><stop offset='1' stop-color='%23ec4899'/></linearGradient></defs><rect width='100' height='100' rx='28' fill='url(%23g)'/><text x='50' y='70' font-size='56' text-anchor='middle'>🎓</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f0f4fd 0%, #e2eafc 100%);
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --card-border: rgba(255, 255, 255, 0.7);
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #7c3aed;
+      --badge-bg: #e0e7ff;
+      --badge-text: #4338ca;
+      --item-idle: #ffffff;
+      --item-approved: #f3e8ff;
+      --item-blocked: #f1f5f9;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      margin: 0;
+      padding: 16px 12px 40px;
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 20px; }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 14px;
+      background: linear-gradient(90deg, #6366f1, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .dashboard {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.08);
+      backdrop-filter: blur(8px);
+      margin-bottom: 20px;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .stat-card { text-align: center; }
+
+    .stat-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 2px;
+    }
+
+    .progress-bar-container {
+      background: #e2e8f0;
+      height: 8px;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #ec4899);
+      border-radius: 99px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dashboard-actions {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: #f8fafc;
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .semestre {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .semestre-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: 4px 2px 10px;
+      user-select: none;
+    }
+
+    .semestre-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .semestre-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-status {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+    }
+
+    .badge-complete { background: #dcfce7; color: #15803d; }
+
+    .chevron {
+      transition: transform 0.3s ease;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .chevron.rotated { transform: rotate(-180deg); }
+
+    .materias-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .materia {
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: var(--item-idle);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: transform 0.15s ease, border-color 0.2s ease;
+    }
+
+    .materia:not(.bloqueada):active { transform: scale(0.985); }
+
+    .materia.aprobada {
+      background: var(--item-approved);
+      border-color: #d8b4fe;
+    }
+
+    .materia.bloqueada {
+      background: var(--item-blocked);
+      border-color: transparent;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .materia-main {
+      flex: 1;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .materia-header-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .materia-nombre {
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .materia.aprobada .materia-nombre {
+      text-decoration: line-through;
+      color: #7c3aed;
+    }
+
+    .btn-edit-electivo {
+      font-size: 0.8rem;
+      color: var(--accent-purple);
+      cursor: pointer;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .materia-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .docente-tag {
+      color: #0284c7;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .docente-tag:hover { text-decoration: underline; }
+
+    .nota-wrapper { display: flex; align-items: center; }
+
+    .input-nota {
+      width: 48px;
+      height: 32px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-nota:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+    }
+
+    .input-nota.aprobado { color: #059669; border-color: #a7f3d0; }
+    .input-nota.reprobado { color: #dc2626; border-color: #fecaca; }
+
+    .semestre-footer {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px dashed #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .promedio-valor {
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    /* Modal emergente */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      place-items: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: grid; }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 20px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .modal-card h3 { margin: 0 0 12px; font-size: 1.05rem; }
+
+    .modal-field { margin-bottom: 12px; }
+
+    .modal-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .btn-modal {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .btn-cancel { background: #f1f5f9; color: #475569; }
+    .btn-save { background: var(--accent-purple); color: #ffffff; }
+  
+    .back-esp { display: inline-flex; align-items: center; height: 38px; padding: 0 14px; margin-bottom: 14px; border-radius: 12px; background: var(--card-bg); border: 1.5px solid #e2e8f0; color: var(--text-main); font-size: .85rem; font-weight: 700; text-decoration: none; }
+  </style>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mi Espacio">
+  <script src="/app.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <a href="/" class="back-esp" aria-label="Volver a Mi Espacio">← Mi Espacio</a>
+    <header>
+      <h1>Malla Curricular Interactiva</h1>
+      <div class="dashboard">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Avance Carrera</div>
+            <div class="stat-value" id="stat-porcentaje">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Ramos Aprobados</div>
+            <div class="stat-value" id="stat-ramos">0/0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Promedio Acumulado</div>
+            <div class="stat-value" id="stat-promedio">-</div>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="barra-progreso"></div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button class="btn-action" id="btn-exportar">💾 Descargar Respaldo</button>
+          <button class="btn-action" id="btn-importar">📂 Cargar Respaldo</button>
+          <button class="btn-action" id="btn-compartir">🔗 Pasar notas a mi Cel</button>
+          <input type="file" id="file-input" style="display: none;" accept=".json">
+        </div>
+      </div>
+    </header>
+
+    <div class="grid" id="malla"></div>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal-card">
+      <h3 id="modal-titulo">Editar Detalles</h3>
+      
+      <div class="modal-field" id="field-nombre-wrap">
+        <label class="modal-label">Nombre de la Asignatura</label>
+        <input type="text" class="modal-input" id="modal-input-nombre" placeholder="Nombre...">
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label">Nombre del Docente</label>
+        <input type="text" class="modal-input" id="modal-input-docente" placeholder="Ej: Profesor Pérez">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal btn-cancel" id="modal-cancel">Cancelar</button>
+        <button class="btn-modal btn-save" id="modal-save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const malla = {
+      'Semestre 1': [
+        { nombre: 'Matemática', codigo: '202548', creditos: 4 },
+        { nombre: 'Análisis de Sistema', codigo: '202549', creditos: 3 },
+        { nombre: 'Desarrollo de Algoritmos', codigo: '201454', creditos: 3 },
+        { nombre: 'Taller Integrado ABP', codigo: '210151', creditos: 1 },
+        { nombre: 'TIC', codigo: '202550', creditos: 2 },
+        { nombre: 'Taller de Hardware', codigo: '202551', creditos: 2 },
+        { nombre: 'Comunicación y Aprendizaje', codigo: '202545', creditos: 1 },
+        { nombre: 'Desarrollo Personal', codigo: '202546', creditos: 1 }
+      ],
+      'Semestre 2': [
+        { nombre: 'Matemática Aplicada', codigo: '202702', creditos: 3 },
+        { nombre: 'Análisis y Diseño O.O', codigo: '202703', creditos: 4, requiere: ['202549'] },
+        { nombre: 'Taller de Programación I', codigo: '202704', creditos: 3, requiere: ['201454'] },
+        { nombre: 'Interfaz de Usuario', codigo: '201468', creditos: 2, requiere: ['201454'] },
+        { nombre: 'Modelamiento de la Información', codigo: '202706', creditos: 3, requiere: ['202549'] },
+        { nombre: 'Inglés I', codigo: '202605', creditos: 4 }
+      ],
+      'Semestre 3': [
+        { nombre: 'Lenguaje de Programación Web I', codigo: '201469', creditos: 2, requiere: ['202704', '201468'] },
+        { nombre: 'Lenguaje de Programación O.O I', codigo: '201459', creditos: 2, requiere: ['202704', '201468'] },
+        { nombre: 'Construcción de Base de Datos', codigo: '202707', creditos: 2, requiere: ['202704', '201468'] },
+        { nombre: 'Infraestructura Tecnológica I', codigo: '202708', creditos: 3, requiere: ['202551'] },
+        { nombre: 'Inglés II', codigo: '202606', creditos: 2 },
+        { nombre: 'Emprendimiento y Empleabilidad', codigo: '202604', creditos: 1 }
+      ],
+      'Semestre 4': [
+        { nombre: 'Taller de Nuevas Tecnologías', codigo: '202889', creditos: 2, requiere: ['201469', '201459'] },
+        { nombre: 'Construcción de Software', codigo: '201912', creditos: 2, requiere: ['202707'] },
+        { nombre: 'Metodologías y Calidad del Software', codigo: '202711', creditos: 3 },
+        { nombre: 'Sustentabilidad y Medioambiente', codigo: '202609', creditos: 2 },
+        { nombre: 'Cultura y Sociedad', codigo: '202614', creditos: 2 }
+      ],
+      'Semestre 5': [
+        { nombre: 'Lenguaje de Programación O.O II', codigo: '201467', creditos: 2, requiere: ['202889'] },
+        { nombre: 'Lenguaje de Programación de Base de Datos', codigo: '202713', creditos: 2, requiere: ['201912'] },
+        { nombre: 'Redes y Comunicación de Datos', codigo: '202714', creditos: 3, requiere: ['202708'] },
+        { nombre: 'Infraestructura Tecnológica II', codigo: '202715', creditos: 2, requiere: ['202708'] },
+        { nombre: 'Análisis Estadístico de Datos', codigo: '203332', creditos: 3 },
+        { nombre: 'Inglés III', codigo: '202607', creditos: 4, requiere: ['202606'] }
+      ],
+      'Semestre 6': [
+        { nombre: 'Cálculo', codigo: 'CAL6', creditos: 4, requiere: ['202548'] },
+        { nombre: 'Inteligencia de Negocios I', codigo: 'IN1', creditos: 3, requiere: ['201459', '202713'] },
+        { nombre: 'Ingeniería de Software', codigo: 'IS6', creditos: 4, requiere: ['202711'] },
+        { nombre: 'Electiva 1', codigo: 'ELECT1', creditos: 3, esElectivo: true },
+        { nombre: 'Seguridad Informática', codigo: 'SI6', creditos: 3, requiere: ['202714', '202715'] },
+        { nombre: 'Administración de Base de Datos', codigo: 'ABD6', creditos: 3, requiere: ['202714', '202715'] },
+        { nombre: 'Inglés IV', codigo: 'ING4', creditos: 2, requiere: ['202607'] }
+      ],
+      'Semestre 7': [
+        { nombre: 'Inteligencia de Negocios II', codigo: 'IN2', creditos: 3, requiere: ['IN1'] },
+        { nombre: 'Gestión de Sistemas Computacionales', codigo: 'GSC7', creditos: 3, requiere: ['IS6'] },
+        { nombre: 'Formulación de Proyectos Informáticos', codigo: 'FPI7', creditos: 3, requiere: ['IS6'] },
+        { nombre: 'Electiva 2', codigo: 'ELECT2', creditos: 3, esElectivo: true },
+        { nombre: 'Cloud Computing', codigo: 'CC7', creditos: 3, requiere: ['SI6', 'ABD6'] },
+        { nombre: 'Habilidades Comunicativas', codigo: 'HC7', creditos: 2 }
+      ],
+      'Semestre 8': [
+        { nombre: 'Taller de Proyectos Informáticos', codigo: 'TPI8', creditos: 4, requiere: ['GSC7', 'FPI7'] },
+        { nombre: 'Lenguaje de Programación Web II', codigo: 'LPW2', creditos: 3, requiere: ['IN2'] },
+        { nombre: 'Electiva 3', codigo: 'ELECT3', creditos: 3, esElectivo: true },
+        { nombre: 'Auditoría Informática', codigo: 'AI8', creditos: 2 },
+        { nombre: 'Proyecto Integrado Final', codigo: 'PIF8', creditos: 5 },
+        { nombre: 'Práctica Integrada de Competencias', codigo: 'PIC8', creditos: 4 }
+      ]
+    };
+
+    function formatearNotaInput(valor) {
+      if (!valor && valor !== 0) return '';
+      let limpio = valor.toString().trim().replace(/,/g, '.');
+
+      if (/^\d{2}$/.test(limpio)) {
+        let entero = limpio[0];
+        let decimal = limpio[1];
+        return decimal === '0' ? `${entero}` : `${entero},${decimal}`;
+      }
+
+      if (/^\d$/.test(limpio)) {
+        return limpio;
+      }
+
+      let num = parseFloat(limpio);
+      if (!isNaN(num)) {
+        if (Number.isInteger(num)) return `${num}`;
+        return num.toFixed(1).replace('.', ',');
+      }
+
+      return valor;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('data')) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(atob(urlParams.get('data'))));
+        if (confirm('Se detectaron datos importados desde el enlace. ¿Deseas cargarlos en este dispositivo?')) {
+          if (decoded.estado) localStorage.setItem('mallaEstado', JSON.stringify(decoded.estado));
+          if (decoded.notas) localStorage.setItem('mallaNotas', JSON.stringify(decoded.notas));
+          if (decoded.electivos) localStorage.setItem('mallaElectivos', JSON.stringify(decoded.electivos));
+          if (decoded.docentes) localStorage.setItem('mallaDocentes', JSON.stringify(decoded.docentes));
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (e) {
+        console.error('Error al decodificar datos:', e);
+      }
+    }
+
+    let estado = JSON.parse(localStorage.getItem('mallaEstado') || '{}');
+    let notas = JSON.parse(localStorage.getItem('mallaNotas') || '{}');
+    let electivosCustom = JSON.parse(localStorage.getItem('mallaElectivos') || '{}');
+    let docentes = JSON.parse(localStorage.getItem('mallaDocentes') || '{}');
+    let semestresColapsados = JSON.parse(localStorage.getItem('mallaColapso') || '{}');
+
+    const contenedor = document.getElementById('malla');
+    const modal = document.getElementById('modal');
+    const modalInputNombre = document.getElementById('modal-input-nombre');
+    const modalInputDocente = document.getElementById('modal-input-docente');
+    const fieldNombreWrap = document.getElementById('field-nombre-wrap');
+    let materiaEditando = null;
+
+    function estaDesbloqueada(materia) {
+      if (!materia.requiere) return true;
+      return materia.requiere.every(cod => estado[cod]);
+    }
+
+    function abrirModal(materia, nombreActual) {
+      materiaEditando = materia;
+      if (materia.esElectivo) {
+        fieldNombreWrap.style.display = 'block';
+        modalInputNombre.value = electivosCustom[materia.codigo] || nombreActual;
+      } else {
+        fieldNombreWrap.style.display = 'none';
+      }
+      modalInputDocente.value = docentes[materia.codigo] || '';
+      modal.classList.add('active');
+      (materia.esElectivo ? modalInputNombre : modalInputDocente).focus();
+    }
+
+    document.getElementById('modal-cancel').onclick = () => {
+      modal.classList.remove('active');
+      materiaEditando = null;
+    };
+
+    document.getElementById('modal-save').onclick = () => {
+      if (!materiaEditando) return;
+
+      if (materiaEditando.esElectivo && modalInputNombre.value.trim()) {
+        electivosCustom[materiaEditando.codigo] = modalInputNombre.value.trim();
+        localStorage.setItem('mallaElectivos', JSON.stringify(electivosCustom));
+      }
+
+      if (modalInputDocente.value.trim()) {
+        docentes[materiaEditando.codigo] = modalInputDocente.value.trim();
+      } else {
+        delete docentes[materiaEditando.codigo];
+      }
+      localStorage.setItem('mallaDocentes', JSON.stringify(docentes));
+
+      modal.classList.remove('active');
+      materiaEditando = null;
+      renderizar();
+    };
+
+    function actualizarDashboardGlobal() {
+      const todosLosRamos = Object.values(malla).flat();
+      const totalRamos = todosLosRamos.length;
+      const aprobados = todosLosRamos.filter(m => estado[m.codigo]).length;
+
+      let sumaNotas = 0;
+      let totalConNota = 0;
+
+      todosLosRamos.forEach(m => {
+        if (notas[m.codigo]) {
+          const valor = parseFloat(notas[m.codigo].toString().replace(',', '.'));
+          if (!isNaN(valor)) {
+            sumaNotas += valor;
+            totalConNota++;
+          }
+        }
+      });
+
+      const promAritmetico = totalConNota > 0 ? (sumaNotas / totalConNota).toFixed(1).replace('.', ',') : '-';
+      const porcentaje = Math.round((aprobados / totalRamos) * 100);
+
+      document.getElementById('stat-ramos').textContent = `${aprobados}/${totalRamos}`;
+      document.getElementById('stat-porcentaje').textContent = `${porcentaje}%`;
+      document.getElementById('stat-promedio').textContent = promAritmetico;
+      document.getElementById('barra-progreso').style.width = `${porcentaje}%`;
+    }
+
+    function renderizar() {
+      contenedor.innerHTML = '';
+
+      Object.entries(malla).forEach(([semestre, materias]) => {
+        const col = document.createElement('div');
+        col.className = 'semestre';
+
+        const totalMaterias = materias.length;
+        const aprobadasCount = materias.filter(m => estado[m.codigo]).length;
+        const completado = totalMaterias === aprobadasCount;
+
+        const estaColapsado = semestresColapsados[semestre] !== undefined
+          ? semestresColapsados[semestre]
+          : completado;
+
+        const header = document.createElement('div');
+        header.className = 'semestre-header';
+        header.innerHTML = `
+          <h2 class="semestre-title">${semestre}</h2>
+          <div class="semestre-meta">
+            <span class="badge-status ${completado ? 'badge-complete' : ''}">
+              ${completado ? '✓ Completado' : `${aprobadasCount}/${totalMaterias}`}
+            </span>
+            <span class="chevron ${estaColapsado ? 'rotated' : ''}">▼</span>
+          </div>
+        `;
+
+        header.onclick = () => {
+          semestresColapsados[semestre] = !estaColapsado;
+          localStorage.setItem('mallaColapso', JSON.stringify(semestresColapsados));
+          renderizar();
+        };
+
+        col.appendChild(header);
+
+        const list = document.createElement('div');
+        list.className = 'materias-list';
+        if (estaColapsado) list.style.display = 'none';
+
+        let sumaSemestre = 0;
+        let cantNotasSemestre = 0;
+
+        materias.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'materia';
+
+          const aprobada = !!estado[m.codigo];
+          const desbloqueada = estaDesbloqueada(m);
+
+          if (aprobada) div.classList.add('aprobada');
+          if (!desbloqueada) div.classList.add('bloqueada');
+
+          const mainBox = document.createElement('div');
+          mainBox.className = 'materia-main';
+
+          const nombreTexto = (m.esElectivo && electivosCustom[m.codigo]) 
+            ? electivosCustom[m.codigo] 
+            : m.nombre;
+
+          const line = document.createElement('div');
+          line.className = 'materia-header-line';
+
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'materia-nombre';
+          titleSpan.textContent = nombreTexto;
+          line.appendChild(titleSpan);
+
+          if (m.esElectivo) {
+            const editBtn = document.createElement('span');
+            editBtn.className = 'btn-edit-electivo';
+            editBtn.textContent = '✎';
+            editBtn.title = 'Personalizar electivo';
+            editBtn.onclick = (e) => {
+              e.stopPropagation();
+              abrirModal(m, nombreTexto);
+            };
+            line.appendChild(editBtn);
+          }
+
+          const subSpan = document.createElement('span');
+          subSpan.className = 'materia-sub';
+
+          const credSpan = document.createElement('span');
+          credSpan.textContent = `${m.codigo} • ${m.creditos} cr`;
+          subSpan.appendChild(credSpan);
+
+          const docenteTexto = docentes[m.codigo] || '+ Docente';
+          const docSpan = document.createElement('span');
+          docSpan.className = 'docente-tag';
+          docSpan.textContent = `👤 ${docenteTexto}`;
+          docSpan.title = 'Editar docente';
+          docSpan.onclick = (e) => {
+            e.stopPropagation();
+            abrirModal(m, nombreTexto);
+          };
+          subSpan.appendChild(docSpan);
+
+          mainBox.appendChild(line);
+          mainBox.appendChild(subSpan);
+
+          mainBox.onclick = () => {
+            if (!desbloqueada) return;
+            estado[m.codigo] = !estado[m.codigo];
+            localStorage.setItem('mallaEstado', JSON.stringify(estado));
+            renderizar();
+          };
+
+          div.appendChild(mainBox);
+
+          if (desbloqueada) {
+            const notaWrapper = document.createElement('div');
+            notaWrapper.className = 'nota-wrapper';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.inputMode = 'decimal';
+            input.className = 'input-nota';
+            input.placeholder = '-';
+
+            const notaGuardada = notas[m.codigo] || '';
+            input.value = notaGuardada ? formatearNotaInput(notaGuardada) : '';
+
+            if (notaGuardada) {
+              const val = parseFloat(notaGuardada.toString().replace(',', '.'));
+              if (!isNaN(val)) {
+                sumaSemestre += val;
+                cantNotasSemestre++;
+                input.classList.add(val >= 4.0 ? 'aprobado' : 'reprobado');
+              }
+            }
+
+            input.onchange = (e) => {
+              const normalizado = formatearNotaInput(e.target.value);
+              if (normalizado) {
+                const numVal = parseFloat(normalizado.replace(',', '.'));
+                if (!isNaN(numVal) && numVal >= 1.0 && numVal <= 7.0) {
+                  notas[m.codigo] = normalizado;
+                  if (numVal >= 4.0) {
+                    estado[m.codigo] = true;
+                    localStorage.setItem('mallaEstado', JSON.stringify(estado));
+                  }
+                } else {
+                  delete notas[m.codigo];
+                }
+              } else {
+                delete notas[m.codigo];
+              }
+              localStorage.setItem('mallaNotas', JSON.stringify(notas));
+              renderizar();
+            };
+
+            notaWrapper.appendChild(input);
+            div.appendChild(notaWrapper);
+          }
+
+          list.appendChild(div);
+        });
+
+        col.appendChild(list);
+
+        const footer = document.createElement('div');
+        footer.className = 'semestre-footer';
+        const promSem = cantNotasSemestre > 0 
+          ? (sumaSemestre / cantNotasSemestre).toFixed(1).replace('.', ',') 
+          : '-';
+        footer.innerHTML = `
+          <span>Promedio Semestral</span>
+          <span class="promedio-valor">${promSem}</span>
+        `;
+        col.appendChild(footer);
+
+        contenedor.appendChild(col);
+      });
+
+      actualizarDashboardGlobal();
+    }
+
+    document.getElementById('btn-exportar').onclick = () => {
+      const backup = { estado, notas, electivosCustom, docentes };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'malla-curricular-respaldo.json';
+      a.click();
+    };
+
+    document.getElementById('btn-importar').onclick = () => {
+      document.getElementById('file-input').click();
+    };
+
+    document.getElementById('file-input').onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (data.estado) localStorage.setItem('mallaEstado', JSON.stringify(data.estado));
+          if (data.notas) localStorage.setItem('mallaNotas', JSON.stringify(data.notas));
+          if (data.electivosCustom) localStorage.setItem('mallaElectivos', JSON.stringify(data.electivosCustom));
+          if (data.docentes) localStorage.setItem('mallaDocentes', JSON.stringify(data.docentes));
+          location.reload();
+        } catch (err) {
+          alert('Archivo de respaldo no válido.');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    document.getElementById('btn-compartir').onclick = () => {
+      const backup = { estado, notas, electivos: electivosCustom, docentes };
+      const raw = btoa(encodeURIComponent(JSON.stringify(backup)));
+      const shareUrl = `${window.location.origin}${window.location.pathname}?data=${raw}`;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('¡Enlace copiado al portapapeles! Ábrelo en tu teléfono para cargar tus notas al instante.');
+      });
+    };
+
+    renderizar();
+  </script>
+</body>
+</html>

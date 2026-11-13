@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark" data-acc="rosa">
+<head>
+  <meta charset="UTF-8">
+  <title>Reposición & Compras</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#14121a">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Organizador">
+  <script>
+    /* Prevención de parpadeo de tema y color de acento */
+    try {
+      var t = localStorage.getItem('app_tema') || 'oscuro';
+      var d = t === 'oscuro' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = d ? 'dark' : 'light';
+      var a = localStorage.getItem('color_compras') || 'rosa';
+      document.documentElement.dataset.acc = ['violeta', 'rosa', 'celeste', 'agua'].indexOf(a) > -1 ? a : 'rosa';
+      var f = localStorage.getItem('app_fuente') || 'fraunces';
+      var F = { fraunces: "'Fraunces', Georgia, serif", jakarta: "'Plus Jakarta Sans', system-ui, sans-serif", fira: "'Fira Sans', system-ui, sans-serif", chivo: "'Chivo', system-ui, sans-serif", space: "'Space Grotesk', system-ui, sans-serif" };
+      if (F[f]) document.documentElement.style.setProperty('--serif', F[f]);
+    } catch(e) {}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700;800&family=Fira+Sans:wght@500;600;700&family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fbf5ee;
+      --card: #fffdf9;
+      --border: #eadfd2;
+      --text: #3b2a22;
+      --muted: #7a685d;
+      --p: #c2417a;
+      --on-p: #ffffff;
+      --p-soft: #fbe1ec;
+      --p-line: #f0b6cf;
+      --p-glow: rgba(194, 65, 122, 0.2);
+      --hover: #f5ebe0;
+      --badge: #f1e8dd;
+      --badge-ink: #65534a;
+      --ok: #047857;
+      --ok-soft: #ecfdf5;
+      --ok-line: #a7f3d0;
+      --warn: #b45309;
+      --warn-soft: #fffbeb;
+      --bad: #e11d48;
+      --bad-soft: #fff1f2;
+      --price: #15803d;
+      --price-soft: #dcfce7;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --shadow: 0 1px 3px rgba(80,50,30,.06), 0 8px 24px rgba(80,50,30,.08);
+      --scrim: rgba(30, 18, 10, 0.55);
+    }
+
+    [data-theme=dark] {
+      color-scheme: dark;
+      --bg: #14121a;
+      --card: #1e1b27;
+      --border: #2d2939;
+      --text: #efeaf7;
+      --muted: #a39cb3;
+      --p: #f472b6;
+      --on-p: #14121a;
+      --p-soft: #3a1d2e;
+      --p-line: #5b2a45;
+      --p-glow: rgba(244, 114, 182, 0.25);
+      --hover: #262232;
+      --badge: #282434;
+      --badge-ink: #bab2ca;
+      --ok: #6ee7b7;
+      --ok-soft: rgba(110, 231, 183, 0.14);
+      --ok-line: rgba(110, 231, 183, 0.35);
+      --warn: #fcd34d;
+      --warn-soft: rgba(252, 211, 77, 0.12);
+      --bad: #fb7185;
+      --bad-soft: rgba(251, 113, 133, 0.14);
+      --price: #86efac;
+      --price-soft: rgba(134, 239, 172, 0.14);
+      --shadow: 0 1px 3px rgba(0,0,0,.3), 0 12px 30px rgba(0,0,0,.35);
+      --scrim: rgba(0, 0, 0, 0.72);
+    }
+
+    [data-acc=violeta] { --p:#7c5cd6; --p-soft:#ece6fb; --p-line:#cdbff2; --on-p:#fff; }
+    [data-theme=dark][data-acc=violeta] { --p:#a78bfa; --p-soft:#2b2445; --p-line:#4c3f7a; --on-p:#14121a; }
+    [data-acc=rosa] { --p:#c2417a; --p-soft:#fbe1ec; --p-line:#f0b6cf; --on-p:#fff; }
+    [data-theme=dark][data-acc=rosa] { --p:#f472b6; --p-soft:#40202f; --p-line:#5b2a45; --on-p:#14121a; }
+    [data-acc=celeste] { --p:#3b82c4; --p-soft:#dcebf8; --p-line:#b3d3ee; --on-p:#fff; }
+    [data-theme=dark][data-acc=celeste] { --p:#7cb7ff; --p-soft:#1b2c44; --p-line:#2f4b73; --on-p:#14121a; }
+    [data-acc=agua] { --p:#2f8a76; --p-soft:#d9f0ea; --p-line:#a8d9cd; --on-p:#fff; }
+    [data-theme=dark][data-acc=agua] { --p:#5eead4; --p-soft:#173b36; --p-line:#2c6a60; --on-p:#14121a; }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      padding: 14px 14px 100px;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 680px; margin: 0 auto; }
+
+    /* Barra superior */
+    .top-bar {
+      display: grid;
+      grid-template-columns: 42px 1fr 88px;
+      align-items: center;
+      margin-bottom: 16px;
+      min-height: 42px;
+    }
+    .sq {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+      transition: transform .12s ease;
+    }
+    .sq:active { transform: scale(.93); }
+    .top-bar > a.sq { color: var(--p); }
+    h1 {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: -.3px;
+    }
+    .top-right {
+      display: flex;
+      gap: 8px;
+      justify-self: end;
+      position: relative;
+    }
+
+    /* Menú emergente ⋮ */
+    .menu, .popover-filtros {
+      position: absolute;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 6px;
+      display: none;
+      z-index: 80;
+    }
+    .menu { right: 0; top: 48px; min-width: 200px; }
+    .popover-filtros { left: 0; top: 44px; min-width: 230px; }
+    .menu.open, .popover-filtros.open { display: block; }
+    .menu button, .popover-filtros button {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 0;
+      background: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .84rem;
+      font-family: inherit;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+    }
+    .menu button:hover, .popover-filtros button:hover { background: var(--hover); }
+    .popover-filtros button.on { background: var(--p-soft); color: var(--p); }
+    .menu hr { border: 0; border-top: 1px dashed var(--border); margin: 6px 4px; }
+    .menu-t { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 6px 12px 4px; }
+    .menu .dots { display: flex; gap: 10px; padding: 4px 12px 8px; }
+    .menu .dots button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: .8rem;
+      background: var(--c);
+    }
+    .menu .dots button[data-c=violeta] { --c:#7c5cd6; }
+    .menu .dots button[data-c=rosa] { --c:#c2417a; }
+    .menu .dots button[data-c=celeste] { --c:#3b82c4; }
+    .menu .dots button[data-c=agua] { --c:#2f8a76; }
+    .menu .dots button.on { border-color: var(--text); }
+    .menu .dots button.on::after { content: "✓"; font-weight: 800; }
+
+    /* Barra de búsqueda */
+    .search-box {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.04);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .search-box:focus-within { border-color: var(--p); box-shadow: 0 0 0 3px var(--p-glow); }
+    .search-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: .94rem;
+      font-family: inherit;
+      color: var(--text);
+      background: transparent;
+    }
+    .btn-clear { border: none; background: none; cursor: pointer; color: var(--muted); font-size: 1rem; display: none; padding: 2px 6px; }
+
+    /* Segmentador de pestañas */
+    .seg.tabs {
+      display: flex;
+      background: var(--badge);
+      border-radius: 14px;
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 12px;
+    }
+    .seg.tabs button {
+      flex: 1;
+      padding: 7px 2px;
+      border-radius: 11px;
+      border: none;
+      background: none;
+      font-weight: 700;
+      font-size: .76rem;
+      font-family: inherit;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      transition: background .15s, color .15s;
+    }
+    .seg.tabs button b { font-size: .68rem; opacity: .75; font-weight: 800; }
+    .seg.tabs button.on {
+      background: var(--card);
+      color: var(--p);
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    }
+
+    /* Herramientas (Filtros y Vistas) */
+    .tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .fbtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 13px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      font-weight: 700;
+      font-size: .8rem;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .fbtn.has { border-color: var(--p); color: var(--p); background: var(--p-soft); }
+    .view {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .view button {
+      width: 36px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+    .view button.on { background: var(--p-soft); color: var(--p); }
+
+    /* Cuadrícula principal de Categorías */
+    .card-list { display: flex; flex-direction: column; gap: 10px; }
+    .card-list.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 360px) { .card-list.grid { grid-template-columns: 1fr; } }
+
+    .group-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 13px 12px 14px 14px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      transition: transform .14s ease, border-color .14s ease;
+    }
+    .group-card:active { transform: scale(.98); }
+    .group-card:hover { border-color: var(--p-line); }
+
+    .c-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .c-name {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 1.05rem;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+    .c-actions-head {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: none;
+      margin-top: -3px;
+    }
+    .btn-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .88rem;
+    }
+    .btn-icon:hover { background: var(--hover); color: var(--text); }
+    .btn-icon.add-fast { color: var(--p); font-size: 1.05rem; font-weight: 800; }
+    .btn-icon.del:hover { color: var(--bad); }
+
+    .c-sub {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Badges de estado */
+    .badges { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin-top: 2px; }
+    .badge {
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: .7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid transparent;
+    }
+    .badge.cat { background: var(--badge); color: var(--badge-ink); border-radius: 99px; }
+    .badge.ok { background: var(--ok-soft); color: var(--ok); border-color: var(--ok-line); }
+    .badge.bad { background: var(--bad-soft); color: var(--bad); }
+    .badge.warn { background: var(--warn-soft); color: var(--warn); }
+    .badge.price { background: var(--price-soft); color: var(--price); font-weight: 800; }
+
+    /* Especial para categoría "Desde Cajas" */
+    .group-card.cajas {
+      background: rgba(167, 139, 250, 0.08);
+      border-color: rgba(167, 139, 250, 0.25);
+    }
+    .group-card.cajas .c-name { color: var(--p); }
+
+    /* Botones al pie de la tarjeta de categoría */
+    .card-list.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .c-edit { width: 28px; height: 28px; flex: none; border: 0; background: transparent; color: var(--muted); border-radius: 8px; cursor: pointer; font-size: .85rem; display: grid; place-items: center; margin-top: -2px; }
+    .c-edit:hover { background: var(--hover); color: var(--text); }
+    .c-head { justify-content: flex-start; align-items: flex-start; }
+    .c-head .c-name { flex: 0 1 auto; }
+    .card-btns { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; padding-top: 8px; }
+    .btn-card { height: 32px; border-radius: 9px; background: transparent; cursor: pointer; font-family: inherit; font-weight: 800; display: inline-grid; place-items: center; }
+    .btn-card.add { width: 40px; border: 1.5px solid var(--p); color: var(--p); font-size: 1.15rem; line-height: 1; }
+    .btn-card.del { width: 34px; border: 0; color: var(--muted); font-size: .9rem; }
+    .btn-card.del:hover { background: var(--hover); color: var(--bad); }
+    .btn-card:active { transform: scale(.93); }
+    .item-quick-btns.stack { flex-direction: column; align-items: flex-end; align-self: stretch; justify-content: space-between; }
+    .prod-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .prod-top .prod-name { white-space: normal; overflow: visible; }
+    .prod-price-row { margin-top: 4px; }
+    .store-pick-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; max-height: 50vh; overflow-y: auto; }
+    .store-pick { border: 1.5px solid var(--border); background: var(--bg); border-radius: 14px; padding: 6px; cursor: pointer; text-align: center; font-family: inherit; color: var(--text); font-weight: 700; font-size: .8rem; }
+    .store-pick img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; display: block; margin-bottom: 4px; }
+    .pop-hero { width: 62px; height: 78px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border); flex: none; cursor: zoom-in; }
+
+    /* Botón flotante ＋ */
+    .fab {
+      position: fixed;
+      z-index: 30;
+      right: max(16px, calc(50% - 330px));
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      height: 52px;
+      padding: 0 20px 0 16px;
+      border-radius: 17px;
+      background: var(--p);
+      color: var(--on-p);
+      border: 0;
+      font-weight: 800;
+      font-size: .92rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.28);
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform .14s ease;
+    }
+    .fab:active { transform: scale(.94); }
+
+    /* ═══════════════════════════════════════════════════
+       HOJA INFERIOR DE DETALLES DE CATEGORÍA
+       ═══════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--scrim);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    #modal-det { align-items: center; padding: 16px; }
+    #modal-det .modal {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      max-height: min(80dvh, 640px);
+      display: flex;
+      flex-direction: column;
+      padding: 18px 16px 16px;
+      transform: scale(.94);
+      transition: transform .22s cubic-bezier(.16, 1, .3, 1);
+      box-shadow: 0 20px 50px rgba(0,0,0,.5);
+      margin: 0;
+    }
+    #modal-det.active .modal { transform: scale(1); }
+    #modal-pop-center { z-index: 120; }
+    #modal-item, #modal-bought, #modal-cat, #modal-tiendas { z-index: 130; }
+    #modal-viewer { z-index: 140; }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4.5px;
+      border-radius: 99px;
+      background: var(--border);
+      margin: 0 auto 12px;
+      flex: none;
+    }
+    .det-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      flex: none;
+    }
+    .det-head h3 {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .btn-add-item-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      padding: 9px;
+      background: var(--p-soft);
+      border: 1px dashed var(--p-line);
+      color: var(--p);
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: .84rem;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+
+    #det-body {
+      overflow-y: auto;
+      flex: 1;
+      min-height: 140px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 20px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TARJETAS DE PRODUCTOS COMPACTAS (CON CHECKBOX)
+       ═══════════════════════════════════════════════════ */
+    .compact-product-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      transition: background .12s ease;
+      cursor: pointer;
+    }
+    .compact-product-item:hover, .compact-product-item:active { background: var(--hover); }
+    .compact-product-item:last-child { border-bottom: none; }
+
+    /* Círculo Checkbox táctil a la izquierda */
+    .circle-check {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      color: transparent;
+      font-weight: 800;
+      font-size: .88rem;
+      transition: all .16s ease;
+    }
+    .circle-check:hover { border-color: var(--ok); }
+    .circle-check.checked {
+      background: var(--ok-soft);
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .prod-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .prod-name {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.25;
+    }
+    .prod-subline {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: 2px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .prod-subline b { color: var(--text); }
+
+    .item-quick-btns {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       VENTANA EMERGENTE EN EL MEDIO (FICHA DE PRODUCTO)
+       ═══════════════════════════════════════════════════ */
+    .modal-center {
+      align-items: center;
+      padding: 16px;
+      z-index: 120;
+    }
+    .modal-center .modal {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px 20px 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+      transform: scale(.93);
+      transition: transform .22s cubic-bezier(.16, 1, .3, 1);
+      margin: 0;
+      max-height: 86vh;
+      overflow-y: auto;
+    }
+    .modal-center.active .modal { transform: scale(1); }
+
+    .pop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+    .pop-title {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+    .pop-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex: none;
+    }
+    .pop-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pop-field {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+    }
+    .pop-field label {
+      display: block;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: .5px;
+      margin-bottom: 3px;
+    }
+    .pop-field p { font-size: .9rem; color: var(--text); overflow-wrap: anywhere; line-height: 1.4; }
+    .pop-photos {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .pop-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       MODAL DE REGISTRAR / EDITAR PRODUCTO MEJORADO
+       ═══════════════════════════════════════════════════ */
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: .76rem; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+    .form-input, .form-select, .form-area {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 13px;
+      font-size: .92rem;
+      font-family: inherit;
+      outline: none;
+      color: var(--text);
+      background: var(--bg);
+    }
+    .form-area { min-height: 72px; resize: vertical; line-height: 1.4; }
+    .form-input:focus, .form-select:focus, .form-area:focus { border-color: var(--p); box-shadow: 0 0 0 3px var(--p-glow); }
+
+    /* Chips de selección rápida */
+    .chips-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .chip-choice {
+      padding: 7px 12px;
+      border-radius: 99px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .14s ease;
+    }
+    .chip-choice.on {
+      background: var(--p-soft);
+      border-color: var(--p);
+      color: var(--p);
+    }
+
+    /* Switch Urgente */
+    .switch-urgente {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    .switch-urgente b { font-size: .86rem; color: var(--text); }
+    .switch-urgente input {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 44px;
+      height: 26px;
+      border-radius: 99px;
+      background: var(--badge);
+      position: relative;
+      border: 1px solid var(--border);
+      transition: background .18s;
+      flex-shrink: 0;
+    }
+    .switch-urgente input::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .18s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    }
+    .switch-urgente input:checked { background: var(--bad); border-color: var(--bad); }
+    .switch-urgente input:checked::after { transform: translateX(18px); }
+
+    /* Acordeón desplegable opcional */
+    details.more-options {
+      margin: 12px 0 6px;
+      border-top: 1px dashed var(--border);
+      padding-top: 6px;
+    }
+    details.more-options summary {
+      cursor: pointer;
+      font-weight: 800;
+      font-size: .82rem;
+      color: var(--p);
+      padding: 8px 0;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    details.more-options summary::-webkit-details-marker { display: none; }
+    details.more-options .inner-box {
+      background: rgba(0,0,0,0.18);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .photo-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .pbox {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      border: 1.5px dashed var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .pbox img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .pbox .rm {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      border: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: .84rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: transform .12s;
+    }
+    .btn:active { transform: scale(.95); }
+    .btn-primary { background: var(--p); color: var(--on-p); }
+    .btn-secondary { background: var(--bg); border: 1.5px solid var(--border); color: var(--text); }
+    .btn-danger { color: var(--bad); }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--text);
+      color: var(--bg);
+      padding: 11px 18px;
+      border-radius: 14px;
+      font-size: .84rem;
+      font-weight: 600;
+      z-index: 200;
+      transition: all .25s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* Selector de letra en el menú ⋮ */
+    .menu { max-height: 75vh; overflow-y: auto; min-width: 230px; }
+    .menu .font-btn.on { background: var(--p-soft); color: var(--p); }
+  </style>
+  <script src="/app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Barra superior -->
+    <header class="top-bar">
+      <a href="organizador.html" class="sq" title="Volver al menú">←</a>
+      <h1>Compras</h1>
+      <div class="top-right">
+        <button class="sq" id="btn-tema" aria-label="Cambiar tema"></button>
+        <button class="sq" id="btn-menu" aria-label="Más opciones">⋮</button>
+        <div class="menu" id="menu">
+          <button id="btn-exportar">💾 Respaldar</button>
+          <button id="btn-importar">📂 Cargar</button>
+          <hr>
+          <div class="menu-sec">
+            <div class="menu-t">Letra de los títulos</div>
+            <button class="font-btn" data-f="fraunces" style="font-family:'Fraunces', serif;">Fraunces (la de ahora)</button>
+            <button class="font-btn" data-f="jakarta" style="font-family:'Plus Jakarta Sans', sans-serif;">Plus Jakarta (sin serif)</button>
+            <button class="font-btn" data-f="fira" style="font-family:'Fira Sans', sans-serif;">Fira Sans</button>
+            <button class="font-btn" data-f="chivo" style="font-family:'Chivo', sans-serif;">Chivo</button>
+            <button class="font-btn" data-f="space" style="font-family:'Space Grotesk', sans-serif;">Space Grotesk</button>
+          </div>
+          <hr>
+          <div class="menu-sec">
+            <div class="menu-t">Color de acento</div>
+            <div class="dots" id="dots">
+              <button data-c="violeta" aria-label="Morado"></button>
+              <button data-c="rosa" aria-label="Rosa"></button>
+              <button data-c="celeste" aria-label="Celeste"></button>
+              <button data-c="agua" aria-label="Aguamarina"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="file-input" style="display:none" accept=".json">
+    </header>
+
+    <!-- Búsqueda rápida -->
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="busqueda" class="search-input" placeholder="Buscar producto, tienda, instrucción..." autocomplete="off">
+      <button id="btn-limpiar" class="btn-clear">✕</button>
+    </div>
+
+    <!-- Pestañas de filtrado -->
+    <div class="seg tabs" id="tabs">
+      <button data-f="todos" class="on">Todos</button>
+      <button data-f="falta">Falta comprar</button>
+      <button data-f="urgente">Urgente</button>
+      <button data-f="tengo">Repuesto</button>
+    </div>
+
+    <!-- Herramientas de vista -->
+    <div class="tools">
+      <button class="fbtn" id="btn-filtros">📁 <span id="txt-vista">Por categoría</span> ▾</button>
+      <div class="popover-filtros" id="pop-filtros">
+        <button data-v="cat">📁 Vista por categoría</button>
+        <button data-v="tienda">🏪 Vista por tienda (lista de compras)</button>
+      </div>
+
+      <div class="view" id="view">
+        <button data-v="list" aria-label="Vista de lista">☰</button>
+        <button data-v="grid" class="on" aria-label="Vista de cuadrícula">⊞</button>
+      </div>
+    </div>
+
+    <!-- Cuadrícula / Lista principal -->
+    <main id="lista" class="card-list grid"></main>
+  </div>
+
+  <!-- Botón flotante ＋ Agregar categoría -->
+  <button class="fab" id="btn-nueva-cat">
+    <span style="font-size:1.15rem;line-height:1">＋</span> Agregar
+  </button>
+
+  <!-- ═══════════════════════════════════════════════════
+       HOJA INFERIOR: DETALLES DE CATEGORÍA
+       ═══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-det">
+    <div class="modal">
+      <div class="det-head">
+        <div style="flex:1; min-width:0">
+          <h3 id="det-titulo">Higiene</h3>
+          <div class="c-sub" id="det-sub">4 productos</div>
+        </div>
+        <button class="sq" data-close aria-label="Cerrar">✕</button>
+      </div>
+
+      <button class="btn-add-item-bar" id="btn-add-prod-inside">
+        <span>＋</span> Agregar producto a esta categoría
+      </button>
+
+      <div id="det-body">
+        <div id="det-products-list" style="display:flex; flex-direction:column;">
+          <!-- Productos compactos con checkbox ( ○ ) / ( ✓ ) -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       VENTANA EMERGENTE EN EL MEDIO (FICHA DE PRODUCTO)
+       ═══════════════════════════════════════════════════ -->
+  <div class="modal-overlay modal-center" id="modal-pop-center">
+    <div class="modal">
+      <div class="pop-header">
+        <img class="pop-hero" id="pop-prod-img" alt="Foto del producto" style="display:none;">
+        <div style="flex:1;min-width:0;">
+          <h4 class="pop-title" id="pop-prod-title">Nombre del Producto</h4>
+          <div class="badges" id="pop-badges-row" style="margin-top:6px;"></div>
+        </div>
+        <button class="pop-close" data-close aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="pop-body">
+        <!-- Repuesto / fecha prevista -->
+        <div class="pop-field" id="pop-stock-box">
+          <label>Disponibilidad</label>
+          <p id="pop-stock-desc"></p>
+        </div>
+
+        <!-- Dónde comprar y precio -->
+        <div class="pop-field" id="pop-store-box">
+          <label>Dónde comprar & Precio</label>
+          <p id="pop-store-desc">DBS · $4.000</p>
+        </div>
+
+        <!-- Detalles -->
+        <div class="pop-field" id="pop-instr-box" style="display:none;">
+          <label>Detalles</label>
+          <p id="pop-instr-desc"></p>
+        </div>
+
+        <!-- Enlace web o maps -->
+        <div class="pop-field" id="pop-link-box" style="display:none;">
+          <label>Enlace</label>
+          <p><a id="pop-link-href" href="#" target="_blank" rel="noopener noreferrer" style="color:var(--p);font-weight:700;">🔗 Abrir enlace externo</a></p>
+        </div>
+
+        <!-- Foto de la tienda -->
+        <div class="pop-field" id="pop-photos-box" style="display:none;">
+          <label>Foto de la tienda</label>
+          <div class="pop-photos" id="pop-photos-container"></div>
+        </div>
+
+        <!-- Botones de acción rápida -->
+        <div style="display:flex; gap:8px; margin-top:6px;">
+          <button class="btn btn-primary" style="flex:1;" id="pop-btn-edit">✎ Editar</button>
+          <button class="btn btn-secondary btn-danger" style="padding:0 16px;" id="pop-btn-del">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODAL DE REGISTRAR / EDITAR PRODUCTO MEJORADO
+       ═══════════════════════════════════════════════════ -->
+  <div class="modal-overlay modal-center" id="modal-item">
+    <div class="modal">
+      <h3 id="item-titulo">Registrar Producto</h3>
+
+      <div class="form-group">
+        <label class="form-label">Nombre del Producto *</label>
+        <input type="text" id="p-nombre" class="form-input" placeholder="Ej: Jabón Dove, Crema facial..." autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Tienes repuesto de este producto?</label>
+        <div class="chips-group" id="chips-tiene">
+          <button type="button" class="chip-choice" data-v="si">Sí, ya tengo en caja</button>
+          <button type="button" class="chip-choice on" data-v="no">No, no tengo (falta comprar)</button>
+        </div>
+      </div>
+
+      <!-- Bloque cuando NO TIENE repuesto (Falta comprar) -->
+      <div id="bloque-falta-comprar">
+        <div class="form-group">
+          <label class="form-label">¿Cuánto te queda actualmente?</label>
+          <div class="chips-group" id="chips-queda">
+            <button type="button" class="chip-choice" data-val="Último concho">Último concho</button>
+            <button type="button" class="chip-choice" data-val="La mitad">La mitad</button>
+            <button type="button" class="chip-choice" data-val="Casi lleno">Casi lleno</button>
+            <button type="button" class="chip-choice" data-val="Muchos">Muchos</button>
+            <button type="button" class="chip-choice" data-val="otro">✏️ Escribir otro...</button>
+          </div>
+          <input type="text" id="p-queda-custom" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: Queda un cuarto...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">¿Cuándo comprarlo?</label>
+          <div class="chips-group" id="chips-cuando">
+            <button type="button" class="chip-choice" data-val="Esta semana">Esta semana</button>
+            <button type="button" class="chip-choice" data-val="A fin de mes">A fin de mes</button>
+            <button type="button" class="chip-choice" data-val="El otro mes">El otro mes</button>
+            <button type="button" class="chip-choice" data-val="otro">✏️ Escribir...</button>
+          </div>
+          <input type="text" id="p-cuando-custom" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: Próxima quincena...">
+        </div>
+
+        <label class="switch-urgente">
+          <span><b>⚡ Comprar pronto (urgente)</b><br><small style="color:var(--muted);font-size:.74rem">Destacar al tope de la lista</small></span>
+          <input type="checkbox" id="p-urgente">
+        </label>
+      </div>
+
+      <!-- Bloque cuando SÍ TIENE repuesto -->
+      <div id="bloque-tiene-repuesto" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">¿En dónde está guardado?</label>
+          <select id="p-lugar" class="form-select"></select>
+          <input type="text" id="p-lugar-otro" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: En mi cajón...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">¿Cuánto repuesto hay guardado?</label>
+          <input type="text" id="p-cantrep" class="form-input" placeholder="Ej: 1 caja sellada, 2 frascos...">
+        </div>
+      </div>
+
+      <!-- Sección colapsable para datos opcionales -->
+      <details class="more-options">
+        <summary><span>▼ Dónde comprar, precio y fotos (opcional)</span></summary>
+        <div class="inner-box">
+          <div class="form-group">
+            <label class="form-label">Elegir tienda guardada</label>
+            <select id="p-tienda-sel" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nombre de la tienda</label>
+            <input type="text" id="p-donde" class="form-input" placeholder="Ej: Cruz Verde, DBS, Líder...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Precio estimado ($)</label>
+            <input type="text" id="p-precio" class="form-input" inputmode="numeric" placeholder="Ej: 4.000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Instrucciones / Pasillo</label>
+            <textarea id="p-instr" class="form-area" placeholder="Ej: Pasillo 3, tapa azul, pedir en mostrador..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enlace tienda o Maps</label>
+            <input type="url" id="p-enlace" class="form-input" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fotos (Producto y Tienda)</label>
+            <div class="photo-row">
+              <div class="pbox" data-k="foto"><span style="color:var(--muted);font-size:1.1rem">📷</span><img alt=""><button type="button" class="rm" data-rm="foto">✕</button></div>
+              <button type="button" class="btn btn-secondary" data-pick="foto" data-cam="1">📸 Producto</button>
+              <button type="button" class="btn btn-secondary" data-pick="foto" title="Elegir de mis archivos">🖼️</button>
+            </div>
+            <div class="photo-row">
+              <div class="pbox" data-k="fotoTienda"><span style="color:var(--muted);font-size:1.1rem">🏪</span><img alt=""><button type="button" class="rm" data-rm="fotoTienda">✕</button></div>
+              <button type="button" class="btn btn-secondary" id="btn-pick-tienda">🏪 Tienda</button>
+              <input type="file" class="pfile" data-k="foto" accept="image/*" hidden>
+              <input type="file" class="pfile" data-k="fotoTienda" accept="image/*" hidden>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btn-guardar-item">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmar "Ya lo compré" -->
+  <div class="modal-overlay modal-center" id="modal-bought">
+    <div class="modal">
+      <h3 id="bought-titulo">✓ Marcar como comprado</h3>
+      <div class="form-group">
+        <label class="form-label">¿Cuánto compraste / queda de repuesto?</label>
+        <input type="text" id="b-cant" class="form-input" placeholder="Ej: 1 frasco, 2 cajas selladas...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿En qué caja o lugar lo guardaste?</label>
+        <select id="b-lugar" class="form-select"></select>
+        <input type="text" id="b-lugar-otro" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: En la cómoda...">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btn-confirmar-compra">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Categoría -->
+  <div class="modal-overlay modal-center" id="modal-cat">
+    <div class="modal">
+      <h3 id="cat-titulo">Nueva Categoría</h3>
+      <div class="form-group">
+        <label class="form-label">Nombre de Categoría *</label>
+        <input type="text" id="cat-nombre" class="form-input" placeholder="Ej: Higiene, Limpieza, Farmacia...">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btn-guardar-cat">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elegir foto de tienda ya guardada -->
+  <div class="modal-overlay modal-center" id="modal-tiendas">
+    <div class="modal">
+      <h3>Elegir foto de tienda</h3>
+      <div class="store-pick-grid" id="store-pick-grid"></div>
+      <div class="modal-footer" style="justify-content:space-between;">
+        <button class="btn btn-secondary" id="btn-tienda-galeria">🖼️ Mi galería</button>
+        <button class="btn btn-secondary" data-close>Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visor de Foto grande -->
+  <div class="modal-overlay modal-center" id="modal-viewer">
+    <div class="modal" style="text-align:center; max-width:440px">
+      <h3 id="viewer-title" style="margin-bottom:10px">Foto</h3>
+      <img id="viewer-img" src="" alt="Vista previa" style="width:100%; border-radius:14px; max-height:70vh; object-fit:contain">
+      <div class="modal-footer" style="justify-content:center; margin-top:14px"><button class="btn btn-secondary" data-close>Cerrar</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════
+       LÓGICA, DATOS Y COMPATIBILIDAD CON TUS RESPALDOS
+       ═══════════════════════════════════════════════════ */
+    const KEY = 'org_compras', VKEY = 'vista_compras', CAJAS = 'org_cajas';
+    const $ = s => document.querySelector(s);
+    const $$ = s => [...document.querySelectorAll(s)];
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const norm = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const num = v => parseInt(String(v).replace(/\D/g, ''), 10) || 0;
+    const vibrar = () => { if (navigator.vibrate) try { navigator.vibrate(8); } catch(e){} };
+    const urlOk = u => {
+      u = (u || '').trim(); if (!u) return '';
+      if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+      try { const x = new URL(u); return x.hostname.includes('.') ? x.href : ''; } catch(e){ return ''; }
+    };
+
+    let tt;
+    function toast(t) {
+      const el = $('#toast');
+      el.textContent = t;
+      el.classList.add('show');
+      clearTimeout(tt);
+      tt = setTimeout(() => el.classList.remove('show'), 2400);
+    }
+
+    /* Precarga de tus datos reales exactos */
+    let db = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (!db) {
+      db = [
+        {
+          id: "cat_1792814690572",
+          nombre: "Cuidado",
+          items: [
+            {
+              id: "p_1792814734334",
+              nombre: "Carmelosa sodica",
+              tieneRepuesto: "no",
+              lugarRepuesto: "",
+              cantidadRepuesto: "",
+              queda: "Una botella",
+              cuando: "En dos semanas más",
+              urgente: false,
+              donde: "Dr.simi",
+              precio: "5.000",
+              instrucciones: "",
+              enlace: "",
+              foto: null,
+              fotoTienda: null
+            }
+          ]
+        },
+        {
+          id: "cat_mvd70nm1uifz",
+          nombre: "Desde Cajas",
+          items: []
+        },
+        {
+          id: "cat_1792259656057",
+          nombre: "Skincare",
+          items: [
+            {
+              id: "p_1792259696562",
+              nombre: "Crema Eucerin",
+              tieneRepuesto: "no",
+              lugarRepuesto: "",
+              cantidadRepuesto: "",
+              queda: "Poco",
+              cuando: "",
+              urgente: true,
+              donde: "Cruz verde",
+              precio: "1000",
+              instrucciones: "",
+              enlace: "",
+              foto: null,
+              fotoTienda: null
+            }
+          ]
+        },
+        {
+          id: "cat_1789948848804",
+          nombre: "Higiene",
+          items: [
+            {
+              id: "p_1792814659341",
+              nombre: "Acondicionador",
+              tieneRepuesto: "no",
+              lugarRepuesto: "",
+              cantidadRepuesto: "",
+              queda: "",
+              cuando: "",
+              urgente: false,
+              donde: "",
+              precio: "",
+              instrucciones: "",
+              enlace: "",
+              foto: null,
+              fotoTienda: null
+            },
+            {
+              id: "p_1792814635443",
+              nombre: "Protectores",
+              tieneRepuesto: "no",
+              lugarRepuesto: "",
+              cantidadRepuesto: "",
+              queda: "Muchos",
+              cuando: "El otro mes",
+              urgente: false,
+              donde: "",
+              precio: "",
+              instrucciones: "",
+              enlace: "",
+              foto: null,
+              fotoTienda: null
+            },
+            {
+              id: "p_1792814602274",
+              nombre: "Shampoo",
+              tieneRepuesto: "no",
+              lugarRepuesto: "",
+              cantidadRepuesto: "",
+              queda: "La mitad",
+              cuando: "El otro mes",
+              urgente: false,
+              donde: "",
+              precio: "",
+              instrucciones: "",
+              enlace: "",
+              foto: null,
+              fotoTienda: null
+            },
+            {
+              id: "p_1789948872057",
+              nombre: "Jabon Dove",
+              tieneRepuesto: "no",
+              lugarRepuesto: "Caja con cordel",
+              cantidadRepuesto: "1 caja sellada",
+              queda: "Uno a medias",
+              cuando: "A fin de mes",
+              precio: "",
+              donde: "",
+              urgente: false,
+              instrucciones: "",
+              enlace: "",
+              foto: null,
+              fotoTienda: null
+            }
+          ]
+        }
+      ];
+    }
+
+    let vista = 'cat', filtro = 'todos', catId = null, itemId = null, detId = null, popProdObj = null;
+    let disp = 'grid';
+    try { disp = localStorage.getItem(VKEY) === 'list' ? 'list' : 'grid'; } catch(e){}
+    const fotos = { foto: null, fotoTienda: null };
+
+    function guardar() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(db));
+      } catch(e) {
+        alert('No hay suficiente espacio en el navegador. Haz un respaldo pronto.');
+      }
+      render();
+    }
+
+    /* Compresión de fotos en Canvas */
+    function comprimir(file, max, cb) {
+      const r = new FileReader();
+      r.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const k = Math.min(1, max / Math.max(img.width, img.height));
+          const w = Math.round(img.width * k), h = Math.round(img.height * k);
+          const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+          cv.getContext('2d').drawImage(img, 0, 0, w, h);
+          cb(cv.toDataURL('image/jpeg', .65));
+        };
+        img.src = e.target.result;
+      };
+      r.readAsDataURL(file);
+    }
+
+    function setPrev(k) {
+      const b = $(`.pbox[data-k="${k}"]`), src = fotos[k], im = b.querySelector('img');
+      im.src = src || ''; im.style.display = src ? 'block' : 'none';
+      b.querySelector('span').style.display = src ? 'none' : 'block';
+      b.querySelector('.rm').style.display = src ? 'flex' : 'none';
+    }
+
+    document.addEventListener('click', e => {
+      const p = e.target.closest('[data-pick]');
+      if (p) {
+        const inp = $(`.pfile[data-k="${p.dataset.pick}"]`);
+        if (p.dataset.cam) inp.setAttribute('capture', 'environment'); else inp.removeAttribute('capture');
+        inp.click();
+      }
+      const r = e.target.closest('[data-rm]'); if (r) {
+        fotos[r.dataset.rm] = null;
+        $(`.pfile[data-k="${r.dataset.rm}"]`).value = '';
+        setPrev(r.dataset.rm);
+      }
+    });
+
+    $$('.pfile').forEach(inp => inp.onchange = e => {
+      const f = e.target.files[0]; if (!f) return;
+      comprimir(f, 480, d => { fotos[inp.dataset.k] = d; setPrev(inp.dataset.k); });
+    });
+
+    function verFoto(src, titulo) {
+      $('#viewer-img').src = src;
+      $('#viewer-title').textContent = titulo || 'Foto';
+      abrir('#modal-viewer');
+    }
+
+    /* Cajas guardadas en 'org_cajas' para asignar repuesto */
+    function cajasGuardadas() {
+      try {
+        const d = JSON.parse(localStorage.getItem(CAJAS) || '[]');
+        return Array.isArray(d) ? d.filter(c => c && typeof c.nombre === 'string' && c.nombre.trim()) : [];
+      } catch(e) { return []; }
+    }
+
+    function llenarLugar(sel, otro, valor) {
+      const cajas = cajasGuardadas(), s = $(sel), o = $(otro);
+      s.innerHTML = '<option value="">Elegir caja...</option>' +
+        cajas.map(c => `<option value="${esc(c.nombre)}">${esc(c.nombre)}${c.ubicacion ? ' — 📍 ' + esc(c.ubicacion) : ''}</option>`).join('') +
+        '<option value="__otro">✏️ Otro lugar...</option>';
+      const hay = cajas.some(c => c.nombre === valor);
+      s.value = !valor ? '' : (hay ? valor : '__otro');
+      o.value = (!valor || hay) ? '' : valor;
+      o.style.display = s.value === '__otro' ? 'block' : 'none';
+    }
+
+    $('#p-lugar').onchange = () => {
+      $('#p-lugar-otro').style.display = $('#p-lugar').value === '__otro' ? 'block' : 'none';
+    };
+    $('#b-lugar').onchange = () => {
+      $('#b-lugar-otro').style.display = $('#b-lugar').value === '__otro' ? 'block' : 'none';
+    };
+
+    /* Tiendas guardadas de otros productos */
+    let tiendasCache = [];
+    function llenarTiendas() {
+      const m = new Map();
+      db.forEach(c => (c.items || []).forEach(it => {
+        const n = (it.donde || '').trim(); if (!n) return;
+        const k = norm(n), x = m.get(k) || { n, foto: null };
+        if (!x.foto && it.fotoTienda) x.foto = it.fotoTienda;
+        m.set(k, x);
+      }));
+      tiendasCache = [...m.values()].sort((a, b) => a.n.localeCompare(b.n, 'es'));
+      const s = $('#p-tienda-sel');
+      s.disabled = !tiendasCache.length;
+      s.innerHTML = `<option value="">${tiendasCache.length ? '🏪 Elegir tienda existente...' : 'Sin tiendas guardadas'}</option>` +
+        tiendasCache.map((t, i) => `<option value="${i}">${esc(t.n)}${t.foto ? ' 📷' : ''}</option>`).join('');
+    }
+
+    $('#p-tienda-sel').onchange = e => {
+      const t = tiendasCache[e.target.value]; if (!t) return;
+      $('#p-donde').value = t.n;
+      if (t.foto && !fotos.fotoTienda) { fotos.fotoTienda = t.foto; setPrev('fotoTienda'); }
+      e.target.value = '';
+    };
+
+    /* Foto de tienda: elegir entre las ya guardadas (o de la galería) */
+    $('#btn-pick-tienda').onclick = () => {
+      llenarTiendas();
+      const conFoto = tiendasCache.filter(t => t.foto);
+      if (!conFoto.length) {
+        const inp = $('.pfile[data-k="fotoTienda"]'); inp.removeAttribute('capture'); inp.click();
+        return;
+      }
+      $('#store-pick-grid').innerHTML = conFoto.map((t, i) => `<button type="button" class="store-pick" data-i="${i}"><img src="${t.foto}" alt="">${esc(t.n)}</button>`).join('');
+      $('#store-pick-grid').dataset.n = conFoto.length;
+      $('#store-pick-grid')._list = conFoto;
+      abrir('#modal-tiendas');
+    };
+    $('#store-pick-grid').onclick = e => {
+      const b = e.target.closest('.store-pick'); if (!b) return;
+      const t = $('#store-pick-grid')._list[b.dataset.i];
+      fotos.fotoTienda = t.foto; setPrev('fotoTienda');
+      if (!$('#p-donde').value.trim()) $('#p-donde').value = t.n;
+      cerrarUno($('#modal-tiendas'));
+    };
+    $('#btn-tienda-galeria').onclick = () => {
+      cerrarUno($('#modal-tiendas'));
+      const inp = $('.pfile[data-k="fotoTienda"]'); inp.removeAttribute('capture'); inp.click();
+    };
+
+    /* Filtrado */
+    const pasaFiltro = it => {
+      const si = it.tieneRepuesto === 'si';
+      if (filtro === 'todos') return true;
+      if (filtro === 'falta') return !si;
+      if (filtro === 'tengo') return si;
+      if (filtro === 'urgente') return !si && it.urgente;
+      return true;
+    };
+
+    const terminosBusq = () => norm($('#busqueda').value).split(/\s+/).filter(Boolean);
+    const cumpleBusq = (c, it, ws) => pasaFiltro(it) && (!ws.length || ws.every(w => norm([it.nombre, it.donde, it.lugarRepuesto, it.instrucciones, c.nombre].join(' ')).includes(w)));
+
+    /* ═══════════════════════════════════════════════════
+       RENDERIZADO: TARJETAS DE CATEGORÍA Y PRODUCTOS
+       ═══════════════════════════════════════════════════ */
+
+    /* Fila de producto. modo: 'popup' (lista de categoría, sin círculo) | 'tienda' (con círculo) | 'plano' (búsqueda/filtros, sin círculo) */
+    function productoFilaHTML(c, it, showCat, modo) {
+      modo = modo || 'popup';
+      const d = `data-c="${esc(c.id)}" data-i="${esc(it.id)}"`;
+      const si = it.tieneRepuesto === 'si';
+      const cant = it.cantidadRepuesto || (si ? it.queda : '');
+      const circle = modo === 'tienda'
+        ? `<button class="circle-check ${si ? 'checked' : ''}" data-act="check-buy" ${d} title="${si ? 'Marcar como falta comprar' : 'Marcar como comprado'}">${si ? '✓' : ''}</button>`
+        : '';
+      const btns = `
+          <div class="item-quick-btns ${modo === 'popup' ? '' : 'stack'}">
+            <button class="btn-icon" data-act="edit" ${d} title="Editar">✎</button>
+            <button class="btn-icon del" data-act="del" ${d} title="Eliminar">🗑</button>
+          </div>`;
+
+      if (modo === 'tienda' || modo === 'plano') {
+        const queda = si
+          ? `Repuesto en: <b>${esc(it.lugarRepuesto || 'Guardado')}</b>${cant ? ' (' + esc(cant) + ')' : ''}`
+          : (it.queda ? `Queda: <b>${esc(it.queda)}</b>` : '');
+        return `
+        <div class="compact-product-item" ${d} data-act="abrir-pop">
+          ${circle}
+          <div class="prod-info">
+            <div class="prod-top">
+              <span class="prod-name">${esc(it.nombre)}</span>
+              ${showCat ? `<span class="badge cat">${esc(c.nombre)}</span>` : ''}
+            </div>
+            ${queda ? `<div class="prod-subline">${queda}</div>` : ''}
+            ${(!si && it.precio) ? `<div class="prod-price-row"><span class="badge price">$${esc(it.precio)}</span></div>` : ''}
+          </div>
+          ${btns}
+        </div>`;
+      }
+
+      let subline = '';
+      if (si) {
+        subline = `<span>Repuesto en: <b>${esc(it.lugarRepuesto || 'Guardado')}</b>${cant ? ' (' + esc(cant) + ')' : ''}</span>`;
+      } else {
+        const partes = [];
+        if (it.queda) partes.push(`Queda: <b>${esc(it.queda)}</b>`);
+        if (it.cuando) partes.push(`Comprar: <b>${esc(it.cuando)}</b>`);
+        if (it.donde) partes.push(`En: <b>${esc(it.donde)}</b>`);
+        if (it.precio) partes.push(`<span class="badge price">$${esc(it.precio)}</span>`);
+        subline = partes.join(' · ');
+      }
+
+      return `
+        <div class="compact-product-item" ${d} data-act="abrir-pop">
+          <div class="prod-info">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <span class="prod-name">${esc(it.nombre)}</span>
+              ${!si && it.urgente ? '<span class="badge bad">⚡ Urgente</span>' : ''}
+              ${si ? '<span class="badge ok">Repuesto</span>' : '<span class="badge bad">Falta</span>'}
+              ${showCat ? `<span class="badge cat">${esc(c.nombre)}</span>` : ''}
+            </div>
+            ${subline ? `<div class="prod-subline">${subline}</div>` : ''}
+          </div>
+          ${btns}
+        </div>
+      `;
+    }
+
+    /* Tarjeta limpia de Categoría en la cuadrícula */
+    function tarjetaCat(c) {
+      const d = `data-c="${esc(c.id)}"`;
+      const total = (c.items || []).length;
+      const esCaja = c.nombre === 'Desde Cajas';
+
+      return `
+        <div class="group-card ${esCaja ? 'cajas' : ''}" ${d} data-act="detalles">
+          <div class="c-head">
+            <div class="c-name">${esc(c.nombre)}</div>
+            ${esCaja ? '' : `<button class="c-edit" data-act="editcat" ${d} title="Cambiar nombre">✎</button>`}
+          </div>
+          <div class="c-sub">${total} producto${total === 1 ? '' : 's'}</div>
+          ${esCaja ? '' : `
+          <div class="card-btns">
+            <button class="btn-card add" data-act="newitem" ${d} title="Agregar producto">＋</button>
+            <button class="btn-card del" data-act="delcat" ${d} title="Eliminar categoría">🗑</button>
+          </div>`}
+        </div>
+      `;
+    }
+
+    function render() {
+      const q = $('#busqueda').value, ws = terminosBusq();
+      $('#btn-limpiar').style.display = q ? 'block' : 'none';
+
+      const all = db.flatMap(c => (c.items || []).map(it => [c, it]));
+
+      $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.f === filtro));
+      $$('#pop-filtros button').forEach(b => b.classList.toggle('on', b.dataset.v === vista));
+      $('#txt-vista').textContent = vista === 'cat' ? 'Por categoría' : 'Por tienda';
+
+      $('#view').style.display = (vista === 'cat' && ws.length === 0 && filtro === 'todos') ? 'flex' : 'none';
+      $$('#view button').forEach(b => b.classList.toggle('on', b.dataset.v === disp));
+
+      const cont = $('#lista');
+      cont.className = 'card-list ' + (vista === 'cat' ? disp : 'list');
+
+      let html = '';
+      const filtrando = ws.length > 0 || filtro !== 'todos';
+
+      if (vista === 'cat' && !filtrando) {
+        // "Desde Cajas" siempre primero
+        [...db].sort((a, b) => (b.nombre === 'Desde Cajas') - (a.nombre === 'Desde Cajas')).forEach(c => {
+          html += tarjetaCat(c);
+        });
+      } else if (vista === 'cat') {
+        // Búsqueda o filtro: se muestran los productos, no las categorías
+        cont.className = 'card-list list';
+        all.forEach(([c, it]) => {
+          if (cumpleBusq(c, it, ws)) html += productoFilaHTML(c, it, true, 'plano');
+        });
+        if (html) html = `<div class="group-card" style="cursor:default;padding:6px 8px;">${html}</div>`;
+      } else {
+        // Vista por tienda
+        const tiendasMap = {};
+        all.forEach(([c, it]) => {
+          if (it.tieneRepuesto === 'si' || !cumpleBusq(c, it, ws)) return;
+          const tName = (it.donde || '').trim() || 'Sin tienda definida';
+          (tiendasMap[norm(tName)] = tiendasMap[norm(tName)] || { n: tName, list: [] }).list.push([c, it]);
+        });
+
+        const ordenadas = Object.values(tiendasMap).sort((a, b) =>
+          (a.n === 'Sin tienda definida') - (b.n === 'Sin tienda definida') || a.n.localeCompare(b.n, 'es')
+        );
+
+        ordenadas.forEach(x => {
+          html += `
+            <div class="group-card" style="cursor:default;">
+              <div class="c-head">
+                <div class="c-name">🏪 ${esc(x.n)}</div>
+              </div>
+              <div class="c-sub">${x.list.length} producto${x.list.length === 1 ? '' : 's'} por comprar aquí</div>
+              <div style="margin-top:8px;">
+                ${x.list.map(([c, it]) => productoFilaHTML(c, it, true, 'tienda')).join('')}
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      if (!html) {
+        html = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 10px;font-size:.9rem;">
+          ${!db.length ? 'No hay categorías creadas.<br>Toca <b>＋ Agregar</b> para comenzar.' : 'Sin productos que coincidan con el filtro o la búsqueda.'}
+        </div>`;
+      }
+
+      cont.innerHTML = html;
+      if (detId) renderDet();
+      if (popProdObj) actualizarPopCenter();
+    }
+
+    /* Hoja inferior de la Categoría */
+    function abrirDet(id) {
+      detId = id;
+      renderDet();
+      abrir('#modal-det');
+    }
+
+    function renderDet() {
+      const c = db.find(x => x.id === detId);
+      if (!c) { detId = null; $('#modal-det').classList.remove('active'); return; }
+
+      const ws = terminosBusq();
+      const items = c.items || [];
+      const vis = items.filter(it => cumpleBusq(c, it, ws));
+
+      $('#det-titulo').textContent = c.nombre;
+      $('#det-sub').textContent = `${items.length} producto${items.length === 1 ? '' : 's'}${vis.length !== items.length ? ` (${vis.length} con filtro activo)` : ''}`;
+
+      const listContainer = $('#det-products-list');
+      if (!vis.length) {
+        listContainer.innerHTML = `<div style="font-size:.85rem;color:var(--muted);font-style:italic;padding:24px 8px;text-align:center;">
+          No hay productos para mostrar en esta categoría con el filtro seleccionado.
+        </div>`;
+      } else {
+        listContainer.innerHTML = vis.map(it => productoFilaHTML(c, it, false, 'popup')).join('');
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       VENTANA EMERGENTE EN EL MEDIO (FICHA DE PRODUCTO)
+       ═══════════════════════════════════════════════════ */
+    function abrirPopCenter(cid, iid) {
+      vibrar();
+      const c = db.find(x => x.id === cid);
+      const it = c && (c.items || []).find(x => x.id === iid);
+      if (!c || !it) return;
+
+      popProdObj = { c, it };
+      actualizarPopCenter();
+      abrir('#modal-pop-center');
+    }
+
+    function actualizarPopCenter() {
+      if (!popProdObj || !popProdObj.c || !popProdObj.it) return;
+      const { c, it } = popProdObj;
+      const si = it.tieneRepuesto === 'si';
+
+      $('#pop-prod-title').textContent = it.nombre;
+
+      // Foto principal arriba (se amplía al tocarla)
+      const hero = $('#pop-prod-img');
+      if (it.foto) { hero.src = it.foto; hero.style.display = 'block'; }
+      else { hero.removeAttribute('src'); hero.style.display = 'none'; }
+
+      // Etiquetas
+      let bHtml = `<span class="badge cat">${esc(c.nombre)}</span>`;
+      if (!si && it.queda) bHtml += `<span class="badge">Queda: <b>${esc(it.queda)}</b></span>`;
+      if (!si && it.urgente) bHtml += '<span class="badge bad">⚡ Urgente</span>';
+      bHtml += si ? '<span class="badge ok">✓ En Repuesto</span>' : '<span class="badge bad">Falta comprar</span>';
+      $('#pop-badges-row').innerHTML = bHtml;
+
+      // Repuesto / fecha prevista
+      const stockBox = $('#pop-stock-box');
+      if (si) {
+        $('#pop-stock-desc').innerHTML = `Guardado en: <b>${esc(it.lugarRepuesto || 'Sin asignar')}</b>${it.cantidadRepuesto ? '<br>Cantidad: ' + esc(it.cantidadRepuesto) : ''}`;
+        stockBox.style.display = 'block';
+      } else if (it.cuando) {
+        $('#pop-stock-desc').innerHTML = `Comprar: <b>${esc(it.cuando)}</b>`;
+        stockBox.style.display = 'block';
+      } else {
+        stockBox.style.display = 'none';
+      }
+
+      // Tienda y precio
+      let sTxt = it.donde ? `Comprar en: <b>${esc(it.donde)}</b>` : 'Tienda no especificada';
+      if (it.precio) sTxt += ` · <span class="badge price">$${esc(it.precio)}</span>`;
+      $('#pop-store-desc').innerHTML = sTxt;
+
+      // Pasillo
+      const ibox = $('#pop-instr-box');
+      if (it.instrucciones) {
+        ibox.style.display = 'block';
+        $('#pop-instr-desc').textContent = it.instrucciones;
+      } else {
+        ibox.style.display = 'none';
+      }
+
+      // Enlace
+      const lbox = $('#pop-link-box');
+      const href = urlOk(it.enlace);
+      if (href) {
+        lbox.style.display = 'block';
+        $('#pop-link-href').href = href;
+      } else {
+        lbox.style.display = 'none';
+      }
+
+      // Foto de la tienda
+      const pbox = $('#pop-photos-box');
+      const pCont = $('#pop-photos-container');
+      pCont.innerHTML = '';
+      let hayFoto = false;
+      if (it.fotoTienda) {
+        hayFoto = true;
+        pCont.innerHTML = `<img src="${it.fotoTienda}" class="pop-thumb" style="border-color:var(--p);" onclick="verFoto('${it.fotoTienda}','${esc(it.nombre)} · Tienda')">`;
+      }
+      pbox.style.display = hayFoto ? 'block' : 'none';
+    }
+
+    /* ═══════════════════════════════════════════════════
+       DELEGACIÓN DE EVENTOS Y ACCIONES
+       ═══════════════════════════════════════════════════ */
+    function manejarAcciones(e) {
+      const b = e.target.closest('[data-act]');
+      if (!b) return;
+
+      const act = b.dataset.act;
+      const cid = b.dataset.c;
+      const iid = b.dataset.i;
+      const c = db.find(x => x.id === cid);
+      const it = c && (c.items || []).find(x => x.id === iid);
+
+      // Abrir categoría completa
+      if (act === 'detalles' && c) {
+        vibrar();
+        return abrirDet(c.id);
+      }
+
+      // Agregar producto rápido
+      if (act === 'newitem' && c) {
+        vibrar();
+        return abrirItem(c.id);
+      }
+
+      // Editar categoría
+      if (act === 'editcat' && c) {
+        vibrar();
+        return abrirCat(c.id);
+      }
+
+      // Eliminar categoría
+      if (act === 'delcat' && c) {
+        vibrar();
+        if (confirm(`¿Eliminar la categoría "${c.nombre}" y todos sus productos?`)) {
+          db = db.filter(x => x.id !== c.id);
+          guardar();
+          toast('Categoría eliminada');
+        }
+        return;
+      }
+
+      // Checkbox circular para comprar o devolver a falta comprar
+      if (act === 'check-buy' && c && it) {
+        vibrar();
+        if (it.tieneRepuesto === 'si') {
+          it.tieneRepuesto = 'no';
+          guardar();
+          toast('Marcado como "Falta comprar"');
+        } else {
+          catId = c.id;
+          itemId = it.id;
+          $('#bought-titulo').textContent = `✓ Marcar "${it.nombre}" como comprado`;
+          $('#b-cant').value = '1 unidad';
+          llenarLugar('#b-lugar', '#b-lugar-otro', it.lugarRepuesto || '');
+          abrir('#modal-bought');
+        }
+        return;
+      }
+
+      // Abrir modal emergente centrado al tocar el producto
+      if (act === 'abrir-pop' && c && it) {
+        return abrirPopCenter(c.id, it.id);
+      }
+
+      // Editar producto
+      if (act === 'edit' && c && it) {
+        vibrar();
+        return abrirItem(c.id, it.id);
+      }
+
+      // Eliminar producto
+      if (act === 'del' && c && it) {
+        vibrar();
+        if (confirm(`¿Eliminar "${it.nombre}"?`)) {
+          c.items = c.items.filter(x => x.id !== it.id);
+          guardar();
+          toast('Producto eliminado');
+        }
+        return;
+      }
+    }
+
+    document.addEventListener('click', manejarAcciones);
+
+    // Botón dentro de la hoja de categoría para agregar producto
+    $('#btn-add-prod-inside').onclick = () => {
+      if (detId) abrirItem(detId);
+    };
+
+    // Confirmación del modal "Ya lo compré"
+    $('#btn-confirmar-compra').onclick = () => {
+      const c = db.find(x => x.id === catId);
+      const it = c && (c.items || []).find(x => x.id === itemId);
+      if (!it) return;
+
+      vibrar();
+      const lugar = $('#b-lugar').value === '__otro' ? $('#b-lugar-otro').value.trim() : $('#b-lugar').value;
+      it.tieneRepuesto = 'si';
+      it.cantidadRepuesto = $('#b-cant').value.trim() || '1 unidad';
+      it.lugarRepuesto = lugar;
+      it.queda = '';
+      it.urgente = false;
+
+      cerrarUno($('#modal-bought'));
+      guardar();
+      toast('¡Listo! Guardado en Repuesto');
+    };
+
+    $('#pop-prod-img').onclick = () => { if (popProdObj && popProdObj.it.foto) verFoto(popProdObj.it.foto, popProdObj.it.nombre); };
+
+    // Acciones desde el popup centrado
+    $('#pop-btn-edit').onclick = () => {
+      if (!popProdObj) return;
+      const cid = popProdObj.c.id, iid = popProdObj.it.id;
+      cerrarUno($('#modal-pop-center'));
+      abrirItem(cid, iid);
+    };
+
+    $('#pop-btn-del').onclick = () => {
+      if (!popProdObj) return;
+      if (confirm(`¿Eliminar "${popProdObj.it.nombre}"?`)) {
+        popProdObj.c.items = popProdObj.c.items.filter(x => x.id !== popProdObj.it.id);
+        guardar();
+        cerrarUno($('#modal-pop-center'));
+        toast('Producto eliminado');
+      }
+    };
+
+    /* ═══════════════════════════════════════════════════
+       MODAL DE REGISTRAR / EDITAR PRODUCTO (RÁPIDO)
+       ═══════════════════════════════════════════════════ */
+    let formTiene = 'no';
+
+    function setFormTiene(v) {
+      formTiene = v;
+      $$('#chips-tiene button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+      $('#bloque-falta-comprar').style.display = v === 'no' ? 'block' : 'none';
+      $('#bloque-tiene-repuesto').style.display = v === 'si' ? 'block' : 'none';
+    }
+
+    $('#chips-tiene').onclick = e => {
+      const b = e.target.closest('button');
+      if (b) setFormTiene(b.dataset.v);
+    };
+
+    // Chips de "Cuánto queda"
+    $('#chips-queda').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      $$('#chips-queda button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      const v = b.dataset.val;
+      if (v === 'otro') {
+        $('#p-queda-custom').style.display = 'block';
+        $('#p-queda-custom').focus();
+      } else {
+        $('#p-queda-custom').style.display = 'none';
+        $('#p-queda-custom').value = v;
+      }
+    };
+
+    // Chips de "Cuándo comprar"
+    $('#chips-cuando').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      $$('#chips-cuando button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      const v = b.dataset.val;
+      if (v === 'otro') {
+        $('#p-cuando-custom').style.display = 'block';
+        $('#p-cuando-custom').focus();
+      } else {
+        $('#p-cuando-custom').style.display = 'none';
+        $('#p-cuando-custom').value = v;
+      }
+    };
+
+    function abrirItem(cid, iid) {
+      catId = cid;
+      itemId = iid || null;
+      const c = db.find(x => x.id === cid);
+      const it = iid ? (c.items || []).find(x => x.id === iid) : null;
+
+      $('#item-titulo').textContent = it ? 'Editar Producto' : 'Registrar Producto';
+      $('#p-nombre').value = it ? it.nombre : '';
+
+      // Configurar estado
+      const t = it ? it.tieneRepuesto : 'no';
+      setFormTiene(t);
+
+      // Nivel restante
+      $$('#chips-queda button').forEach(b => b.classList.remove('on'));
+      if (it && it.queda) {
+        const matchingBtn = Array.from($$('#chips-queda button')).find(b => b.dataset.val === it.queda);
+        if (matchingBtn) {
+          matchingBtn.classList.add('on');
+          $('#p-queda-custom').style.display = 'none';
+          $('#p-queda-custom').value = it.queda;
+        } else {
+          const otroBtn = Array.from($$('#chips-queda button')).find(b => b.dataset.val === 'otro');
+          if (otroBtn) otroBtn.classList.add('on');
+          $('#p-queda-custom').style.display = 'block';
+          $('#p-queda-custom').value = it.queda;
+        }
+      } else {
+        $('#p-queda-custom').style.display = 'none';
+        $('#p-queda-custom').value = '';
+      }
+
+      // Cuándo comprar
+      $$('#chips-cuando button').forEach(b => b.classList.remove('on'));
+      if (it && it.cuando) {
+        const matchingBtn = Array.from($$('#chips-cuando button')).find(b => b.dataset.val === it.cuando);
+        if (matchingBtn) {
+          matchingBtn.classList.add('on');
+          $('#p-cuando-custom').style.display = 'none';
+          $('#p-cuando-custom').value = it.cuando;
+        } else {
+          const otroBtn = Array.from($$('#chips-cuando button')).find(b => b.dataset.val === 'otro');
+          if (otroBtn) otroBtn.classList.add('on');
+          $('#p-cuando-custom').style.display = 'block';
+          $('#p-cuando-custom').value = it.cuando;
+        }
+      } else {
+        $('#p-cuando-custom').style.display = 'none';
+        $('#p-cuando-custom').value = '';
+      }
+
+      $('#p-urgente').checked = !!(it && it.urgente);
+
+      // Cajas para repuesto
+      llenarLugar('#p-lugar', '#p-lugar-otro', it ? it.lugarRepuesto : '');
+      $('#p-cantrep').value = it ? (it.cantidadRepuesto || '') : '';
+
+      // Opcionales
+      llenarTiendas();
+      $('#p-donde').value = it ? (it.donde || '') : '';
+      $('#p-precio').value = it ? (it.precio || '') : '';
+      $('#p-instr').value = it ? (it.instrucciones || '') : '';
+      $('#p-enlace').value = it ? (it.enlace || '') : '';
+
+      fotos.foto = it ? it.foto : null;
+      fotos.fotoTienda = it ? it.fotoTienda : null;
+      $$('.pfile').forEach(i => i.value = '');
+      setPrev('foto');
+      setPrev('fotoTienda');
+
+      $('details.more-options').open = false;
+      abrir('#modal-item');
+      setTimeout(() => $('#p-nombre').focus(), 150);
+    }
+
+    $('#btn-guardar-item').onclick = () => {
+      const nombre = $('#p-nombre').value.trim();
+      if (!nombre) return alert('Por favor escribe el nombre del producto');
+
+      const enlace = $('#p-enlace').value.trim();
+      if (enlace && !urlOk(enlace)) return alert('El enlace no parece válido');
+
+      vibrar();
+      const c = db.find(x => x.id === catId);
+      if (!c) return;
+
+      const quedaVal = $('#p-queda-custom').value.trim();
+      const cuandoVal = $('#p-cuando-custom').value.trim();
+      const lugarVal = $('#p-lugar').value === '__otro' ? $('#p-lugar-otro').value.trim() : $('#p-lugar').value;
+
+      const datos = {
+        nombre,
+        tieneRepuesto: formTiene,
+        lugarRepuesto: formTiene === 'si' ? lugarVal : '',
+        cantidadRepuesto: formTiene === 'si' ? $('#p-cantrep').value.trim() : '',
+        queda: formTiene === 'no' ? quedaVal : '',
+        cuando: formTiene === 'no' ? cuandoVal : '',
+        urgente: formTiene === 'no' ? $('#p-urgente').checked : false,
+        donde: $('#p-donde').value.trim(),
+        precio: $('#p-precio').value.trim(),
+        instrucciones: $('#p-instr').value.trim(),
+        enlace,
+        foto: fotos.foto,
+        fotoTienda: fotos.fotoTienda
+      };
+
+      if (itemId) {
+        const it = (c.items || []).find(x => x.id === itemId);
+        if (it) Object.assign(it, datos);
+      } else {
+        c.items = c.items || [];
+        c.items.unshift({ id: 'p_' + Date.now(), ...datos });
+      }
+
+      cerrarUno($('#modal-item'));
+      guardar();
+      toast('Producto guardado');
+    };
+
+    /* Categoría */
+    function abrirCat(id) {
+      catId = id || null;
+      const c = id ? db.find(x => x.id === id) : null;
+      $('#cat-titulo').textContent = c ? 'Editar Categoría' : 'Nueva Categoría';
+      $('#cat-nombre').value = c ? c.nombre : '';
+      abrir('#modal-cat');
+      setTimeout(() => $('#cat-nombre').focus(), 150);
+    }
+
+    $('#btn-nueva-cat').onclick = () => { vibrar(); abrirCat(); };
+
+    $('#btn-guardar-cat').onclick = () => {
+      const v = $('#cat-nombre').value.trim();
+      if (!v) return;
+      vibrar();
+      if (catId) {
+        const c = db.find(x => x.id === catId);
+        if (c) c.nombre = v;
+      } else {
+        db.unshift({ id: 'cat_' + Date.now(), nombre: v, items: [] });
+      }
+      cerrarUno($('#modal-cat'));
+      guardar();
+      toast('Categoría guardada');
+    };
+
+    /* ═══════════════════════════════════════════════════
+       CONTROL DE MODALES Y BÚSQUEDA
+       ═══════════════════════════════════════════════════ */
+    const abrir = s => $(s).classList.add('active');
+
+    function cerrarUno(ov) {
+      ov.classList.remove('active');
+      if (ov.id === 'modal-pop-center') popProdObj = null;
+      else if (ov.id === 'modal-det') detId = null;
+    }
+
+    document.addEventListener('click', e => {
+      const ov = e.target.classList.contains('modal-overlay')
+        ? e.target
+        : (e.target.closest('[data-close]') && e.target.closest('.modal-overlay'));
+      if (ov) cerrarUno(ov);
+    });
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const a = $$('.modal-overlay.active');
+        if (a.length) cerrarUno(a[a.length - 1]);
+      }
+    });
+
+    // Pestañas
+    $('#tabs').onclick = e => {
+      const b = e.target.closest('button');
+      if (b) {
+        filtro = b.dataset.f;
+        render();
+      }
+    };
+
+    // Popover de tipo de vista
+    $('#btn-filtros').onclick = e => {
+      e.stopPropagation();
+      $('#pop-filtros').classList.toggle('open');
+    };
+    $('#pop-filtros').onclick = e => {
+      const b = e.target.closest('button');
+      if (b) {
+        vista = b.dataset.v;
+        $('#pop-filtros').classList.remove('open');
+        render();
+      }
+    };
+
+    // Buscador
+    $('#busqueda').addEventListener('input', render);
+    $('#btn-limpiar').onclick = () => {
+      $('#busqueda').value = '';
+      render();
+    };
+
+    // Vistas Cuadrícula / Lista
+    $('#view').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      disp = b.dataset.v;
+      try { localStorage.setItem(VKEY, disp); } catch(er){}
+      render();
+    };
+
+    // Menú superior ⋮
+    $('#btn-menu').onclick = e => {
+      e.stopPropagation();
+      $('#pop-filtros').classList.remove('open');
+      $('#menu').classList.toggle('open');
+    };
+    document.addEventListener('click', () => {
+      $('#menu').classList.remove('open');
+      $('#pop-filtros').classList.remove('open');
+    });
+
+    /* Respaldos JSON */
+    $('#btn-exportar').onclick = () => {
+      vibrar();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' }));
+      a.download = `respaldo-compras-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      toast('Respaldo descargado');
+    };
+
+    $('#btn-importar').onclick = () => { vibrar(); $('#file-input').click(); };
+    $('#file-input').onchange = e => {
+      const file = e.target.files[0]; if (!file) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        try {
+          const d = JSON.parse(ev.target.result);
+          if (!Array.isArray(d)) throw 0;
+          if (!confirm('Esto reemplazará tus categorías y productos por los del archivo. ¿Continuar?')) return;
+          db = d;
+          guardar();
+          toast('¡Compras cargadas con éxito!');
+        } catch(err) {
+          alert('Archivo de respaldo no válido.');
+        }
+        e.target.value = '';
+      };
+      r.readAsText(file);
+    };
+
+    /* Cambios de tema y acento */
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const temaPref = () => { try { return localStorage.getItem('app_tema') || 'oscuro'; } catch(e){ return 'oscuro'; } };
+    const oscuro = () => temaPref() === 'oscuro' || (temaPref() === 'auto' && mq.matches);
+
+    function aplicarTema() {
+      document.documentElement.dataset.theme = oscuro() ? 'dark' : 'light';
+      $('#btn-tema').textContent = oscuro() ? '☀️' : '🌙';
+      const m = $('meta[name=theme-color]');
+      if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    }
+
+    $('#btn-tema').onclick = () => {
+      vibrar();
+      try { localStorage.setItem('app_tema', oscuro() ? 'claro' : 'oscuro'); } catch(e){}
+      aplicarTema();
+    };
+    if (mq.addEventListener) mq.addEventListener('change', aplicarTema);
+
+    function aplicarAcc() {
+      let a = 'rosa';
+      try { a = localStorage.getItem('color_compras') || 'rosa'; } catch(e){}
+      if (!['violeta', 'rosa', 'celeste', 'agua'].includes(a)) a = 'rosa';
+      document.documentElement.dataset.acc = a;
+      $$('#dots button').forEach(b => b.classList.toggle('on', b.dataset.c === a));
+    }
+    $('#dots').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      try { localStorage.setItem('color_compras', b.dataset.c); } catch(er){}
+      aplicarAcc();
+    };
+
+
+    /* Fuente de los títulos (se recuerda en app_fuente) */
+    const FUENTES = {
+      fraunces: "'Fraunces', Georgia, serif",
+      jakarta: "'Plus Jakarta Sans', system-ui, sans-serif",
+      fira: "'Fira Sans', system-ui, sans-serif",
+      chivo: "'Chivo', system-ui, sans-serif",
+      space: "'Space Grotesk', system-ui, sans-serif"
+    };
+    function aplicarFuente(avisar) {
+      let f = 'fraunces';
+      try { f = localStorage.getItem('app_fuente') || 'fraunces'; } catch(e){}
+      if (!FUENTES[f]) f = 'fraunces';
+      document.documentElement.style.setProperty('--serif', FUENTES[f]);
+      $$('#menu .font-btn').forEach(b => b.classList.toggle('on', b.dataset.f === f));
+      if (avisar) toast('Letra actualizada');
+    }
+    $('#menu').addEventListener('click', e => {
+      const b = e.target.closest('.font-btn');
+      if (!b) return;
+      e.stopPropagation(); // mantiene el menú abierto para ver el cambio
+      try { localStorage.setItem('app_fuente', b.dataset.f); } catch(er){}
+      aplicarFuente(true);
+    });
+
+    // Inicio
+    aplicarTema();
+    aplicarFuente();
+    aplicarAcc();
+    render();
+  </script>
+</body>
+</html>

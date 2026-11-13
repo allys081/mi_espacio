@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Traslado · Mi Espacio</title>
+
+  <!-- Prevención de parpadeo de tema, fuente y acento -->
+  <script>
+    var EST_THEMES = [
+      { id:'rubi',    n:'Mocha rubí',            d:'rubí intenso, lavanda y café blanco',         h:342, s:34, a:['#9b2f55','#e58aa5'], b:['#7a5bb5','#c6b2ee'], sw:['#7a3149','#e7a3b5','#c8b6e2','#efe6e4','#6b4a40'], g:['#4a2236','#a24a68'], m:'dark' },
+      { id:'flores',  n:'Felicidad de las flores', d:'pétalos de rosa y burbujas de melocotón',     h:350, s:62, a:['#d02a66','#ff7ea5'], b:['#b9501f','#ffb592'], sw:['#ff5c8a','#ff9a6c','#c9b0ff','#fff0f0'],         g:['#ff5c93','#ff8a6a'], m:'light' },
+      { id:'matcha',  n:'Miel de matcha',          d:'hojas de salvia, chorrito de miel tibia',     h:140, s:26, a:['#37744f','#8fd3a2'], b:['#946400','#f3cb55'], sw:['#2f6b4f','#0d3b2e','#c79a5a','#f5c518'],         g:['#1f5a40','#e5b817'], m:'light' },
+      { id:'niebla',  n:'Niebla de lavanda',       d:'resplandor púrpura después de medianoche',    h:262, s:26, a:['#6a4cb0','#b9a0f7'], b:['#7a6a9c','#d0c8e8'], sw:['#2a2438','#4a4160','#8f86a8','#d6d0e3'],         g:['#2d2640','#cfc9dc'], m:'dark' },
+      { id:'sorbete', n:'Sorbete bañado por el sol', d:'coral, mermelada de tomate y cielo',         h:18,  s:78, a:['#cc4126','#ff8f6b'], b:['#1c7aa0','#74d2ef'], sw:['#fff1c9','#ffd27a','#ff7a59','#d63a3a','#4ec3e0'], g:['#ffc370','#e0402e'], m:'light' },
+      { id:'peonia',  n:'Latte de peonía',         d:'colorete, palo de rosa y crema de vainilla',   h:10,  s:42, a:['#b04f69','#eaa3b6'], b:['#587a48','#b9cf9f'], sw:['#fff3dc','#f6c1cf','#b1c08e','#b6bfd8'],         g:['#f0b9c8','#3b3447'], m:'light' },
+      { id:'limon',   n:'Brisa de limón',          d:'lino azul cielo, piedra lunar y azafrán',     h:195, s:42, a:['#1a7385','#72d3e3'], b:['#9a6c00','#f7c84a'], sw:['#bfe6ee','#76b9c4','#f2b83a','#1d3a40'],         g:['#a9dbe6','#e4b94a'], m:'light' },
+      { id:'acero',   n:'Acero de medianoche',     d:'noche azul tinta y niebla plateada',            h:210, s:38, a:['#2c5a85','#92bde3'], b:['#566b7b','#bac6d1'], sw:['#0e1d27','#274255','#4c6677','#9fb2bd','#c5d0d6'], g:['#0c1a24','#6f8794'], m:'dark' },
+      { id:'bryn',    n:'El hogar de Bryn',        d:'pino intenso, musgo y chocolate negro',        h:112, s:24, a:['#46692f','#a0c97e'], b:['#774526','#d6a579'], sw:['#17301c','#2e5a2a','#4f6b33','#5a3a28','#7a5a40'], g:['#1f3a1f','#6b4a30'], m:'dark' },
+      { id:'lila',    n:'Sueño diurno de lila',    d:'bruma color lavanda, convertida en luz del día.', h:265, s:46, a:['#7752d0','#ab8ffb'], b:['#86449f','#d6a9ee'], sw:['#efe7ff','#cdb9f0','#a98ad8','#7a55b8','#3d2a66'], g:['#e3d6fa','#7a55b8'], m:'light' },
+      { id:'violeta', n:'Latte violeta',           d:'flores de lila sobre crema de vainilla',        h:38,  s:55, a:['#7747b3','#bd9ef0'], b:['#8c6d1f','#edda9c'], sw:['#fff1d6','#f0dfa0','#d3b8ec','#9a6fc9','#3b2a5a'], g:['#f6e7c3','#9a6fc9'], m:'light' }
+    ];
+    var EST_ACC_MIGRA = { violeta:'lila', rosa:'peonia', celeste:'limon', agua:'matcha' };
+    function estHsl(h, s, l) { return 'hsl(' + Math.round(h) + ',' + Math.round(s) + '%,' + l + '%)'; }
+    function estLum(hex) {
+      var c = [1,3,5].map(function (i) { var v = parseInt(hex.substr(i,2),16)/255; return v <= .03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4); });
+      return .2126*c[0] + .7152*c[1] + .0722*c[2];
+    }
+    function estHue(hex) {
+      var r=parseInt(hex.substr(1,2),16)/255, g=parseInt(hex.substr(3,2),16)/255, b=parseInt(hex.substr(5,2),16)/255;
+      var mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn, h=0;
+      if (d) { h = mx===r ? ((g-b)/d)%6 : mx===g ? (b-r)/d+2 : (r-g)/d+4; h*=60; if (h<0) h+=360; }
+      return h;
+    }
+    function estTheme(id) {
+      if (EST_ACC_MIGRA[id]) id = EST_ACC_MIGRA[id];
+      for (var i = 0; i < EST_THEMES.length; i++) if (EST_THEMES[i].id === id) return EST_THEMES[i];
+      return EST_THEMES[9];
+    }
+    function estApplyTheme(id, mode) {
+      var T = estTheme(id), dark = mode === 'dark', st = document.documentElement.style;
+      var p = dark ? T.a[1] : T.a[0], g = dark ? T.b[1] : T.b[0], hp = estHue(p), hg = estHue(g);
+      var sl = Math.min(T.s, 60), sd = Math.min(T.s * .6, 30);
+      var v = dark ? {
+        '--bg': estHsl(T.h, sd, 7), '--card': estHsl(T.h, sd, 10.5), '--card-elevated': estHsl(T.h, sd, 15),
+        '--border': estHsl(T.h, sd, 22), '--text': estHsl(T.h, 30, 94), '--muted': estHsl(T.h, 12, 66),
+        '--p-soft': estHsl(hp, 30, 22), '--gold-soft': estHsl(hg, 28, 20)
+      } : {
+        '--bg': estHsl(T.h, sl * .8, 96), '--card': estHsl(T.h, sl, 99), '--card-elevated': estHsl(T.h, sl * .9, 92.5),
+        '--border': estHsl(T.h, sl * .8, 85), '--text': estHsl(T.h, 38, 14), '--muted': estHsl(T.h, 14, 38),
+        '--p-soft': estHsl(hp, 60, 92), '--gold-soft': estHsl(hg, 62, 91)
+      };
+      v['--p'] = p; v['--gold'] = g;
+      v['--on-p'] = estLum(p) > .38 ? '#14121a' : '#ffffff';
+      for (var k in v) st.setProperty(k, v[k]);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      document.documentElement.dataset.tema = T.id;
+      var m = document.getElementById('metaThemeColor');
+      if (m) m.setAttribute('content', dark ? estHsl(T.h, sd, 7) : estHsl(T.h, sl * .8, 96));
+      return T;
+    }
+    try {
+      var t = localStorage.getItem('estacion_tema') || 'dark';
+      var d = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      var a = localStorage.getItem('estacion_acento') || 'lila';
+      var tid = estTheme(a).id;
+      estApplyTheme(tid, d ? 'dark' : 'light');
+      var f = localStorage.getItem('estacion_fuente_titulos') || 'fraunces';
+      var F = {
+        fraunces: "'Fraunces', Georgia, serif",
+        jakarta: "'Plus Jakarta Sans', system-ui, sans-serif",
+        fira: "'Fira Sans', system-ui, sans-serif",
+        chivo: "'Chivo', system-ui, sans-serif",
+        space: "'Space Grotesk', system-ui, sans-serif"
+      };
+      if (F[f]) document.documentElement.style.setProperty('--font-title', F[f]);
+    } catch (e) {}
+  </script>
+
+  <!-- Ícono SVG embebido de alta resolución -->
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mi Espacio">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0e0d13" id="metaThemeColor">
+
+  <!-- Tipografías de Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700;800&family=Fira+Sans:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;700;800&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-title: 'Fraunces', Georgia, serif;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --bg: #fefce8;
+      --card: #fef9c3;
+      --card-elevated: #fef08a;
+      --border: #fde047;
+      --text: #713f12;
+      --muted: #a16207;
+      --p: #eab308;
+      --p-soft: #fef08a;
+      --gold: #ca8a04;
+      --gold-soft: #fef9c3;
+      --emerald: #059669;
+      --emerald-soft: #d1fae5;
+      --rose: #e11d48;
+      --rose-soft: #ffe4e6;
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --yellow-pres: #ca8a04;
+      --yellow-pres-soft: #fef08a;
+      --shadow: 0 1px 3px rgba(202,138,4,.1), 0 8px 22px rgba(202,138,4,.08);
+      --scrim: rgba(40, 25, 15, 0.55);
+    }
+    [data-theme="dark"] {
+      --bg: #0e0d13;
+      --card: #171520;
+      --card-elevated: #1f1c2b;
+      --border: #2c273d;
+      --text: #fef08a;
+      --muted: #facc15;
+      --p: #eab308;
+      --p-soft: rgba(234, 179, 8, 0.16);
+      --gold: #facc15;
+      --gold-soft: rgba(250, 204, 21, 0.16);
+      --emerald: #10b981;
+      --emerald-soft: rgba(16, 185, 129, 0.16);
+      --rose: #fb7185;
+      --rose-soft: rgba(251, 113, 133, 0.16);
+      --blue: #60a5fa;
+      --blue-soft: rgba(96, 165, 250, 0.16);
+      --yellow-pres: #fef08a;
+      --yellow-pres-soft: rgba(254, 240, 138, 0.16);
+      --shadow: 0 1px 3px rgba(0,0,0,.3), 0 12px 30px rgba(0,0,0,.45);
+      --scrim: rgba(0, 0, 0, 0.75);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg); color: var(--text); font-family: var(--font-sans); min-height: 100vh; padding: 14px 14px 110px; -webkit-font-smoothing: antialiased; transition: background-color 0.25s ease, color 0.25s ease; }
+    .font-title { font-family: var(--font-title), Georgia, serif !important; }
+    .container { max-width: 520px; margin: 0 auto; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 2px 14px; }
+    .top-titles h1 { font-size: 1.18rem; font-weight: 700; line-height: 1.2; color: var(--text); }
+    .top-titles p { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+    .top-actions { display: flex; align-items: center; gap: 7px; position: relative; flex-shrink: 0; }
+    .icon-btn { width: 38px; height: 38px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--text); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.95rem; font-weight: 700; transition: all 0.15s ease; }
+    .icon-btn:active { transform: scale(0.93); }
+    .dropdown-menu { position: absolute; right: 0; top: 48px; width: 230px; max-height: 75vh; overflow-y: auto; background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 6px; z-index: 60; display: none; }
+    .dropdown-menu.open { display: block; }
+    .dropdown-header { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 6px 12px 4px; }
+    .font-btn, .dropdown-menu .menu-item { width: 100%; text-align: left; border: none; background: transparent; color: var(--text); padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: inherit; }
+    .font-btn:hover, .dropdown-menu .menu-item:hover { background: var(--card-elevated); }
+    .font-btn.active { background: var(--p-soft); color: var(--p); }
+    .dropdown-menu hr { border: 0; border-top: 1px dashed var(--border); margin: 6px 4px; }
+    .search-wrap { margin-bottom: 12px; position: sticky; top: 8px; z-index: 25; }
+    .search-box { display: flex; align-items: center; gap: 9px; background: var(--card); border: 1.5px solid var(--border); border-radius: 15px; padding: 9px 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .search-box:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent); }
+    .search-input { flex: 1; border: none; outline: none; background: transparent; color: var(--text); font-size: 0.88rem; font-family: inherit; }
+    .search-clear { background: none; border: none; color: var(--muted); font-size: 0.9rem; cursor: pointer; padding: 2px 4px; display: none; }
+    .search-box.has-val .search-clear { display: block; }
+    .packing-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 12px 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
+    .packing-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; font-weight: 700; margin-bottom: 6px; }
+    .packing-bar-bg { width: 100%; height: 7px; background: var(--card-elevated); border-radius: 99px; overflow: hidden; border: 1px solid var(--border); }
+    .packing-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #10b981, #059669); transition: width 0.3s ease; }
+    .packing-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border); font-size: 0.72rem; }
+    .packing-reset { border: none; background: none; color: var(--emerald); font-weight: 700; font-size: 0.74rem; cursor: pointer; }
+    .cat-accordion { background: var(--card); border: 1px solid var(--border); border-radius: 18px; margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
+    .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--card); cursor: pointer; user-select: none; }
+    .cat-header:hover { background: var(--card-elevated); }
+    .cat-title-text { font-size: 0.88rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+    .cat-badge-wrap { display: flex; align-items: center; gap: 6px; }
+    .cat-counter { font-size: 0.72rem; font-family: monospace; padding: 2px 7px; border-radius: 99px; background: var(--card-elevated); border: 1px solid var(--border); color: var(--muted); font-weight: 700; }
+    .cat-arrow { font-size: 0.72rem; color: var(--muted); transition: transform 0.2s ease; }
+    .cat-accordion.open .cat-arrow { transform: rotate(180deg); color: var(--gold); }
+    .cat-content { display: none; padding: 4px 10px 10px; border-top: 1px solid var(--border); background: var(--card); }
+    .cat-accordion.open .cat-content { display: block; }
+    .task-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 6px; border-bottom: 1px solid rgba(128, 128, 128, 0.1); cursor: pointer; border-radius: 10px; transition: background 0.12s; }
+    .task-row:hover { background: var(--card-elevated); }
+    .task-row:last-child { border-bottom: none; }
+    .task-checkbox { margin-top: 3px; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; color: transparent; font-size: 0.75rem; font-weight: 800; transition: all 0.15s ease; }
+    .task-checkbox.checked { background: var(--emerald-soft); border-color: var(--emerald); color: var(--emerald); }
+    .task-body { flex: 1; min-width: 0; }
+    .task-title { font-size: 0.86rem; font-weight: 600; line-height: 1.3; color: var(--text); word-break: break-word; }
+    .task-title.done { text-decoration: line-through; opacity: 0.55; }
+    .task-summary-pill { display: inline-flex; align-items: center; gap: 4px; margin-top: 3px; font-size: 0.72rem; padding: 2px 8px; border-radius: 6px; background: var(--gold-soft); color: var(--gold); border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent); font-weight: 600; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .task-arrow { color: var(--muted); font-size: 1rem; margin-top: 1px; flex-shrink: 0; }
+
+    /* Estilos de la sección Calendario en Instituto */
+    .inst-nav-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .inst-nav-btn { padding: 10px; border-radius: 14px; background: var(--card); border: 1.5px solid var(--border); color: var(--text); font-weight: 700; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .inst-nav-btn.active { background: var(--p-soft); border-color: var(--p); color: var(--gold); }
+
+    .hero-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg, var(--p-soft), var(--card)); }
+    .hero-num { min-width: 70px; text-align: center; border-radius: 14px; padding: 8px 4px; background: var(--p); color: #14121a; }
+    .hero-num b { display: block; font: 800 1.8rem/1 Georgia, serif; }
+    .hero-num span { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero-num.soon { background: var(--rose); color: #fff; }
+    .hero-num.none { background: var(--card-elevated); color: var(--muted); }
+
+    .cal-compact { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 10px; margin-bottom: 12px; box-shadow: var(--shadow); }
+    .cal-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .cal-h h3 { font: 700 0.95rem Georgia, serif; text-transform: capitalize; }
+    .mb { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-elevated); color: var(--text); cursor: pointer; }
+    .grid-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+    .dw { font-size: 0.6rem; font-weight: 800; color: var(--muted); text-align: center; padding: 2px 0; text-transform: uppercase; }
+    .c { height: 34px; border-radius: 7px; border: 1px solid transparent; background: transparent; color: var(--text); font: 600 .72rem inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0; }
+    .c.o { opacity: .3; }
+    .c.t { border-color: var(--gold); color: var(--gold); }
+    .c.s { background: var(--p); color: #14121a; border-color: var(--p); }
+    .dots { display: flex; gap: 2px; height: 4px; }
+    .dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--blue); }
+    .dots i.eval-cert { background: var(--rose); }
+    .dots i.eval-trab { background: var(--blue); }
+    .dots i.eval-pres { background: var(--yellow-pres); }
+    .c.s .dots i { background: #14121a; }
+
+    .priority-box { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 10px; margin-bottom: 12px; box-shadow: var(--shadow); }
+    .priority-item { padding: 10px; border-radius: 12px; background: var(--card-elevated); margin-top: 0; border-left: 4px solid var(--rose); }
+    .priority-item.trab { border-left-color: var(--blue); }
+    .priority-item.pres { border-left-color: var(--yellow-pres); }
+
+    .fab-bar { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); width: min(100%, 520px); padding: 0 16px; bottom: calc(76px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; gap: 10px; pointer-events: none; }
+    .fab-bar > * { pointer-events: auto; }
+    .fab, .fab-cat { height: 50px; padding: 0 18px; border-radius: 16px; font-weight: 800; font-size: 0.88rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); cursor: pointer; font-family: inherit; transition: transform 0.14s ease; }
+    .fab { background: var(--p); color: #14121a; border: none; margin-left: auto; }
+    .fab-cat { background: var(--card); color: var(--text); border: 1.5px solid var(--border); }
+    .fab:active, .fab-cat:active { transform: scale(0.95); }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 40; background: var(--card); border-top: 1px solid var(--border); padding: 8px 16px calc(8px + env(safe-area-inset-bottom)); box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
+    .bottom-nav-inner { max-width: 520px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .nav-tab-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 12px; border-radius: 14px; background: transparent; border: 1px solid transparent; color: var(--muted); font-size: 0.84rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
+    .nav-tab-btn.active { background: var(--p-soft); border-color: var(--p); color: var(--gold); }
+
+    .modal-overlay { position: fixed; inset: 0; background: var(--scrim); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.22s ease; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-card { width: 100%; max-width: 420px; background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 20px; box-shadow: 0 16px 40px rgba(0,0,0,0.4); transform: scale(0.94); transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1); max-height: 88vh; overflow-y: auto; }
+    .modal-overlay.active .modal-card { transform: scale(1); }
+    .modal-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 10px; }
+    .modal-close-btn { width: 32px; height: 32px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+    .modal-field { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; margin-bottom: 10px; }
+    .modal-field label { display: block; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 3px; }
+    .modal-field p { font-size: 0.88rem; color: var(--text); line-height: 1.45; white-space: pre-line; word-break: break-word; }
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: 0.74rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+    .form-input, .form-select, .form-area { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 9px 12px; font-size: 0.88rem; font-family: inherit; outline: none; color: var(--text); background: var(--bg); }
+    .form-area { min-height: 84px; resize: vertical; line-height: 1.4; }
+    .form-input:focus, .form-select:focus, .form-area:focus { border-color: var(--gold); }
+    .btn { border: none; border-radius: 12px; padding: 9px 16px; font-weight: 700; font-size: 0.84rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; transition: transform 0.12s; }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary { background: var(--p); color: #14121a; }
+    .btn-secondary { background: var(--bg); border: 1.5px solid var(--border); color: var(--text); }
+    .btn-danger { color: var(--rose); border: 1px solid var(--border); background: var(--bg); }
+    .toast { position: fixed; left: 50%; top: 20px; transform: translate(-50%, -20px); opacity: 0; pointer-events: none; background: var(--text); color: var(--bg); padding: 9px 16px; border-radius: 14px; font-size: 0.82rem; font-weight: 600; z-index: 200; transition: all 0.25s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .fab, .btn-primary { color: #14121a !important; }
+    .lugar-select { font-family: inherit; font-size: inherit; font-weight: inherit; color: var(--gold); background: var(--card-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 0 4px; margin-left: 2px; outline: none; max-width: 110px; }
+    .lugar-select option { color: #222; font-family: system-ui, sans-serif; }
+    .dropdown-menu .menu-item { width:100%; text-align:left; border:none; background:transparent; color:var(--text); padding:10px 12px; border-radius:10px; font-size:.86rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    .dropdown-menu .menu-item:hover { background: var(--card-elevated); }
+    .theme-list { display:flex; flex-direction:column; gap:6px; }
+    .theme-row { display:flex; align-items:center; gap:14px; width:100%; text-align:left; padding:10px; border-radius:18px; border:2px solid transparent; background:transparent; color:var(--text); cursor:pointer; font-family:inherit; transition: background .15s, border-color .15s; }
+    .theme-row:hover { background: var(--card-elevated); }
+    .theme-row.on { border-color: var(--p); background: var(--p-soft); }
+    .theme-swatch { position:relative; width:64px; height:52px; border-radius:14px; flex-shrink:0; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+    .theme-dots { position:absolute; left:4px; bottom:4px; display:flex; }
+    .theme-dots i { width:18px; height:18px; border-radius:50%; border:2px solid rgba(255,255,255,.92); margin-right:-6px; box-shadow:0 0 0 1px rgba(0,0,0,.18); }
+    .theme-name { font-family: var(--font-title), Georgia, serif; font-weight:700; font-size:1rem; line-height:1.2; }
+    .theme-desc { font-size:.78rem; color:var(--muted); margin-top:3px; line-height:1.3; }
+    .theme-info { min-width:0; flex:1; }
+    .catm-row { display:flex; align-items:center; gap:8px; padding:10px 4px; border-bottom:1px solid rgba(128,128,128,.12); }
+    .catm-row:last-child { border-bottom:none; }
+    .catm-info { flex:1; min-width:0; }
+    .catm-name { font-family: var(--font-title), Georgia, serif; font-weight:700; font-size:.92rem; word-break:break-word; }
+    .catm-meta { font-size:.72rem; color:var(--muted); margin-top:2px; }
+    .mini-btn:disabled { opacity:.3; cursor:default; }
+    .cat-foot { display:flex; justify-content:flex-end; gap:6px; margin-top:6px; }
+    .cat-foot button { font-size:.72rem; background:none; border:none; cursor:pointer; padding:4px 6px; font-family:inherit; font-weight:600; }
+    .cosas-btn { width:100%; margin-bottom:12px; padding:9px 12px; border-radius:12px; border:1px dashed var(--border); background:transparent; color:var(--muted); font-size:.78rem; font-weight:700; cursor:pointer; font-family:inherit; text-align:left; display:flex; justify-content:space-between; align-items:center; }
+    .cosa-row { display:flex; align-items:center; gap:10px; padding:9px 4px; border-bottom:1px solid rgba(128,128,128,.12); }
+    .cosa-row:last-child { border-bottom:none; }
+    .cosa-thumb { width:54px; height:54px; border-radius:12px; object-fit:cover; background:var(--bg); border:1px solid var(--border); flex-shrink:0; display:grid; place-items:center; font-size:1.2rem; cursor:pointer; }
+    .cosa-info { flex:1; min-width:0; }
+    .cosa-name { font-size:.88rem; font-weight:700; word-break:break-word; }
+    .cosa-loc { font-size:.74rem; color:var(--muted); margin-top:2px; word-break:break-word; }
+    .mini-btn { width:32px; height:32px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--muted); cursor:pointer; font-size:.85rem; }
+    .photo-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .pbox { position:relative; width:54px; height:54px; border-radius:12px; border:1.5px dashed var(--border); display:grid; place-items:center; overflow:hidden; background:var(--bg); }
+    .pbox img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; }
+    .pbox .rm { position:absolute; top:2px; right:2px; width:18px; height:18px; border-radius:50%; border:none; background:rgba(0,0,0,.65); color:#fff; font-size:.6rem; display:none; place-items:center; cursor:pointer; }
+    .mini-modal .modal-card { max-width: 420px; }
+  
+    /* ===== Mi Espacio: páginas separadas ===== */
+    .bottom-nav { display: none !important; }
+    body { padding-bottom: 96px; }
+    .fab-bar { bottom: calc(18px + env(safe-area-inset-bottom)) !important; }
+    .modal-overlay { align-items: flex-end; padding: 0; }
+    .modal-card { max-width: 520px !important; border-radius: 22px 22px 0 0; transform: translateY(26px); padding-bottom: calc(20px + env(safe-area-inset-bottom)); max-height: 90vh; }
+    .modal-overlay.active .modal-card { transform: none; }
+    .inst-nav-bar { grid-template-columns: 1fr 1fr 1fr !important; }
+    .inst-nav-btn { font-size: .8rem !important; padding-left: 4px !important; padding-right: 4px !important; }
+    .estado-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .estado-tabs button { padding: 10px 6px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); font: 700 .8rem var(--font-sans); cursor: pointer; }
+    .estado-tabs button.on { background: var(--p); border-color: var(--p); color: #1a1405; }
+    .sec-t { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin: 14px 2px 6px; }
+    .ev-row { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; box-shadow: var(--shadow); }
+    .ev-row .k { width: 4px; align-self: stretch; border-radius: 4px; background: var(--rose); flex-shrink: 0; }
+    .ev-row .k.trabajo { background: var(--blue); } .ev-row .k.presentacion { background: var(--yellow-pres); } .ev-row .k.tarea { background: var(--muted); }
+    .ev-row .b { flex: 1; min-width: 0; }
+    .ev-row .b b { display: block; font-size: .88rem; }
+    .ev-row .b small { color: var(--muted); font-size: .72rem; }
+    .ev-row .d { font-size: .7rem; font-weight: 800; padding: 4px 9px; border-radius: 99px; background: var(--p-soft); color: var(--text); white-space: nowrap; }
+    .ev-row .d.soon { background: var(--rose-soft); color: var(--rose); }
+    .hab-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 12px 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
+    .hab-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .hab-ring { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+    .hab-ring span { width: 42px; height: 42px; border-radius: 50%; background: var(--card); display: grid; place-items: center; font-size: .8rem; font-weight: 800; }
+    .hab-row { display: flex; align-items: center; gap: 10px; padding: 9px 2px; border-top: 1px solid rgba(128,128,128,.12); cursor: pointer; font-size: .88rem; }
+    .hab-row.done span.t { text-decoration: line-through; opacity: .6; }
+
+    /* ===== Ajustes de maqueta: encabezado, aviso y Notas importantes ===== */
+    .top-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .top-titles { min-width: 0; }
+    .toast { top: auto; bottom: calc(92px + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); font-size: .78rem; padding: 7px 14px; max-width: 80vw; text-align: center; }
+    .toast.show { transform: translate(-50%, 0); }
+    .inst-nav-bar { grid-template-columns: repeat(4, 1fr) !important; gap: 6px !important; }
+    .inst-nav-btn { font-size: .72rem !important; padding: 10px 2px !important; flex-direction: column; gap: 2px; }
+    .nota { display: flex; gap: 0; background: var(--card); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
+    .nota-bar { width: 6px; flex: none; }
+    .nota-body { flex: 1; min-width: 0; padding: 11px 12px; cursor: pointer; }
+    .nota-t { font-weight: 800; font-size: .92rem; word-break: break-word; display: flex; gap: 6px; align-items: center; }
+    .nota-x { font-size: .84rem; color: var(--text); margin-top: 5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+    .nota.open .nota-x { -webkit-line-clamp: unset; display: block; }
+    .nota-d { font-size: .68rem; color: var(--muted); margin-top: 6px; }
+    .nota-act { display: flex; flex-direction: column; gap: 4px; padding: 8px 8px 8px 0; }
+    .nota-act button { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-elevated); cursor: pointer; font-size: .9rem; }
+    .nota-act button.on { background: var(--p-soft); border-color: var(--p); }
+    .col-row { display: flex; gap: 10px; margin: 2px 0 6px; }
+    .col-row button { width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; }
+    .col-row button.on { border-color: var(--text); }
+  </style>
+  <script src="/app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Barra Superior -->
+    <header class="top-bar">
+      <div class="top-left">
+        <a href="/" class="icon-btn" aria-label="Volver al inicio" title="Inicio" style="text-decoration:none">←</a>
+        <div class="top-titles">
+          <h1 class="font-title" id="headerTitle"><span id="headerTitleText">Traslado a</span> <select class="lugar-select" id="selLugar" aria-label="Lugar de traslado"><option value="renaico">Renaico</option><option value="hualqui">Hualqui</option></select></h1>
+          <p id="headerSubtitle">Resumen & detalle para no olvidar nada</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-btn" id="btnThemeToggle" title="Cambiar tema (Claro/Oscuro)">☀️</button>
+        <button class="icon-btn" id="btnMenu" title="Más opciones" aria-label="Más opciones">⋮</button>
+        <input type="file" id="fileInput" style="display:none" accept=".json">
+
+        <div class="dropdown-menu" id="fontDropdown">
+          <button class="menu-item" id="btnExport">💾 Respaldar</button>
+          <button class="menu-item" id="btnImport">📂 Cargar</button>
+          <hr>
+          <div class="dropdown-header">Letra de los títulos</div>
+          <button class="font-btn" data-f="fraunces" style="font-family:'Fraunces', serif;">Fraunces (la de ahora)</button>
+          <button class="font-btn" data-f="jakarta" style="font-family:'Plus Jakarta Sans', sans-serif;">Plus Jakarta (sin serif)</button>
+          <button class="font-btn" data-f="fira" style="font-family:'Fira Sans', sans-serif;">Fira Sans</button>
+          <button class="font-btn" data-f="chivo" style="font-family:'Chivo', sans-serif;">Chivo</button>
+          <button class="font-btn" data-f="space" style="font-family:'Space Grotesk', sans-serif;">Space Grotesk</button>
+          <hr>
+          <button class="menu-item" id="btnTemas">🎨 Temas <span id="temaActual" style="font-weight:600;color:var(--muted);font-size:.78rem;"></span></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Barra de Búsqueda -->
+    <div class="search-wrap">
+      <div class="search-box" id="searchBoxContainer">
+        <span>🔎</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar tarea, apunte, cable o tip..." autocomplete="off">
+        <button class="search-clear" id="btnSearchClear">✕</button>
+      </div>
+    </div>
+
+    <!-- Barra de Progreso de Empaque (Modo Renaico) -->
+    <section class="packing-card" id="packingCard">
+      <div class="packing-head">
+        <span style="color:var(--muted);display:flex;align-items:center;gap:6px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);"></span>
+          Equipaje empacado
+        </span>
+        <span id="packingPercent" style="color:var(--emerald);font-family:monospace;font-weight:800;">0% (0/0)</span>
+      </div>
+      <div class="packing-bar-bg">
+        <div class="packing-bar-fill" id="packingBarFill" style="width: 0%;"></div>
+      </div>
+      <div class="packing-footer">
+        <span style="color:var(--muted)">¿Preparando nuevo viaje?</span>
+        <button class="packing-reset" id="btnResetPacking">🔄 Desmarcar todo para viajar</button>
+      </div>
+    </section>
+
+    <!-- Traslado: pestañas por estado -->
+    <div class="estado-tabs" id="estadoTabs">
+      <button id="tabPor" class="on" onclick="setEstado('por')">Por empacar</button>
+      <button id="tabEmp" onclick="setEstado('emp')">Empacado</button>
+      <button id="tabQue" onclick="$('#btnCosas').click()">Quedaron</button>
+    </div>
+
+    <!-- Sección de Instituto con Sub-navegación (Próximo, Calendario, Apuntes) -->
+    <div id="institutoSectionView" style="display:none;">
+      <div class="inst-nav-bar">
+        <button class="inst-nav-btn active" id="btnViewProx" onclick="switchInstitutoSub('prox')">⏳ Próximo</button>
+        <button class="inst-nav-btn" id="btnViewCal" onclick="switchInstitutoSub('cal')">📅 Calendario</button>
+        <button class="inst-nav-btn" id="btnViewApuntes" onclick="switchInstitutoSub('apuntes')">📚 Apuntes</button>
+        <button class="inst-nav-btn" id="btnViewNotas" onclick="switchInstitutoSub('notas')">📌 Notas</button>
+      </div>
+
+      <!-- Sub-vista Próximo -->
+      <div id="subViewProx">
+        <section class="hero-card" id="proxHero"></section>
+        <div id="proxArea"></div>
+      </div>
+
+      <!-- Sub-vista Calendario & Priorizador -->
+      <div id="subViewCal" style="display:none;">
+        <section class="hero-card">
+          <div class="hero-num" id="heroNum"><b>–</b><span>días</span></div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+              <span style="font-size:0.65rem;font-weight:800;text-transform:uppercase;color:var(--muted);">Evaluación a vigilar</span>
+              <select id="selectEvalTarget" style="background:var(--card-elevated);color:var(--text);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;padding:2px 6px;outline:none;font-weight:700;max-width:160px;"></select>
+            </div>
+            <h2 id="heroTitle" class="font-title" style="font-size:0.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Sin evaluaciones</h2>
+            <p id="heroDesc" style="font-size:0.72rem;color:var(--muted);">Selecciona una evaluación para ver días restantes.</p>
+          </div>
+        </section>
+
+        <section class="priority-box" id="priorityBox" style="display:none;">
+          <div id="priorityContent" style="font-size:0.8rem;color:var(--text);"></div>
+        </section>
+
+        <section class="cal-compact">
+          <div class="cal-h">
+            <button class="mb" id="calPrev">‹</button>
+            <h3 id="calMonthTitle" class="font-title">mes año</h3>
+            <button class="mb" id="calNext">›</button>
+          </div>
+          <div class="grid-cal" id="calGrid"></div>
+          <div class="leg" style="display:flex;gap:12px;font-size:0.7rem;color:var(--muted);margin-top:8px;">
+            <span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--rose);margin-right:3px;"></i>Certamen</span>
+            <span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:3px;"></i>Trabajo</span>
+            <span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--yellow-pres);margin-right:3px;"></i>Presentación</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- Sub-vista Apuntes & Hábitos -->
+      <div id="subViewApuntes" style="display:none;">
+        <div id="habitosCard"></div>
+        <main id="institutoApuntesArea"></main>
+      </div>
+      <!-- Sub-vista Notas importantes -->
+      <div id="subViewNotas" style="display:none;">
+        <div id="notasArea"></div>
+      </div>
+    </div>
+
+    <!-- Cosas que quedaron en el lugar (solo Traslado) -->
+    <button class="cosas-btn" id="btnCosas"><span id="cosasBtnTxt">📦 Cosas que hay/quedaron en Renaico</span><span>›</span></button>
+
+    <!-- Contenedor dinámico de Categorías y Tareas (Traslado) -->
+    <main id="mainContentArea"></main>
+  </div>
+
+  <!-- Botones flotantes -->
+  <div class="fab-bar">
+    <button class="fab-cat" id="btnCatManager" aria-label="Administrar categorías">
+      <span style="font-size:1.05rem;line-height:1">🗂️</span> Categorías
+    </button>
+    <button class="fab" id="btnFabAdd">
+      <span style="font-size:1.15rem;line-height:1">＋</span> <span id="fabAddTxt">Agregar tarea</span>
+    </button>
+  </div>
+
+  <!-- Barra de Navegación Inferior -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="nav-tab-btn active" id="tabRenaico" onclick="switchSection('renaico')">
+        <span>🏡</span>
+        <span class="font-title">Traslado</span>
+      </button>
+      <button class="nav-tab-btn" id="tabInstituto" onclick="switchSection('instituto')">
+        <span>🎓</span>
+        <span class="font-title">Instituto</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Ventana Modal de Detalle -->
+  <div class="modal-overlay" id="modalDetail">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span style="font-size:0.72rem;font-weight:700;color:var(--p);text-transform:uppercase;" id="detCatBadge">Categoría</span>
+          <h3 class="font-title" style="font-size:1.18rem;margin-top:2px;" id="detTitle">Título</h3>
+        </div>
+        <button class="modal-close-btn" data-close>✕</button>
+      </div>
+      <div class="modal-field" id="detSummaryBox">
+        <label>Resumen visible</label>
+        <p id="detSummaryTxt"></p>
+      </div>
+      <div class="modal-field" style="max-height:38vh;overflow-y:auto;">
+        <label>Detalle / Notas</label>
+        <p id="detBodyTxt"></p>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button class="btn btn-primary" style="flex:1;" id="detToggleCheck">✓ Marcar como lista</button>
+        <button class="btn btn-secondary" id="detEdit">✎ Editar</button>
+        <button class="btn btn-danger" id="detDelete">🗑️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Agregar / Editar Tarea o Evaluación -->
+  <div class="modal-overlay" id="modalForm">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="font-title" style="font-size:1.18rem;" id="formModalTitle">Nueva Tarea</h3>
+        <button class="modal-close-btn" data-close>✕</button>
+      </div>
+      <div class="form-group" id="groupEvalType" style="display:none;">
+        <label class="form-label">Tipo de evento</label>
+        <select id="inpEvalType" class="form-select">
+          <option value="certamen">🔴 Certamen / Prueba</option>
+          <option value="trabajo">🔵 Entrega de Trabajo</option>
+          <option value="presentacion">🟡 Presentación / Exposición</option>
+          <option value="tarea">✅ Tarea personal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Título principal *</label>
+        <input type="text" id="inpTitle" class="form-input" placeholder="Ej: Certamen 1, entrega de trabajo...">
+      </div>
+      <div class="form-group" id="groupEvalDate" style="display:none;">
+        <label class="form-label">Fecha del evento</label>
+        <input type="date" id="inpEvalDate" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Resumen corto (visible en la lista)</label>
+        <input type="text" id="inpSummary" class="form-input" placeholder="Ej: Ponderación 30%, Materia X...">
+      </div>
+      <div class="form-group" id="groupCategorySelect">
+        <label class="form-label">Categoría</label>
+        <select id="inpCategory" class="form-select"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Detalle completo</label>
+        <textarea id="inpDetail" class="form-area" placeholder="Escribe los pasos, notas clave o recordatorios..."></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btnSaveTask">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Gestor de categorías -->
+  <div class="modal-overlay mini-modal" id="modalCatManager">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="font-title" style="font-size:1.1rem;" id="catMgrTitle">Categorías</h3>
+        <button class="modal-close-btn" data-close>✕</button>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:8px;" id="btnAddCategory">＋ Nueva categoría</button>
+      <div id="catMgrList"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Temas -->
+  <div class="modal-overlay" id="modalTemas">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="font-title" style="font-size:1.18rem;">Temas</h3>
+        <button class="modal-close-btn" data-close>✕</button>
+      </div>
+      <div class="theme-list" id="themeList"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Crear / editar Categoría -->
+  <div class="modal-overlay" id="modalCategory" style="z-index:110;">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="font-title" style="font-size:1.18rem;" id="catFormTitle">Nueva Categoría</h3>
+        <button class="modal-close-btn" data-close-cat>✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre de la categoría *</label>
+        <input type="text" id="inpCatName" class="form-input" placeholder="Ej: Ropa, Evaluaciones...">
+      </div>
+      <div class="form-group" id="groupPackingCheckbox" style="display:none;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.8rem;color:var(--text)">
+          <input type="checkbox" id="inpCatPacking" style="width:16px;height:16px;accent-color:var(--emerald);">
+          <span>Cuenta para la barra de equipaje empacado</span>
+        </label>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button class="btn btn-secondary" data-close-cat>Cancelar</button>
+        <button class="btn btn-primary" id="btnSaveCategory">Crear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Cosas que hay / quedaron -->
+  <div class="modal-overlay mini-modal" id="modalCosas">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="font-title" style="font-size:1.1rem;" id="cosasTitle">Cosas que quedaron</h3>
+        <button class="modal-close-btn" data-close>✕</button>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:8px;" id="btnAddCosa">＋ Agregar cosa</button>
+      <div id="cosasList"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Nota importante -->
+  <div class="modal-overlay mini-modal" id="modalNota">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="font-title" style="font-size:1.1rem;" id="notaFormTitle">Nueva nota importante</h3>
+        <button class="modal-close-btn" data-close>✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Título *</label>
+        <input type="text" id="notaTitulo" class="form-input" placeholder="Ej: Claves del aula virtual, fechas límite..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nota</label>
+        <textarea id="notaTexto" class="form-area" rows="6" placeholder="Escribe lo que no puedes olvidar..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color</label>
+        <div class="col-row" id="notaColores"></div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:.86rem;font-weight:700;margin:6px 0 4px;"><input type="checkbox" id="notaFijar"> 📌 Fijar arriba</label>
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:14px;">
+        <button class="btn btn-danger" id="btnDelNota" style="display:none;">Eliminar</button>
+        <span style="flex:1"></span>
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btnSaveNota">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Agregar / editar cosa -->
+  <div class="modal-overlay mini-modal" id="modalCosaForm" style="z-index:110;">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="font-title" style="font-size:1.1rem;" id="cosaFormTitle">Nueva cosa</h3>
+        <button class="modal-close-btn" data-close-cosa>✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre del objeto *</label>
+        <input type="text" id="cosaNombre" class="form-input" placeholder="Ej: Plancha..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿Dónde lo dejé?</label>
+        <input type="text" id="cosaUbi" class="form-input" placeholder="Ej: Clóset..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Foto (opcional)</label>
+        <div class="photo-row">
+          <div class="pbox" id="cosaPbox"><span>📷</span><img alt=""><button type="button" class="rm" id="cosaRm">✕</button></div>
+          <button type="button" class="btn btn-secondary" id="btnCosaCam">📸 Tomar</button>
+          <button type="button" class="btn btn-secondary" id="btnCosaGal">🖼️ Elegir</button>
+          <input type="file" id="cosaFileCam" accept="image/*" capture="environment" hidden>
+          <input type="file" id="cosaFileGal" accept="image/*" hidden>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button class="btn btn-secondary" data-close-cosa>Cancelar</button>
+        <button class="btn btn-primary" id="btnSaveCosa">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para ver eventos de un día específico al hacer clic en el calendario -->
+  <div class="modal-overlay mini-modal" id="modalDayEvents">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span style="font-size:0.72rem;font-weight:700;color:var(--p);text-transform:uppercase;">Agenda del día</span>
+          <h3 class="font-title" style="font-size:1.1rem;margin-top:2px;" id="dayEventsTitle">Fecha</h3>
+        </div>
+        <button class="modal-close-btn" data-close>✕</button>
+      </div>
+      <div id="dayEventsList" style="max-height:50vh;overflow-y:auto;margin-bottom:12px;"></div>
+      <button class="btn btn-primary" style="width:100%;" id="btnAddEventOnDay">＋ Agregar evento este día</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toastMsg">Acción guardada</div>
+
+  <script>
+    const KEY_DATA = 'estacion_detallada_data';
+    const KEY_CATS = 'estacion_categorias';
+    const KEY_THEME = 'estacion_tema';
+    const KEY_FONT = 'estacion_fuente_titulos';
+    const KEY_ACC = 'estacion_acento';
+    const KEY_COSAS = 'estacion_cosas';
+    const KEY_LUGAR = 'estacion_lugar';
+    const KEY_CAL_ITEMS = 'estacion_cal_items_v2';
+    const KEY_HAB = 'estacion_habitos_v1';
+    const PAGE = 'renaico'; // 'renaico' (Traslado) o 'instituto' (Instituto)
+
+    const $ = s => document.querySelector(s);
+    const $$ = s => [...document.querySelectorAll(s)];
+    const norm = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const vibrar = () => { if (navigator.vibrate) try { navigator.vibrate(8); } catch(e){} };
+
+    let toastTimer;
+    function toast(text) {
+      const el = $('#toastMsg');
+      el.textContent = text;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+    }
+
+    const DEFAULT_DATA = {
+      renaico: [
+        { id: 'r1', cat: 'llevar_tec', title: 'Computador y estación de trabajo', summary: 'Cargador original, mouse y soporte', detail: '• Revisar cargador de alta potencia.\n• Mouse inalámbrico + pila de repuesto.', checked: true }
+      ],
+      instituto: [
+        { id: 'i1', cat: 'estudio', title: 'Bloques de enfoque: 45m / 15m', summary: 'Hábito diario', detail: 'Poner temporizador visible.', checked: false }
+      ]
+    };
+
+    const DEFAULT_CATS = {
+      renaico: [
+        { key: 'llevar_tec', name: 'Tecnológico & Cables', packing: true },
+        { key: 'llevar_skin', name: 'Skincare & Aseo', packing: true }
+      ],
+      instituto: [
+        { key: 'estudio', name: 'Enfoque & Hábitos de Estudio', packing: false },
+        { key: 'estructura', name: 'Estructura & Organización', packing: false }
+      ]
+    };
+
+    const DEFAULT_CAL_ITEMS = [];
+
+    let appData = JSON.parse(localStorage.getItem(KEY_DATA) || 'null') || DEFAULT_DATA;
+    let catData = JSON.parse(localStorage.getItem(KEY_CATS) || 'null') || DEFAULT_CATS;
+    let calItems = JSON.parse(localStorage.getItem(KEY_CAL_ITEMS) || 'null') || DEFAULT_CAL_ITEMS;
+    calItems = calItems.filter(x => !(x.id === 'c1' && /base de datos/i.test(x.title)));
+    let cosasData = JSON.parse(localStorage.getItem(KEY_COSAS) || 'null') || { renaico: [], hualqui: [] };
+    let lugar = localStorage.getItem(KEY_LUGAR) === 'hualqui' ? 'hualqui' : 'renaico';
+    const LUGAR_NOMBRE = { renaico: 'Renaico', hualqui: 'Hualqui' };
+
+    let currentSection = 'renaico';
+    let institutoSubView = 'prox'; // 'prox', 'cal' o 'apuntes'
+    let estadoFiltro = 'por'; // Traslado: 'por' | 'emp'
+    const esCal = () => institutoSubView !== 'apuntes' && institutoSubView !== 'notas';
+    let searchQuery = '';
+    let openCats = { llevar_tec: true, estudio: true };
+    let selectedDetailId = null;
+    let editingId = null;
+    let editingCatKey = null;
+
+    // Estado del calendario de Instituto
+    const now = new Date();
+    let calYear = now.getFullYear();
+    let calMonth = now.getMonth();
+    const pad = n => String(n).padStart(2, '0');
+    const ks = (y, m, d) => y + '-' + pad(m + 1) + '-' + pad(d);
+    const TODAY = ks(now.getFullYear(), now.getMonth(), now.getDate());
+    const toU = s => { const a = s.split('-').map(Number); return Date.UTC(a[0], a[1] - 1, a[2]); };
+    const diffDays = s => Math.round((toU(s) - toU(TODAY)) / 864e5);
+    const MES_NOMBRES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    function fmtDate(s) {
+      if (!s) return '';
+      const a = s.split('-').map(Number);
+      return new Date(a[0], a[1] - 1, a[2]).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+    }
+
+    function saveAll() {
+      // Dos páginas escriben en los mismos objetos: se lee lo último guardado y solo se cambia la sección propia.
+      const rdj = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+      const otro = PAGE === 'renaico' ? 'instituto' : 'renaico';
+      try {
+        const d = rdj(KEY_DATA) || {}; if (!Array.isArray(d[otro])) d[otro] = appData[otro]; d[PAGE] = appData[PAGE];
+        const c = rdj(KEY_CATS) || {}; if (!Array.isArray(c[otro])) c[otro] = catData[otro]; c[PAGE] = catData[PAGE];
+        localStorage.setItem(KEY_DATA, JSON.stringify(d));
+        localStorage.setItem(KEY_CATS, JSON.stringify(c));
+        if (PAGE === 'renaico') localStorage.setItem(KEY_COSAS, JSON.stringify(cosasData));
+        else localStorage.setItem(KEY_CAL_ITEMS, JSON.stringify(calItems));
+      } catch (e) { alert('Almacenamiento lleno. Haz un respaldo desde Mi Espacio.'); }
+      updatePackingProgress();
+      updateCalendarUI();
+    }
+
+    let temaId = estTheme(localStorage.getItem(KEY_ACC) || 'lila').id;
+    function applyTheme(themeName) {
+      try { localStorage.setItem(KEY_THEME, themeName); } catch (e) {}
+      estApplyTheme(temaId, themeName);
+      $('#btnThemeToggle').textContent = themeName === 'dark' ? '☀️' : '🌙';
+    }
+
+    $('#btnThemeToggle').onclick = () => {
+      vibrar();
+      const current = document.documentElement.dataset.theme;
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+      toast(document.documentElement.dataset.theme === 'dark' ? 'Modo Oscuro' : 'Modo Claro');
+    };
+
+    const FONTS = {
+      fraunces: "'Fraunces', Georgia, serif",
+      jakarta: "'Plus Jakarta Sans', system-ui, sans-serif",
+      fira: "'Fira Sans', system-ui, sans-serif",
+      chivo: "'Chivo', system-ui, sans-serif",
+      space: "'Space Grotesk', system-ui, sans-serif"
+    };
+
+    function setFont(key) {
+      if (!FONTS[key]) key = 'fraunces';
+      localStorage.setItem(KEY_FONT, key);
+      document.documentElement.style.setProperty('--font-title', FONTS[key]);
+      $$('#fontDropdown .font-btn').forEach(b => b.classList.toggle('active', b.dataset.f === key));
+      toast('Letra actualizada');
+    }
+
+    function renderTemas() {
+      $('#themeList').innerHTML = EST_THEMES.map(t => `
+        <button class="theme-row ${t.id === temaId ? 'on' : ''}" data-tema="${t.id}">
+          <span class="theme-swatch" style="background:linear-gradient(135deg, ${t.g[0]}, ${t.g[1]});">
+            <span class="theme-dots">${t.sw.map(c => `<i style="background:${c}"></i>`).join('')}</span>
+          </span>
+          <span class="theme-info">
+            <span class="theme-name" style="display:block">${esc(t.n)}</span>
+            <span class="theme-desc" style="display:block">${esc(t.d)}</span>
+          </span>
+        </button>`).join('');
+      $('#temaActual').textContent = '· ' + estTheme(temaId).n;
+    }
+
+    function setTema(id) {
+      const T = estTheme(id);
+      temaId = T.id;
+      localStorage.setItem(KEY_ACC, temaId);
+      applyTheme(T.m);
+      renderTemas();
+      if (window.__listo) toast('Tema: ' + T.n);
+    }
+
+    $('#themeList').addEventListener('click', e => {
+      const r = e.target.closest('[data-tema]'); if (r) { vibrar(); setTema(r.dataset.tema); }
+    });
+    $('#btnTemas').onclick = () => { renderTemas(); $('#modalTemas').classList.add('active'); };
+
+    $('#btnMenu').onclick = e => { e.stopPropagation(); $('#fontDropdown').classList.toggle('open'); };
+    $('#fontDropdown').addEventListener('click', e => {
+      e.stopPropagation();
+      const f = e.target.closest('.font-btn'); if (f) setFont(f.dataset.f);
+      if (e.target.closest('#btnExport') || e.target.closest('#btnImport') || e.target.closest('#btnTemas')) $('#fontDropdown').classList.remove('open');
+    });
+    document.addEventListener('click', () => $('#fontDropdown').classList.remove('open'));
+
+    function aplicarCabecera() {
+      const isRen = currentSection === 'renaico';
+      $('#headerTitleText').textContent = isRen ? 'Traslado a' : 'Instituto';
+      $('#selLugar').style.display = isRen ? '' : 'none';
+      $('#selLugar').value = lugar;
+      $('#headerSubtitle').textContent = isRen ? 'Resumen & detalle para no olvidar nada' : 'Eventos, apuntes y notas importantes';
+      $('#cosasBtnTxt').textContent = `📦 Cosas que hay/quedaron en ${LUGAR_NOMBRE[lugar]}`;
+      $('#btnCosas').style.display = 'none'; // ahora es la pestaña "Quedaron"
+      $('#estadoTabs').style.display = isRen ? 'grid' : 'none';
+      $('#btnCatManager').style.display = (!isRen && institutoSubView !== 'apuntes') ? 'none' : '';
+      $('#fabAddTxt').textContent = isRen ? 'Agregar tarea' : (institutoSubView === 'notas' ? 'Agregar nota' : institutoSubView !== 'apuntes' ? 'Agregar evento' : 'Agregar apunte');
+      $('#packingCard').style.display = isRen ? 'block' : 'none';
+      $('#institutoSectionView').style.display = isRen ? 'none' : 'block';
+    }
+
+    function switchSection(sec) {
+      currentSection = sec;
+      $('#tabRenaico').classList.toggle('active', sec === 'renaico');
+      $('#tabInstituto').classList.toggle('active', sec === 'instituto');
+      aplicarCabecera();
+      render();
+    }
+
+    function switchInstitutoSub(sub) {
+      institutoSubView = sub;
+      [['prox', 'btnViewProx', 'subViewProx'], ['cal', 'btnViewCal', 'subViewCal'], ['apuntes', 'btnViewApuntes', 'subViewApuntes'], ['notas', 'btnViewNotas', 'subViewNotas']].forEach(([s, b, v]) => {
+        $('#' + b).classList.toggle('active', sub === s);
+        $('#' + v).style.display = sub === s ? 'block' : 'none';
+      });
+      aplicarCabecera();
+      render();
+    }
+
+    $('#selLugar').onchange = e => {
+      lugar = e.target.value === 'hualqui' ? 'hualqui' : 'renaico';
+      localStorage.setItem(KEY_LUGAR, lugar);
+      aplicarCabecera();
+      toast('Destino: ' + LUGAR_NOMBRE[lugar]);
+    };
+
+    function updatePackingProgress() {
+      const list = appData.renaico.filter(it => {
+        const c = catData.renaico.find(x => x.key === it.cat);
+        return c && c.packing;
+      });
+      const total = list.length;
+      const packed = list.filter(it => it.checked).length;
+      const percent = total > 0 ? Math.round((packed / total) * 100) : 0;
+      $('#packingPercent').textContent = `${percent}% (${packed}/${total})`;
+      $('#packingBarFill').style.width = `${percent}%`;
+    }
+
+    function updateCalendarUI() {
+      if (currentSection !== 'instituto' || institutoSubView !== 'cal') return;
+      const items = calItems.filter(it => !it.checked && diffDays(it.evalDate) >= 0);
+
+      // Selector de evaluación a vigilar
+      const selTarget = $('#selectEvalTarget');
+      const currentTargetVal = selTarget.value;
+      selTarget.innerHTML = items.length ? items.map(e => `<option value="${e.id}">${esc(e.title)}</option>`).join('') : '<option value="">Sin eventos</option>';
+      
+      if (currentTargetVal && items.some(e => e.id === currentTargetVal)) {
+        selTarget.value = currentTargetVal;
+      } else if (items.length) {
+        selTarget.value = items[0].id;
+      }
+
+      const heroNum = $('#heroNum');
+      const heroTitle = $('#heroTitle');
+      const heroDesc = $('#heroDesc');
+
+      const selectedId = selTarget.value;
+      const targetEval = items.find(e => e.id === selectedId);
+
+      if (targetEval) {
+        const n = diffDays(targetEval.evalDate);
+        heroNum.className = 'hero-num ' + (n <= 3 ? 'soon' : '');
+        heroNum.innerHTML = `<b>${n}</b><span>${n === 1 ? 'día' : 'días'}</span>`;
+        heroTitle.textContent = targetEval.title;
+        heroDesc.textContent = `Fecha: ${fmtDate(targetEval.evalDate)} · ${n === 0 ? '¡Es hoy!' : n === 1 ? 'Es mañana.' : 'Faltan ' + n + ' días.'}`;
+      } else {
+        heroNum.className = 'hero-num none';
+        heroNum.innerHTML = '<b>–</b><span>días</span>';
+        heroTitle.textContent = 'Sin eventos próximos';
+        heroDesc.textContent = 'Agrega una evaluación o tarea.';
+      }
+
+      // Priorizador automático por fecha (lo que esté más cerca)
+      const priorityBox = $('#priorityBox');
+      if (items.length) {
+        let sorted = [...items].sort((a,b) => diffDays(a.evalDate) - diffDays(b.evalDate));
+        const top = sorted[0];
+        const tipoCls = top.kind === 'trabajo' ? 'trab' : (top.kind === 'presentacion' ? 'pres' : '');
+        const tipoNombre = top.kind === 'certamen' ? 'Certamen' : (top.kind === 'trabajo' ? 'Trabajo' : (top.kind === 'presentacion' ? 'Presentación' : 'Tarea'));
+        const n = diffDays(top.evalDate);
+        const falta = n === 0 ? 'es hoy' : (n === 1 ? 'falta 1 día' : 'faltan ' + n + ' días');
+
+        $('#priorityContent').innerHTML = `
+          <div class="priority-item ${tipoCls}">
+            <div style="font-weight:700;font-size:0.9rem;">⚡ Priorizar: ${esc(top.title)}</div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;">${tipoNombre} · ${fmtDate(top.evalDate)} · ${falta}</div>
+          </div>
+        `;
+        priorityBox.style.display = 'block';
+      } else {
+        priorityBox.style.display = 'none';
+      }
+
+      // Cuadrícula mensual compacta
+      $('#calMonthTitle').textContent = MES_NOMBRES[calMonth] + ' ' + calYear;
+      const first = (new Date(calYear, calMonth, 1).getDay() + 6) % 7;
+      const dim = new Date(calYear, calMonth + 1, 0).getDate();
+      const prevDim = new Date(calYear, calMonth, 0).getDate();
+
+      let h = '';
+      ['L','M','M','J','V','S','D'].forEach(d => { h += '<div class="dw">' + d + '</div>'; });
+      
+      for (let i = 0; i < 42; i++) {
+        let dn = i - first + 1, o = false, y = calYear, m = calMonth;
+        if (dn < 1) { dn = prevDim + dn; m = calMonth - 1; o = true; }
+        else if (dn > dim) { dn = dn - dim; m = calMonth + 1; o = true; }
+        if (m < 0) { m = 11; y = calYear - 1; } else if (m > 11) { m = 0; y = calYear + 1; }
+
+        const k = ks(y, m, dn);
+        const dayEvs = calItems.filter(x => x.evalDate === k && !x.checked);
+        let dots = '';
+        dayEvs.slice(0, 3).forEach(e => {
+          const kind = e.kind || 'certamen';
+          const dotCls = kind === 'certamen' ? 'eval-cert' : (kind === 'trabajo' ? 'eval-trab' : (kind === 'presentacion' ? 'eval-pres' : ''));
+          dots += `<i class="${dotCls}"></i>`;
+        });
+
+        h += `<button class="c ${o ? 'o ' : ''}${k === TODAY ? 't ' : ''}" onclick="openDayEventsModal('${k}')">${dn}<span class="dots">${dots}</span></button>`;
+      }
+      $('#calGrid').innerHTML = h;
+    }
+
+    $('#selectEvalTarget').onchange = () => { updateCalendarUI(); };
+
+    function toggleCategoryAccordion(key) {
+      vibrar();
+      openCats[key] = !openCats[key];
+      render();
+    }
+
+    function render() {
+      const q = norm(searchQuery);
+      const isSearching = q.length > 0;
+      const categories = catData[currentSection] || [];
+      const items = appData[currentSection] || [];
+      let html = '';
+
+      categories.forEach(cat => {
+        let catItems = items.filter(x => x.cat === cat.key);
+        if (isSearching) {
+          catItems = catItems.filter(x => norm(x.title).includes(q) || norm(x.summary).includes(q) || norm(x.detail).includes(q));
+        }
+
+        const isOpen = isSearching || !!openCats[cat.key];
+        const doneCount = catItems.filter(x => x.checked).length;
+        const totalCount = catItems.length;
+        const esTarea = currentSection === 'renaico';
+        if (esTarea && !isSearching) {
+          if (estadoFiltro === 'por') catItems = catItems.filter(x => !x.checked);
+          else if (estadoFiltro === 'emp') catItems = catItems.filter(x => x.checked);
+        }
+
+        html += `
+          <div class="cat-accordion ${isOpen ? 'open' : ''}">
+            <div class="cat-header" onclick="toggleCategoryAccordion('${cat.key}')">
+              <span class="cat-title-text font-title">${esc(cat.name)}</span>
+              <div class="cat-badge-wrap">
+                <span class="cat-counter">${esTarea ? doneCount + '/' + totalCount : catItems.length}</span>
+                <span class="cat-arrow">▼</span>
+              </div>
+            </div>
+            <div class="cat-content">
+              ${catItems.length === 0 ? '<div style="font-size:0.75rem;color:var(--muted);font-style:italic;text-align:center;padding:12px 0;">Vacío.</div>' : catItems.map(it => `
+                <div class="task-row" onclick="openDetailModal('${it.id}')">
+                  ${esTarea ? `<button class="task-checkbox ${it.checked ? 'checked' : ''}" onclick="toggleItemCheck('${it.id}', event)">${it.checked ? '✓' : ''}</button>` : ''}
+                  <div class="task-body">
+                    <div class="task-title ${esTarea && it.checked ? 'done' : ''}">${esc(it.title)}</div>
+                    ${it.summary ? `<div class="task-summary-pill"><span>📌</span><span>${esc(it.summary)}</span></div>` : ''}
+                  </div>
+                  <span class="task-arrow">›</span>
+                </div>
+              `).join('')}
+              <div class="cat-foot">
+                <button onclick="openCategoryForm('${cat.key}')" style="color:var(--p);">✎ Editar categoría</button>
+                <button onclick="confirmDeleteCat('${cat.key}')" style="color:var(--rose);">Eliminar</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      $('#institutoApuntesArea').innerHTML = html || '<div style="text-align:center;padding:36px;color:var(--muted);">No hay categorías.</div>';
+      $('#mainContentArea').innerHTML = currentSection === 'renaico' ? html : '';
+      if (currentSection === 'instituto') { renderProximo(); renderHabitos(); renderNotas(); }
+      updatePackingProgress();
+      updateCalendarUI();
+    }
+
+    function setEstado(e) {
+      estadoFiltro = e;
+      $('#tabPor').classList.toggle('on', e === 'por');
+      $('#tabEmp').classList.toggle('on', e === 'emp');
+      render();
+    }
+
+    /* ---------- Instituto · Próximo ---------- */
+    const KIND_NOM = { certamen: 'Certamen', trabajo: 'Trabajo', presentacion: 'Presentación', tarea: 'Tarea' };
+    function diaTxt(n) { return n === 0 ? 'Hoy' : n === 1 ? 'Mañana' : 'En ' + n + ' días'; }
+    function renderProximo() {
+      const hero = $('#proxHero'), box = $('#proxArea');
+      if (!hero || !box) return;
+      const items = calItems.filter(x => !x.checked && x.evalDate && diffDays(x.evalDate) >= 0).sort((a, b) => diffDays(a.evalDate) - diffDays(b.evalDate));
+      if (!items.length) {
+        hero.innerHTML = '<div class="hero-num none"><b>–</b><span>días</span></div><div style="flex:1"><h2 class="font-title" style="font-size:.95rem">Sin eventos próximos</h2><p style="font-size:.72rem;color:var(--muted)">Usa ＋ para agregar una evaluación o tarea.</p></div>';
+        box.innerHTML = '';
+        return;
+      }
+      const t = items[0], n = diffDays(t.evalDate);
+      hero.innerHTML = `<div class="hero-num ${n <= 3 ? 'soon' : ''}"><b>${n}</b><span>${n === 1 ? 'día' : 'días'}</span></div>
+        <div style="flex:1;min-width:0"><h2 class="font-title" style="font-size:.95rem;font-weight:700">${esc(t.title)}</h2>
+        <p style="font-size:.72rem;color:var(--muted)">${esc(new Date(toU(t.evalDate) + 12 * 36e5).toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }))}</p></div>`;
+      const fila = it => {
+        const n = diffDays(it.evalDate), k = it.kind || 'certamen';
+        const f = new Date(toU(it.evalDate) + 12 * 36e5).toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', timeZone: 'UTC' });
+        return `<div class="ev-row" onclick="openCalDetailModal('${it.id}')"><span class="k ${k}"></span><div class="b"><b>${esc(it.title)}</b><small>${esc(f)} · ${KIND_NOM[k] || 'Tarea'}</small></div><span class="d ${n <= 3 ? 'soon' : ''}">${diaTxt(n)}</span></div>`;
+      };
+      const semana = items.filter(x => diffDays(x.evalDate) <= 7), despues = items.filter(x => diffDays(x.evalDate) > 7);
+      box.innerHTML = (semana.length ? '<div class="sec-t">Esta semana</div>' + semana.map(fila).join('') : '')
+        + (despues.length ? '<div class="sec-t">Más adelante</div>' + despues.map(fila).join('') : '');
+    }
+
+    /* ---------- Instituto · Hábitos con casilla diaria y racha ---------- */
+    const leerHab = () => { try { const h = JSON.parse(localStorage.getItem(KEY_HAB) || 'null'); return (h && h.done && h.full) ? h : { done: {}, full: {} }; } catch (e) { return { done: {}, full: {} }; } };
+    const habitos = () => (appData.instituto || []).filter(x => x.cat === 'estudio');
+    function racha(h) {
+      let n = 0; const d = new Date();
+      const k = x => ks(x.getFullYear(), x.getMonth(), x.getDate());
+      if (!h.full[k(d)]) d.setDate(d.getDate() - 1);
+      while (h.full[k(d)]) { n++; d.setDate(d.getDate() - 1); }
+      return n;
+    }
+    function toggleHabito(id) {
+      vibrar();
+      const h = leerHab(), lista = habitos();
+      const hoy = h.done[TODAY] || [];
+      h.done[TODAY] = hoy.includes(id) ? hoy.filter(x => x !== id) : hoy.concat(id);
+      h.full[TODAY] = lista.length > 0 && lista.every(x => h.done[TODAY].includes(x.id));
+      try { localStorage.setItem(KEY_HAB, JSON.stringify(h)); } catch (e) {}
+      renderHabitos();
+    }
+    function renderHabitos() {
+      const box = $('#habitosCard'); if (!box) return;
+      const lista = habitos();
+      if (!lista.length) { box.innerHTML = ''; return; }
+      const h = leerHab(), hoy = h.done[TODAY] || [];
+      const hechos = lista.filter(x => hoy.includes(x.id)).length;
+      const deg = Math.round(hechos / lista.length * 360), r = racha(h);
+      box.innerHTML = `<div class="hab-card"><div class="hab-head">
+        <div class="hab-ring" style="background:conic-gradient(var(--p) ${deg}deg, var(--card-elevated) 0)"><span>${hechos}/${lista.length}</span></div>
+        <div><div class="font-title" style="font-weight:700">Hábitos de hoy</div><div style="font-size:.74rem;color:var(--muted)">Racha: ${r} ${r === 1 ? 'día' : 'días'}${r ? ' 🔥' : ''}</div></div></div>
+        ${lista.map(x => `<div class="hab-row ${hoy.includes(x.id) ? 'done' : ''}" onclick="toggleHabito('${x.id}')"><button class="task-checkbox ${hoy.includes(x.id) ? 'checked' : ''}" tabindex="-1">${hoy.includes(x.id) ? '✓' : ''}</button><span class="t">${esc(x.title)}</span></div>`).join('')}</div>`;
+    }
+
+    function openDayEventsModal(dateStr) {
+      vibrar();
+      const items = calItems.filter(x => x.evalDate === dateStr);
+      $('#dayEventsTitle').textContent = fmtDate(dateStr) + ' (' + dateStr + ')';
+      
+      const listEl = $('#dayEventsList');
+      if (!items.length) {
+        listEl.innerHTML = '<div style="font-size:0.8rem;color:var(--muted);font-style:italic;text-align:center;padding:16px 0;">No hay eventos ni tareas este día.</div>';
+      } else {
+        listEl.innerHTML = items.map(it => {
+          const kind = it.kind || 'certamen';
+          const badgeColor = kind === 'certamen' ? 'var(--rose)' : (kind === 'trabajo' ? 'var(--blue)' : 'var(--yellow-pres)');
+          const kindName = kind === 'certamen' ? 'Certamen' : (kind === 'trabajo' ? 'Trabajo' : (kind === 'presentacion' ? 'Presentación' : 'Tarea'));
+          return `
+            <div style="padding:10px;border-radius:12px;background:var(--card-elevated);margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+              <button class="task-checkbox ${it.checked ? 'checked' : ''}" onclick="toggleCalItemCheck('${it.id}', event)">${it.checked ? '✓' : ''}</button>
+              <div style="flex:1;min-width:0;cursor:pointer;" onclick="closeModals(); openCalDetailModal('${it.id}')">
+                <span style="font-size:0.68rem;font-weight:800;color:${badgeColor};text-transform:uppercase;">${kindName}</span>
+                <div style="font-weight:700;font-size:0.88rem;margin-top:2px;" class="${it.checked ? 'done' : ''}">${esc(it.title)}</div>
+              </div>
+              <button onclick="closeModals(); openAddTaskModal('${it.id}')" aria-label="Editar" style="background:none;border:none;cursor:pointer;color:var(--p);font-size:0.95rem;">✎</button>
+              <button onclick="deleteCalItem('${it.id}')" style="background:none;border:none;cursor:pointer;color:var(--rose);font-size:0.85rem;">🗑</button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      $('#btnAddEventOnDay').onclick = () => { closeModals(); openAddTaskModal(null, dateStr); };
+      $('#modalDayEvents').classList.add('active');
+    }
+
+    function openCalDetailModal(id) {
+      const it = calItems.find(x => x.id === id);
+      if (!it) return;
+      selectedDetailId = id;
+      const kind = it.kind || 'certamen';
+      const kindName = kind === 'certamen' ? 'Certamen' : (kind === 'trabajo' ? 'Trabajo' : (kind === 'presentacion' ? 'Presentación' : 'Tarea'));
+      $('#detCatBadge').textContent = 'Calendario · ' + kindName + ' (' + it.evalDate + ')';
+      $('#detTitle').textContent = it.title;
+      const sBox = $('#detSummaryBox');
+      if (it.summary) { sBox.style.display = 'block'; $('#detSummaryTxt').textContent = it.summary; } else { sBox.style.display = 'none'; }
+      $('#detBodyTxt').textContent = it.detail || 'Sin detalles.';
+      $('#detToggleCheck').textContent = it.checked ? '↩︎ Desmarcar' : '✓ Marcar como completado';
+      $('#detToggleCheck').style.display = '';
+      $('#detToggleCheck').onclick = () => { toggleCalItemCheck(id); openCalDetailModal(id); };
+      $('#detEdit').style.display = '';
+      $('#detEdit').onclick = () => { closeModals(); openAddTaskModal(id); };
+      $('#detDelete').onclick = () => {
+        if (confirm('¿Eliminar este evento?')) {
+          calItems = calItems.filter(x => x.id !== id);
+          saveAll(); closeModals(); render(); toast('Eliminado');
+        }
+      };
+      $('#modalDetail').classList.add('active');
+    }
+
+    function toggleCalItemCheck(id, e) {
+      if (e) e.stopPropagation();
+      const it = calItems.find(x => x.id === id);
+      if (it) { vibrar(); it.checked = !it.checked; saveAll(); render(); if ($('#modalDayEvents').classList.contains('active')) openDayEventsModal(it.evalDate); }
+    }
+
+    function deleteCalItem(id) {
+      if (confirm('¿Eliminar este evento?')) {
+        const it = calItems.find(x => x.id === id);
+        const d = it ? it.evalDate : null;
+        calItems = calItems.filter(x => x.id !== id);
+        saveAll(); render(); toast('Eliminado');
+        if (d && $('#modalDayEvents').classList.contains('active')) openDayEventsModal(d);
+      }
+    }
+
+    function openDetailModal(id) {
+      vibrar();
+      selectedDetailId = id;
+      const it = (appData[currentSection] || []).find(x => x.id === id);
+      if (!it) return;
+      const cat = (catData[currentSection] || []).find(c => c.key === it.cat);
+      $('#detCatBadge').textContent = cat ? cat.name : 'Elemento';
+      $('#detTitle').textContent = it.title;
+      const sBox = $('#detSummaryBox');
+      if (it.summary) { sBox.style.display = 'block'; $('#detSummaryTxt').textContent = it.summary; } else { sBox.style.display = 'none'; }
+      $('#detBodyTxt').textContent = it.detail || 'Sin especificaciones detalladas.';
+      $('#detToggleCheck').style.display = currentSection === 'renaico' ? '' : 'none';
+      $('#detToggleCheck').textContent = it.checked ? '↩︎ Desmarcar' : '✓ Marcar como lista';
+      $('#detEdit').style.display = '';
+      $('#detToggleCheck').onclick = () => { toggleItemCheck(id); openDetailModal(id); };
+      $('#detEdit').onclick = () => { closeModals(); openAddTaskModal(id); };
+      $('#detDelete').onclick = () => {
+        if (confirm('¿Eliminar este elemento definitivamente?')) {
+          appData[currentSection] = appData[currentSection].filter(x => x.id !== id);
+          saveAll(); closeModals(); render(); toast('Eliminado');
+        }
+      };
+      $('#modalDetail').classList.add('active');
+    }
+
+    $('#detToggleCheck').onclick = () => {
+      if (!selectedDetailId) return;
+      toggleItemCheck(selectedDetailId);
+      openDetailModal(selectedDetailId);
+    };
+
+    $('#detEdit').onclick = () => {
+      if (!selectedDetailId) return;
+      const it = (appData[currentSection] || []).find(x => x.id === selectedDetailId);
+      if (!it) return;
+      const id = it.id;
+      closeModals();
+      openAddTaskModal(id);
+    };
+
+    $('#detDelete').onclick = () => {
+      if (!selectedDetailId) return;
+      if (confirm('¿Eliminar este elemento definitivamente?')) {
+        appData[currentSection] = appData[currentSection].filter(x => x.id !== selectedDetailId);
+        saveAll(); closeModals(); render(); toast('Eliminado');
+      }
+    };
+
+    function toggleItemCheck(id, e) {
+      if (e) e.stopPropagation();
+      const it = (appData[currentSection] || []).find(x => x.id === id);
+      if (it) { vibrar(); it.checked = !it.checked; saveAll(); render(); }
+    }
+
+    function openAddTaskModal(editId, presetDate) {
+      const isInstCal = currentSection === 'instituto' && esCal();
+      const cats = catData[currentSection] || [];
+      if (!isInstCal && !cats.length) return alert('Crea primero una categoría.');
+      editingId = editId || null;
+      
+      const it = editingId ? (isInstCal ? calItems.find(x => x.id === editingId) : (appData[currentSection] || []).find(x => x.id === editingId)) : null;
+
+      $('#formModalTitle').textContent = it ? 'Editar' : (isInstCal ? 'Nuevo Evento / Tarea' : 'Nuevo Apunte');
+      $('#inpTitle').value = it ? it.title : '';
+      $('#inpSummary').value = it ? it.summary : '';
+      $('#inpDetail').value = it ? it.detail : '';
+      $('#inpEvalDate').value = (it && (it.evalDate || it.evalD)) ? (it.evalDate || it.evalD) : (presetDate || TODAY);
+      $('#inpEvalType').value = (it && it.kind) ? it.kind : 'certamen';
+
+      if (isInstCal) {
+        $('#groupEvalDate').style.display = 'block';
+        $('#groupEvalType').style.display = 'block';
+        $('#groupCategorySelect').style.display = 'none';
+      } else {
+        $('#groupEvalDate').style.display = 'none';
+        $('#groupEvalType').style.display = 'none';
+        $('#groupCategorySelect').style.display = 'block';
+        $('#inpCategory').innerHTML = cats.map(c => `<option value="${c.key}" ${it && it.cat === c.key ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+      }
+
+      $('#modalForm').classList.add('active');
+      setTimeout(() => $('#inpTitle').focus(), 150);
+    }
+
+    $('#btnFabAdd').onclick = () => (currentSection === 'instituto' && institutoSubView === 'notas') ? openNotaForm() : openAddTaskModal();
+
+    /* ===== Notas importantes (Instituto) ===== */
+    const KEY_NOTAS = 'estacion_notas_importantes';
+    const NOTA_COLORES = ['#e11d48', '#eab308', '#10b981', '#3b82f6', '#8b5cf6'];
+    let notasData = (() => { try { const v = JSON.parse(localStorage.getItem(KEY_NOTAS) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } })();
+    let notaEdit = null, notaColor = NOTA_COLORES[1];
+    const saveNotas = () => { try { localStorage.setItem(KEY_NOTAS, JSON.stringify(notasData)); } catch (e) { alert('Almacenamiento lleno.'); } };
+    function renderNotas() {
+      const box = $('#notasArea'); if (!box) return;
+      const q = norm(searchQuery);
+      const l = notasData.filter(n => !q || norm(n.title).includes(q) || norm(n.text).includes(q))
+        .sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || (b.ts || 0) - (a.ts || 0));
+      if (!l.length) { box.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.86rem;padding:34px 12px;line-height:1.6;">' + (q ? 'Sin resultados.' : '📌 Aún no tienes notas importantes.<br><small>Toca “Agregar nota” para guardar lo que no puedes olvidar.</small>') + '</div>'; return; }
+      box.innerHTML = l.map(n => `<div class="nota" id="nota_${n.id}"><span class="nota-bar" style="background:${esc(n.color || NOTA_COLORES[1])}"></span><div class="nota-body" onclick="this.parentNode.classList.toggle('open')"><div class="nota-t">${n.pin ? '📌 ' : ''}${esc(n.title)}</div>${n.text ? `<div class="nota-x">${esc(n.text)}</div>` : ''}<div class="nota-d">${new Date(n.ts || Date.now()).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}</div></div><div class="nota-act"><button class="${n.pin ? 'on' : ''}" aria-label="Fijar" onclick="toggleNotaPin('${n.id}')">📌</button><button aria-label="Editar" onclick="openNotaForm('${n.id}')">✎</button></div></div>`).join('');
+    }
+    function toggleNotaPin(id) { const n = notasData.find(x => x.id === id); if (!n) return; n.pin = !n.pin; saveNotas(); renderNotas(); }
+    function pintarColoresNota() { $('#notaColores').innerHTML = NOTA_COLORES.map(c => `<button type="button" class="${c === notaColor ? 'on' : ''}" style="background:${c}" onclick="notaColor='${c}';pintarColoresNota()" aria-label="Color"></button>`).join(''); }
+    function openNotaForm(id) {
+      const n = id ? notasData.find(x => x.id === id) : null;
+      notaEdit = n ? n.id : null; notaColor = n ? (n.color || NOTA_COLORES[1]) : NOTA_COLORES[1];
+      $('#notaFormTitle').textContent = n ? 'Editar nota' : 'Nueva nota importante';
+      $('#notaTitulo').value = n ? n.title : ''; $('#notaTexto').value = n ? (n.text || '') : ''; $('#notaFijar').checked = !!(n && n.pin);
+      $('#btnDelNota').style.display = n ? '' : 'none';
+      pintarColoresNota(); $('#modalNota').classList.add('active');
+    }
+    $('#btnSaveNota').onclick = () => {
+      const title = $('#notaTitulo').value.trim(); if (!title) return alert('Escribe un título.');
+      const d = { title, text: $('#notaTexto').value.trim(), color: notaColor, pin: $('#notaFijar').checked };
+      const n = notaEdit ? notasData.find(x => x.id === notaEdit) : null;
+      if (n) Object.assign(n, d); else notasData.push({ id: 'n' + Date.now().toString(36), ts: Date.now(), ...d });
+      saveNotas(); closeModals(); renderNotas(); toast('Nota guardada');
+    };
+    $('#btnDelNota').onclick = () => { if (!confirm('¿Eliminar esta nota?')) return; notasData = notasData.filter(x => x.id !== notaEdit); saveNotas(); closeModals(); renderNotas(); toast('Nota eliminada'); };
+
+
+    $('#btnSaveTask').onclick = () => {
+      const title = $('#inpTitle').value.trim();
+      if (!title) return alert('Ingresa un título');
+      vibrar();
+      const isInstCal = currentSection === 'instituto' && esCal();
+
+      if (isInstCal) {
+        const evalDate = $('#inpEvalDate').value;
+        const kind = $('#inpEvalType').value;
+        if (!evalDate) return alert('Selecciona una fecha');
+
+        if (editingId) {
+          const it = calItems.find(x => x.id === editingId);
+          if (it) { it.title = title; it.summary = $('#inpSummary').value.trim(); it.detail = $('#inpDetail').value.trim(); it.evalDate = evalDate; it.kind = kind; }
+        } else {
+          calItems.unshift({
+            id: 'cal_' + Date.now().toString(36),
+            title,
+            evalDate,
+            kind,
+            summary: $('#inpSummary').value.trim(),
+            detail: $('#inpDetail').value.trim(),
+            checked: false
+          });
+        }
+      } else {
+        const catKey = $('#inpCategory').value;
+        if (editingId) {
+          const it = (appData[currentSection] || []).find(x => x.id === editingId);
+          if (it) { it.title = title; it.summary = $('#inpSummary').value.trim(); it.detail = $('#inpDetail').value.trim(); it.cat = catKey; }
+        } else {
+          appData[currentSection].unshift({
+            id: 'usr_' + Date.now().toString(36),
+            cat: catKey,
+            title,
+            summary: $('#inpSummary').value.trim(),
+            detail: $('#inpDetail').value.trim(),
+            checked: false
+          });
+        }
+      }
+      saveAll(); closeModals(); render(); toast('Guardado'); editingId = null;
+    };
+
+    function renderCatManager() {
+      const cats = catData[currentSection] || [];
+      $('#catMgrTitle').textContent = 'Categorías · ' + (currentSection === 'renaico' ? 'Traslado' : 'Instituto');
+      $('#catMgrList').innerHTML = cats.length ? cats.map((c, i) => `
+        <div class="catm-row">
+          <div class="catm-info">
+            <div class="catm-name">${esc(c.name)}</div>
+            <div class="catm-meta">${(appData[currentSection] || []).filter(x => x.cat === c.key).length} elementos</div>
+          </div>
+          <button class="mini-btn" onclick="openCategoryForm('${c.key}')">✎</button>
+          <button class="mini-btn" onclick="confirmDeleteCat('${c.key}')">🗑</button>
+        </div>`).join('') : '<div style="font-size:.8rem;color:var(--muted);text-align:center;padding:12px;">Sin categorías.</div>';
+    }
+
+    $('#btnCatManager').onclick = () => { renderCatManager(); $('#modalCatManager').classList.add('active'); };
+
+    function openCategoryForm(key) {
+      editingCatKey = key || null;
+      const c = editingCatKey ? (catData[currentSection] || []).find(x => x.key === editingCatKey) : null;
+      $('#catFormTitle').textContent = c ? 'Editar Categoría' : 'Nueva Categoría';
+      $('#inpCatName').value = c ? c.name : '';
+      $('#inpCatPacking').checked = c ? !!c.packing : false;
+      $('#groupPackingCheckbox').style.display = currentSection === 'renaico' ? 'block' : 'none';
+      $('#modalCategory').classList.add('active');
+    }
+
+    $('#btnAddCategory').onclick = () => openCategoryForm();
+
+    $('#btnSaveCategory').onclick = () => {
+      const name = $('#inpCatName').value.trim();
+      if (!name) return alert('Ingresa un nombre');
+      vibrar();
+      const packing = currentSection === 'renaico' && $('#inpCatPacking').checked;
+      const c = editingCatKey ? (catData[currentSection] || []).find(x => x.key === editingCatKey) : null;
+      if (c) { c.name = name; c.packing = packing; }
+      else { const nc = { key: 'cat_' + Date.now().toString(36), name, packing }; catData[currentSection].push(nc); openCats[nc.key] = true; }
+      saveAll(); $('#modalCategory').classList.remove('active'); render(); renderCatManager(); toast('Guardado'); editingCatKey = null;
+    };
+
+    function confirmDeleteCat(key) {
+      if (confirm('¿Eliminar categoría y sus elementos?')) {
+        catData[currentSection] = (catData[currentSection] || []).filter(c => c.key !== key);
+        appData[currentSection] = (appData[currentSection] || []).filter(x => x.cat !== key);
+        saveAll(); render(); renderCatManager(); toast('Eliminado');
+      }
+    }
+
+    $('#btnResetPacking').onclick = () => {
+      if (confirm('¿Desmarcar todo el equipaje?')) {
+        appData.renaico.forEach(it => { const c = catData.renaico.find(x => x.key === it.cat); if (c && c.packing) it.checked = false; });
+        saveAll(); render(); toast('Equipaje reiniciado');
+      }
+    };
+
+    $('#calPrev').onclick = () => { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } updateCalendarUI(); };
+    $('#calNext').onclick = () => { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } updateCalendarUI(); };
+
+    $('#searchInput').addEventListener('input', e => { searchQuery = e.target.value; $('#searchBoxContainer').classList.toggle('has-val', searchQuery.length > 0); render(); });
+    $('#btnSearchClear').onclick = () => { $('#searchInput').value = ''; searchQuery = ''; $('#searchBoxContainer').classList.remove('has-val'); render(); };
+
+    function closeModals() { $$('.modal-overlay').forEach(m => m.classList.remove('active')); selectedDetailId = null; }
+    document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModals(); if (e.target.closest('[data-close]')) closeModals(); });
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+
+    $('#btnExport').onclick = () => { MiEspacio.descargar(MiEspacio.exportar(/^estacion_/), 'estacion-respaldo-' + MiEspacio.fechaArchivo() + '.json'); toast('Respaldo descargado'); };
+    $('#btnImport').onclick = () => $('#fileInput').click();
+    $('#fileInput').onchange = async e => {
+      const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+      try {
+        const datos = await MiEspacio.leerArchivo(f, /^estacion_/);
+        if (!confirm('Se reemplazarán los datos de Traslado e Instituto con los del archivo. ¿Continuar?')) return;
+        MiEspacio.aplicar(datos); toast('Datos cargados'); setTimeout(() => location.reload(), 600);
+      } catch (er) { alert('No se pudo cargar: ' + er.message); }
+    };
+    addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
+
+    applyTheme(localStorage.getItem(KEY_THEME) === 'light' ? 'light' : 'dark');
+    setFont(localStorage.getItem(KEY_FONT) || 'fraunces');
+    setTema(temaId);
+    switchSection(PAGE);
+    if (PAGE === 'instituto') switchInstitutoSub('prox');
+    window.__listo = true;
+  </script>
+</body>
+</html>

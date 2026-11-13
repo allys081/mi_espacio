@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark" data-acc="violeta">
+<head>
+  <meta charset="UTF-8">
+  <title>Cajas y Espacios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#14121a">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Organizador">
+  <script>
+    /* Aplica tema y acento antes de pintar para evitar parpadeos */
+    try {
+      var t = localStorage.getItem('app_tema') || 'oscuro';
+      var d = t === 'oscuro' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = d ? 'dark' : 'light';
+      var a = localStorage.getItem('color_cajas') || 'violeta';
+      document.documentElement.dataset.acc = ['violeta', 'rosa', 'celeste', 'agua'].indexOf(a) > -1 ? a : 'violeta';
+      var f = localStorage.getItem('app_fuente') || 'fraunces';
+      var F = { fraunces: "'Fraunces', Georgia, serif", jakarta: "'Plus Jakarta Sans', system-ui, sans-serif", fira: "'Fira Sans', system-ui, sans-serif", chivo: "'Chivo', system-ui, sans-serif", space: "'Space Grotesk', system-ui, sans-serif" };
+      if (F[f]) document.documentElement.style.setProperty('--serif', F[f]);
+    } catch (e) {}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700;800&family=Fira+Sans:wght@500;600;700&family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fbf5ee;
+      --card: #fffdf9;
+      --border: #eadfd2;
+      --text: #3b2a22;
+      --muted: #7a685d;
+      --p: #7c5cd6;
+      --on-p: #ffffff;
+      --p-soft: #ece6fb;
+      --p-line: #cdbff2;
+      --p-glow: rgba(124, 92, 214, 0.22);
+      --hover: #f3eae0;
+      --badge: #f1e8dd;
+      --badge-ink: #65534a;
+      --ok: #047857;
+      --ok-soft: #ecfdf5;
+      --warn: #b45309;
+      --warn-soft: #fffbeb;
+      --bad: #e11d48;
+      --bad-soft: #fff1f2;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --shadow: 0 1px 3px rgba(80,50,30,.06), 0 8px 24px rgba(80,50,30,.08);
+      --scrim: rgba(30, 18, 10, 0.55);
+    }
+
+    [data-theme=dark] {
+      color-scheme: dark;
+      --bg: #14121a;
+      --card: #1e1b27;
+      --border: #2d2939;
+      --text: #efeaf7;
+      --muted: #a39cb3;
+      --p: #a78bfa;
+      --on-p: #14121a;
+      --p-soft: #2b2445;
+      --p-line: #4c3f7a;
+      --p-glow: rgba(167, 139, 250, 0.25);
+      --hover: #262232;
+      --badge: #282434;
+      --badge-ink: #bab2ca;
+      --ok: #6ee7b7;
+      --ok-soft: rgba(110, 231, 183, 0.14);
+      --warn: #fcd34d;
+      --warn-soft: rgba(252, 211, 77, 0.12);
+      --bad: #fb7185;
+      --bad-soft: rgba(251, 113, 133, 0.14);
+      --shadow: 0 1px 3px rgba(0,0,0,.3), 0 12px 30px rgba(0,0,0,.35);
+      --scrim: rgba(0, 0, 0, 0.72);
+    }
+
+    [data-acc=violeta] { --p:#7c5cd6; --p-soft:#ece6fb; --p-line:#cdbff2; --on-p:#fff; }
+    [data-theme=dark][data-acc=violeta] { --p:#a78bfa; --p-soft:#2b2445; --p-line:#4c3f7a; --on-p:#14121a; }
+    [data-acc=rosa] { --p:#c2417a; --p-soft:#fbe1ec; --p-line:#f0b6cf; --on-p:#fff; }
+    [data-theme=dark][data-acc=rosa] { --p:#f472b6; --p-soft:#40202f; --p-line:#5b2a45; --on-p:#14121a; }
+    [data-acc=celeste] { --p:#3b82c4; --p-soft:#dcebf8; --p-line:#b3d3ee; --on-p:#fff; }
+    [data-theme=dark][data-acc=celeste] { --p:#7cb7ff; --p-soft:#1b2c44; --p-line:#2f4b73; --on-p:#14121a; }
+    [data-acc=agua] { --p:#2f8a76; --p-soft:#d9f0ea; --p-line:#a8d9cd; --on-p:#fff; }
+    [data-theme=dark][data-acc=agua] { --p:#5eead4; --p-soft:#173b36; --p-line:#2c6a60; --on-p:#14121a; }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      padding: 14px 14px 100px;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 680px; margin: 0 auto; }
+
+    /* Barra superior */
+    .top-bar {
+      display: grid;
+      grid-template-columns: 42px 1fr 88px;
+      align-items: center;
+      margin-bottom: 16px;
+      min-height: 42px;
+    }
+    .sq {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+      transition: transform .12s ease;
+    }
+    .sq:active { transform: scale(.93); }
+    .top-bar > a.sq { color: var(--p); }
+    h1 {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: -.3px;
+    }
+    .top-right {
+      display: flex;
+      gap: 8px;
+      justify-self: end;
+      position: relative;
+    }
+
+    /* Menú desplegable ⋮ */
+    .menu {
+      position: absolute;
+      right: 0;
+      top: 48px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 6px;
+      min-width: 200px;
+      display: none;
+      z-index: 80;
+    }
+    .menu.open { display: block; }
+    .menu button {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 0;
+      background: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .84rem;
+      font-family: inherit;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+    }
+    .menu button:hover { background: var(--hover); }
+    .menu hr { border: 0; border-top: 1px dashed var(--border); margin: 6px 4px; }
+    .menu-t { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 6px 12px 4px; }
+    .menu .dots { display: flex; gap: 10px; padding: 4px 12px 8px; }
+    .menu .dots button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: .8rem;
+      background: var(--c);
+    }
+    .menu .dots button[data-c=violeta] { --c:#7c5cd6; }
+    .menu .dots button[data-c=rosa] { --c:#c2417a; }
+    .menu .dots button[data-c=celeste] { --c:#3b82c4; }
+    .menu .dots button[data-c=agua] { --c:#2f8a76; }
+    .menu .dots button.on { border-color: var(--text); }
+    .menu .dots button.on::after { content: "✓"; font-weight: 800; }
+
+    /* Barra de búsqueda */
+    .search-box {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.04);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .search-box:focus-within { border-color: var(--p); box-shadow: 0 0 0 3px var(--p-glow); }
+    .search-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: .94rem;
+      font-family: inherit;
+      color: var(--text);
+      background: transparent;
+    }
+    .btn-clear { border: none; background: none; cursor: pointer; color: var(--muted); font-size: 1rem; display: none; padding: 2px 6px; }
+
+    /* Barra de herramientas */
+    .tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .tot { font-size: .82rem; color: var(--muted); font-weight: 600; }
+    .tot b { color: var(--text); font-family: var(--serif); font-size: 1.05rem; }
+    .view {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .view button {
+      width: 36px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+    .view button.on { background: var(--p-soft); color: var(--p); }
+
+    /* Cuadrícula de cajas principal */
+    .card-list { display: flex; flex-direction: column; gap: 10px; }
+    .card-list.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; margin: 0 auto; }
+    @media (max-width: 360px) { .card-list.grid { grid-template-columns: 1fr; } }
+
+    .group-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 13px 12px 14px 14px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: transform .14s ease, border-color .14s ease;
+      position: relative;
+    }
+    .group-card:active { transform: scale(.98); }
+    .group-card:hover { border-color: var(--p-line); }
+
+    .c-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .c-title-box {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      min-width: 0;
+      flex: 1;
+    }
+    .caja-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: var(--hover);
+      border: 1px solid var(--border);
+      flex: none;
+    }
+    .c-name {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 1.02rem;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .c-actions-head {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: none;
+      margin-top: -3px;
+    }
+    .c-actions-head .btn-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .88rem;
+    }
+    .c-actions-head .btn-icon:hover { background: var(--hover); color: var(--text); }
+    .c-actions-head .btn-icon.add-fast { color: var(--p); font-size: 1.05rem; font-weight: 800; }
+
+    .c-sub {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 600;
+      overflow-wrap: anywhere;
+      margin-top: 2px;
+    }
+
+    /* Botones al pie de la tarjeta de caja */
+    .card-btns { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; padding-top: 6px; }
+    .btn-card {
+      height: 34px; border-radius: 10px; border: 0; background: transparent; cursor: pointer;
+      font-family: inherit; font-weight: 800; font-size: .84rem; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .btn-card.add { color: var(--p); padding: 0 6px 0 0; }
+    .btn-card.del { color: var(--muted); width: 34px; justify-content: center; }
+    .btn-card.del:hover { background: var(--hover); color: var(--bad); }
+    .btn-card.add:active, .btn-card.del:active { transform: scale(.94); }
+
+    /* Foto del objeto en la ventana de detalle (marco horizontal) */
+    .pop-photo {
+      width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--bg); cursor: zoom-in;
+    }
+    .pop-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .item-sub { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 3px; }
+
+    /* Botón flotante ＋ Agregar caja */
+    .fab {
+      position: fixed;
+      z-index: 30;
+      right: max(16px, calc(50% - 330px));
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      height: 52px;
+      padding: 0 20px 0 16px;
+      border-radius: 17px;
+      background: var(--p);
+      color: var(--on-p);
+      border: 0;
+      font-weight: 800;
+      font-size: .92rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.28);
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform .14s ease;
+    }
+    .fab:active { transform: scale(.94); }
+
+    /* ═══════════════════════════════════════════════
+       HOJA DE LA CAJA (LISTA MINIMALISTA DE OBJETOS)
+       ═══════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--scrim);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    /* Ventana emergente centrada con los objetos de la caja */
+    #modal-det { align-items: center; padding: 16px; }
+    #modal-det .modal {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      max-height: min(80dvh, 640px);
+      display: flex;
+      flex-direction: column;
+      padding: 18px 16px 16px;
+      transform: scale(.94);
+      transition: transform .22s cubic-bezier(.16, 1, .3, 1);
+      box-shadow: 0 20px 50px rgba(0,0,0,.5);
+      margin: 0;
+    }
+    #modal-det.active .modal { transform: scale(1); }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4.5px;
+      border-radius: 99px;
+      background: var(--border);
+      margin: 0 auto 12px;
+      flex: none;
+    }
+    .det-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      flex: none;
+    }
+    .det-head h3 {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .btn-add-item-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      padding: 9px;
+      background: var(--p-soft);
+      border: 1px dashed var(--p-line);
+      color: var(--p);
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: .84rem;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+    .btn-add-item-bar:active { transform: scale(.98); }
+
+    /* Contenedor de la lista minimalista */
+    #det-body {
+      overflow-y: auto;
+      flex: 1;
+      min-height: 140px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 6px;
+    }
+
+    .minimal-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .item-row-simple {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background .12s ease;
+      gap: 10px;
+    }
+    .item-row-simple:hover, .item-row-simple:active { background: var(--hover); }
+    .item-row-simple:last-child { border-bottom: none; }
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+    .item-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--p);
+      opacity: .6;
+      flex-shrink: 0;
+    }
+    .item-title-wrap { min-width: 0; flex: 1; }
+    .item-name {
+      font-size: .94rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .item-badges-mini {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+    .mini-tag {
+      font-size: .68rem;
+      padding: 1px 7px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+    .mini-tag.qty { background: var(--badge); color: var(--p); border: 1px solid var(--border); }
+    .mini-tag.buy { background: var(--bad-soft); color: var(--bad); }
+    .mini-tag.detail { color: var(--muted); font-size: .74rem; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
+
+    .item-quick-btns {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .item-quick-btns .btn-icon {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .88rem;
+    }
+    .item-quick-btns .btn-icon:hover { background: var(--badge); color: var(--text); }
+    .item-quick-btns .btn-icon.del:hover { color: var(--bad); }
+
+    /* ═══════════════════════════════════════════════
+       VENTANA EMERGENTE EN EL MEDIO (POPOVER DETALLE)
+       ═══════════════════════════════════════════════ */
+    #modal-viewer { z-index: 140; }
+    #modal-caja, #modal-item, #modal-mover { z-index: 130; }
+    #modal-popup-center {
+      align-items: center;
+      padding: 16px;
+      z-index: 120;
+    }
+    #modal-popup-center .modal {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px 20px 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+      transform: scale(.93);
+      transition: transform .22s cubic-bezier(.16, 1, .3, 1);
+      margin: 0;
+    }
+    #modal-popup-center.active .modal { transform: scale(1); }
+
+    .pop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+    .pop-title {
+      font-family: var(--serif);
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+    .pop-subtitle {
+      font-size: .74rem;
+      color: var(--muted);
+      margin-top: 2px;
+      display: block;
+    }
+    .pop-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex: none;
+    }
+
+    .pop-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pop-field {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+    }
+    .pop-field label {
+      display: block;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: .5px;
+      margin-bottom: 3px;
+    }
+    .pop-field p { font-size: .92rem; color: var(--text); overflow-wrap: anywhere; line-height: 1.4; }
+
+    /* Control de cantidad en el popup */
+    .qty-control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px 14px;
+    }
+    .stepper {
+      display: inline-flex;
+      align-items: center;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .stepper button {
+      width: 34px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: var(--p);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .stepper span {
+      min-width: 36px;
+      text-align: center;
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .pop-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .btn-pop {
+      height: 42px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: .84rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: transform .12s ease;
+    }
+    .btn-pop:active { transform: scale(.95); }
+    .btn-pop.reponer.active {
+      background: var(--bad-soft);
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    /* Modales estándar (Caja, Objeto, Mover, Visor) */
+    .modal-center {
+      align-items: center;
+      padding: 16px;
+    }
+    .modal-center .modal {
+      background: var(--card);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      padding: 22px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      transform: scale(.95);
+      transition: transform .22s cubic-bezier(.16, 1, .3, 1);
+      margin: 0;
+    }
+    .modal-center.active .modal { transform: scale(1); }
+    .modal-center h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: .76rem; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+    .form-input, .form-select {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 13px;
+      font-size: .92rem;
+      font-family: inherit;
+      outline: none;
+      color: var(--text);
+      background: var(--bg);
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--p); box-shadow: 0 0 0 3px var(--p-glow); }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: .86rem;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      background: var(--bg);
+    }
+    .check input { width: 18px; height: 18px; accent-color: var(--p); }
+
+    .photo-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .pbox {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      border: 1.5px dashed var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .pbox img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .pbox .rm {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      border: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: .84rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: transform .12s;
+    }
+    .btn:active { transform: scale(.95); }
+    .btn-primary { background: var(--p); color: var(--on-p); }
+    .btn-secondary { background: var(--bg); border: 1.5px solid var(--border); color: var(--text); }
+    .btn-danger { color: var(--bad); }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--text);
+      color: var(--bg);
+      padding: 11px 18px;
+      border-radius: 14px;
+      font-size: .84rem;
+      font-weight: 600;
+      z-index: 200;
+      transition: all .25s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* Selector de letra en el menú ⋮ */
+    .menu { max-height: 75vh; overflow-y: auto; min-width: 230px; }
+    .menu .font-btn.on { background: var(--p-soft); color: var(--p); }
+
+    /* ===== Cajas: tarjetas con color, ubicación corta y filtros ===== */
+    .chips-ubi { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 12px; scrollbar-width: none; }
+    .chips-ubi::-webkit-scrollbar { display: none; }
+    .chips-ubi button { flex: none; padding: 7px 14px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font: 700 .78rem inherit; font-family: inherit; cursor: pointer; }
+    .chips-ubi button.on { background: var(--p); border-color: var(--p); color: var(--on-p, #14121a); }
+    .group-card.tile { padding: 0; gap: 0; overflow: hidden; }
+    .tile-band { height: 54px; display: flex; align-items: flex-end; gap: 5px; padding: 0 12px 7px; background-size: cover; background-position: center; }
+    .tile-band s { width: 16px; border-radius: 5px 5px 0 0; background: rgba(255,255,255,.62); text-decoration: none; }
+    .tile-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+    .tile-body .c-name { font-size: .98rem; line-height: 1.2; }
+    .tile-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; }
+    .tile-foot .loc-pill { flex: 0 1 auto; }
+    .tile-act { margin-left: auto; }
+    .loc-pill { font-size: .7rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: var(--p-soft); color: var(--p); border: 1px solid var(--p-line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .loc-pill.vacia { background: transparent; color: var(--muted); border-style: dashed; }
+    .tile-act { display: flex; gap: 4px; flex: none; }
+    .tile-act button { width: 30px; height: 30px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-elevated, var(--bg)); color: var(--text); cursor: pointer; font-size: .85rem; }
+    .card-list:not(.grid) .tile-band { height: 38px; }
+  </style>
+  <script src="/app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Barra superior -->
+    <header class="top-bar">
+      <a href="organizador.html" class="sq" title="Volver al menú">←</a>
+      <h1>Cajas y Espacios</h1>
+      <div class="top-right">
+        <button class="sq" id="btn-tema" aria-label="Cambiar modo de tema"></button>
+        <button class="sq" id="btn-menu" aria-label="Más opciones">⋮</button>
+        <div class="menu" id="menu">
+          <button id="btn-exportar">💾 Respaldar</button>
+          <button id="btn-importar">📂 Cargar</button>
+          <hr>
+          <div class="menu-sec">
+            <div class="menu-t">Letra de los títulos</div>
+            <button class="font-btn" data-f="fraunces" style="font-family:'Fraunces', serif;">Fraunces (la de ahora)</button>
+            <button class="font-btn" data-f="jakarta" style="font-family:'Plus Jakarta Sans', sans-serif;">Plus Jakarta (sin serif)</button>
+            <button class="font-btn" data-f="fira" style="font-family:'Fira Sans', sans-serif;">Fira Sans</button>
+            <button class="font-btn" data-f="chivo" style="font-family:'Chivo', sans-serif;">Chivo</button>
+            <button class="font-btn" data-f="space" style="font-family:'Space Grotesk', sans-serif;">Space Grotesk</button>
+          </div>
+          <hr>
+          <div class="menu-sec">
+            <div class="menu-t">Color de acento</div>
+            <div class="dots" id="dots">
+              <button data-c="violeta" aria-label="Morado"></button>
+              <button data-c="rosa" aria-label="Rosa"></button>
+              <button data-c="celeste" aria-label="Celeste"></button>
+              <button data-c="agua" aria-label="Aguamarina"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="file-input" style="display:none" accept=".json">
+    </header>
+
+    <!-- Búsqueda rápida -->
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="busqueda" class="search-input" placeholder="Buscar objeto, caja, ubicación o persona..." autocomplete="off">
+      <button id="btn-limpiar" class="btn-clear">✕</button>
+    </div>
+
+    <!-- Resultados en vivo de búsqueda -->
+    <div id="search-box-results" style="display:none; margin-bottom: 18px;">
+      <div style="font-size: .75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px;">Resultados encontrados</div>
+      <div id="search-items" class="minimal-list" style="background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 6px 12px;"></div>
+    </div>
+
+    <!-- Barra de conteo y vista -->
+    <div class="tools">
+      <span class="tot">Total cajas: <b id="tot-cajas">0</b><span id="tot-objs"></span></span>
+      <div class="view" id="view">
+        <button data-v="list" aria-label="Vista de lista">☰</button>
+        <button data-v="grid" class="on" aria-label="Vista de cuadrícula">⊞</button>
+      </div>
+    </div>
+
+    <!-- Cuadrícula principal de cajas -->
+    <main id="contenedor-cajas" class="card-list grid"></main>
+  </div>
+
+  <!-- Botón flotante ＋ Agregar caja -->
+  <button class="fab" id="btn-nueva-caja">
+    <span style="font-size:1.15rem;line-height:1">＋</span> Caja
+  </button>
+
+  <!-- ═══════════════════════════════════════════════════
+       HOJA DE DETALLE DE LA CAJA (LISTA MINIMALISTA)
+       ═══════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-det">
+    <div class="modal">
+      <div class="det-head">
+        <div id="det-foto"></div>
+        <div style="flex:1; min-width:0">
+          <h3 id="det-titulo">Nombre Caja</h3>
+          <div class="c-sub" id="det-sub">0 objetos · 📍 Ubicación</div>
+        </div>
+        <button class="sq" id="det-edit" data-act="editcaja" aria-label="Editar caja" title="Editar caja">✎</button>
+        <button class="sq" data-close aria-label="Cerrar">✕</button>
+      </div>
+
+      <button class="btn-add-item-bar" id="btn-add-obj-inside">
+        <span>＋</span> Agregar objeto a esta caja
+      </button>
+
+      <div id="det-body">
+        <div class="minimal-list" id="det-items-list">
+          <!-- Filas de objetos sin recuadros pesados -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       VENTANA EMERGENTE EN EL MEDIO (POPOVER DETALLE)
+       ═══════════════════════════════════════════════════ -->
+  <div class="modal-overlay modal-center" id="modal-popup-center">
+    <div class="modal">
+      <div class="pop-header">
+        <div>
+          <h4 class="pop-title" id="pop-title">Conectores RJ-45</h4>
+          <span class="pop-subtitle" id="pop-subtitle">Guardado en Caja herramientas</span>
+        </div>
+        <button class="pop-close" data-close aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="pop-body">
+        <!-- Detalle o notas -->
+        <div class="pop-field" id="pop-det-box">
+          <label>Detalle / Nota</label>
+          <p id="pop-details">Sin detalles adicionales</p>
+        </div>
+
+        <!-- Foto del objeto -->
+        <div class="pop-photo" id="pop-photo-box" style="display:none;"><img id="pop-photo" alt="Foto del objeto"></div>
+
+        <!-- Cantidad con stepper -->
+        <div class="qty-control-row" id="pop-qty-box">
+          <div>
+            <span style="font-size: .86rem; font-weight: 700;">Cantidad disponible</span>
+            <p style="font-size: .74rem; color: var(--muted);">Unidades en la caja</p>
+          </div>
+          <div class="stepper">
+            <button id="pop-btn-minus" aria-label="Restar">−</button>
+            <span id="pop-qty-val">6</span>
+            <button id="pop-btn-plus" aria-label="Sumar">+</button>
+          </div>
+        </div>
+
+        <!-- Prestado a -->
+        <div class="pop-field" id="pop-loan-box" style="display: none;">
+          <label>🤝 Prestado a</label>
+          <p id="pop-loan-name">Dani</p>
+        </div>
+
+        <!-- Acciones: Enviar a Compras / Mover caja -->
+        <div class="pop-actions-grid">
+          <button class="btn-pop reponer" id="pop-btn-reponer">
+            🛒 <span id="pop-reponer-txt">Por reponer</span>
+          </button>
+          <button class="btn-pop" id="pop-btn-mover">
+            ⇄ Mover caja
+          </button>
+        </div>
+
+        <!-- Acciones secundarias: Editar todo / Eliminar -->
+        <div style="display: flex; gap: 8px; margin-top: 6px;">
+          <button class="btn-pop" style="flex: 1;" id="pop-btn-edit">✎ Editar</button>
+          <button class="btn-pop btn-danger" style="padding: 0 16px;" id="pop-btn-del">🗑 Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Crear / Editar Caja -->
+  <div class="modal-overlay modal-center" id="modal-caja">
+    <div class="modal">
+      <h3 id="caja-titulo">Nueva Caja</h3>
+      <div class="form-group">
+        <label class="form-label">Nombre del contenedor o lugar</label>
+        <input type="text" id="caja-nombre" class="form-input" placeholder="Ej: Caja negra, Cajón escritorio..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿Dónde está? (opcional)</label>
+        <input type="text" id="caja-ubi" class="form-input" placeholder="Ej: Closet, repisa 2..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Foto de la caja o lugar (opcional)</label>
+        <div class="photo-row">
+          <div class="pbox" data-k="cajaFoto"><span class="ph">📦</span><img alt=""><button type="button" class="rm" data-rm="cajaFoto">✕</button></div>
+          <button type="button" class="btn btn-secondary" data-pick="cajaFoto" data-cam="1">📸 Tomar</button>
+          <button type="button" class="btn btn-secondary" data-pick="cajaFoto">🖼️ Elegir</button>
+          <input type="file" class="pfile" data-k="cajaFoto" accept="image/*" hidden>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btn-guardar-caja">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Crear / Editar Objeto -->
+  <div class="modal-overlay modal-center" id="modal-item">
+    <div class="modal">
+      <h3 id="item-titulo">Agregar Objeto</h3>
+      <div class="form-group">
+        <label class="form-label">Nombre del objeto *</label>
+        <input type="text" id="item-nombre" class="form-input" placeholder="Ej: Elásticos, Cargador, Libreta..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Detalle opcional (color, estado, etc.)</label>
+        <input type="text" id="item-detalles" class="form-input" placeholder="Ej: sellado, color negro..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cantidad (vacío = sin contador numérico)</label>
+        <input type="text" id="item-cantidad" class="form-input" inputmode="numeric" placeholder="Ej: 6 (o dejar vacío)" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prestado a (opcional)</label>
+        <input type="text" id="item-prestado" class="form-input" placeholder="Ej: Dani, hermana..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="check"><input type="checkbox" id="item-reponer"> 🛒 Por reponer (lo manda a Compras)</label>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Foto del objeto (opcional)</label>
+        <div class="photo-row">
+          <div class="pbox" data-k="itemFoto"><span class="ph">📷</span><img alt=""><button type="button" class="rm" data-rm="itemFoto">✕</button></div>
+          <button type="button" class="btn btn-secondary" data-pick="itemFoto" data-cam="1">📸 Tomar</button>
+          <button type="button" class="btn btn-secondary" data-pick="itemFoto">🖼️ Elegir</button>
+          <input type="file" class="pfile" data-k="itemFoto" accept="image/*" hidden>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btn-guardar-item">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Mover Objeto a Otra Caja -->
+  <div class="modal-overlay modal-center" id="modal-mover">
+    <div class="modal">
+      <h3 id="mover-titulo">Mover objeto</h3>
+      <div class="form-group">
+        <label class="form-label">Selecciona la caja de destino</label>
+        <select id="mover-destino" class="form-select"></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btn-confirmar-mover">Mover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visor de Fotos -->
+  <div class="modal-overlay modal-center" id="modal-viewer">
+    <div class="modal" style="text-align:center; max-width:440px">
+      <h3 id="viewer-title" style="margin-bottom:10px">Foto</h3>
+      <img id="viewer-img" src="" alt="Vista previa" style="width:100%; border-radius:14px; max-height:70vh; object-fit:contain">
+      <div class="modal-footer" style="justify-content:center; margin-top:14px"><button class="btn btn-secondary" data-close>Cerrar</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════
+       LÓGICA, DATOS Y COMPATIBILIDAD CON TUS RESPALDOS
+       ═══════════════════════════════════════════════════ */
+    const KEY = 'org_cajas', VKEY = 'vista_cajas', COMPRAS = 'org_compras', CAT_COMPRAS = 'Desde Cajas';
+    const $ = s => document.querySelector(s);
+    const $$ = s => [...document.querySelectorAll(s)];
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const norm = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const vibrar = () => { if (navigator.vibrate) try { navigator.vibrate(8); } catch(e){} };
+    const leer = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
+    const fechaActual = () => new Date().toLocaleDateString('es-CL', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+    let tt;
+    function toast(t) {
+      const el = $('#toast');
+      el.textContent = t;
+      el.classList.add('show');
+      clearTimeout(tt);
+      tt = setTimeout(() => el.classList.remove('show'), 2400);
+    }
+
+    const cantN = v => {
+      const n = parseInt(String(v ?? '').replace(/\D/g, ''), 10);
+      return Number.isFinite(n) ? Math.min(n, 99999) : null;
+    };
+
+    function normItem(x) {
+      return {
+        id: String(x.id || uid('it_')),
+        nombre: String(x.nombre || '').trim(),
+        detalles: String(x.detalles || '').trim(),
+        fecha: String(x.fecha || fechaActual()),
+        foto: typeof x.foto === 'string' && x.foto ? x.foto : null,
+        cantidad: x.cantidad === null || x.cantidad === undefined || x.cantidad === '' ? null : cantN(x.cantidad),
+        prestadoA: String(x.prestadoA || '').trim(),
+        porReponer: !!x.porReponer
+      };
+    }
+
+    function normCaja(c) {
+      return {
+        id: String(c.id || uid('c_')),
+        nombre: String(c.nombre || 'Caja').trim() || 'Caja',
+        ubicacion: String(c.ubicacion || '').trim(),
+        foto: typeof c.foto === 'string' && c.foto ? c.foto : null,
+        items: (Array.isArray(c.items) ? c.items : []).filter(x => x && typeof x === 'object' && String(x.nombre || '').trim()).map(normItem)
+      };
+    }
+
+    /* Datos reales cargados desde tu JSON de respaldo si localStorage está vacío */
+    let db = (Array.isArray(leer(KEY, null)) ? leer(KEY, null) : null);
+    if (!db) {
+      /* Si no hay datos previos en este navegador, dejamos precargado tu inventario real */
+      db = [
+        {
+          id: "c_mvlvbbsbj6qq",
+          nombre: "Caja herramientas",
+          ubicacion: "Piso",
+          foto: null,
+          items: [
+            { id: "it_mvlver1j6i8q", nombre: "Cosas para colgantes", detalles: "", fecha: "24 oct 2026, 01:00 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlve56i9ak0", nombre: "Corta carton", detalles: "Atado con pegote y genero", fecha: "24 oct 2026, 12:59 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvdpdecaes", nombre: "Conectores RJ-45", detalles: "Categoría 6 para red", fecha: "24 oct 2026, 12:59 a. m.", foto: null, cantidad: 6, prestadoA: "", porReponer: false },
+            { id: "it_mvlvde8nv9ld", nombre: "Adaptador micro SD", detalles: "", fecha: "24 oct 2026, 12:59 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvd9isnvzu", nombre: "Pernos", detalles: "", fecha: "24 oct 2026, 12:58 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvcqnnw9r2", nombre: "Alicate en punta", detalles: "", fecha: "24 oct 2026, 12:58 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvcbebkwad", nombre: "Destornillador de cruz", detalles: "", fecha: "24 oct 2026, 12:58 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvc6d0chau", nombre: "Cajita tachuelas", detalles: "", fecha: "24 oct 2026, 12:58 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvc0or06os", nombre: "Caja transparente circular", detalles: "", fecha: "24 oct 2026, 12:58 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvbusm5tum", nombre: "Gotero mediano azul", detalles: "", fecha: "24 oct 2026, 12:57 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlvbj4viq1z", nombre: "Alicate rojo grueso", detalles: "", fecha: "24 oct 2026, 12:58 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false }
+          ]
+        },
+        {
+          id: "c_mvlv8e4od342",
+          nombre: "Caja exagonal",
+          ubicacion: "Closet plastico, 3 fila",
+          foto: null,
+          items: [
+            { id: "it_mvlv9y6jm1ic", nombre: "Bolsas genero moradas", detalles: "", fecha: "24 oct 2026, 12:56 a. m.", foto: null, cantidad: 4, prestadoA: "", porReponer: false },
+            { id: "it_mvlv9jsqdxyv", nombre: "Cajita", detalles: "", fecha: "24 oct 2026, 12:56 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv9193imdu", nombre: "Bolsitas transparentes pequeñas", detalles: "", fecha: "24 oct 2026, 12:55 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv8vlnlqjy", nombre: "Bolsita genero blanca", detalles: "", fecha: "24 oct 2026, 12:55 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv8ptwzs3e", nombre: "Audifonos malos", detalles: "", fecha: "24 oct 2026, 12:55 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false }
+          ]
+        },
+        {
+          id: "c_mvlv5q8cm41k",
+          nombre: "Caja de rosas",
+          ubicacion: "Closet plastico, 4 fila",
+          foto: null,
+          items: [
+            { id: "it_mvlv7xbovahk", nombre: "Delineador lapiz negro", detalles: "", fecha: "24 oct 2026, 12:54 a. m.", foto: null, cantidad: 1, prestadoA: "", porReponer: false },
+            { id: "it_mvlv7pmch8yb", nombre: "Delineador ojos negro", detalles: "Sellado", fecha: "24 oct 2026, 12:54 a. m.", foto: null, cantidad: 1, prestadoA: "", porReponer: false },
+            { id: "it_mvlv7gqedd0f", nombre: "Petalos maquillaje", detalles: "Tapados y sueltos", fecha: "24 oct 2026, 12:54 a. m.", foto: null, cantidad: 10, prestadoA: "", porReponer: false },
+            { id: "it_mvlv6ojap01j", nombre: "Sheglam polvo", detalles: "Sellado", fecha: "24 oct 2026, 12:53 a. m.", foto: null, cantidad: 1, prestadoA: "", porReponer: false },
+            { id: "it_mvlv6i8rccqh", nombre: "Pintauñas rojo", detalles: "", fecha: "24 oct 2026, 12:53 a. m.", foto: null, cantidad: 1, prestadoA: "", porReponer: false },
+            { id: "it_mvlv69bim9a7", nombre: "Petalos desmaquillantes", detalles: "1 Sellado y 1 a la mitad", fecha: "24 oct 2026, 12:53 a. m.", foto: null, cantidad: 2, prestadoA: "", porReponer: false }
+          ]
+        },
+        {
+          id: "c_mvlv1hux3pg0",
+          nombre: "Caja estampillas",
+          ubicacion: "Closet plástico, 4 fila",
+          foto: null,
+          items: [
+            { id: "it_mvlv53g3qwzt", nombre: "\"Pon a volar tu imaginación \"", detalles: "", fecha: "24 oct 2026, 12:52 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv4lxzn3u2", nombre: "Sticker de nota", detalles: "Rollo amarillo", fecha: "24 oct 2026, 12:52 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv4b4364vm", nombre: "Diario 2026 de osito", detalles: "", fecha: "24 oct 2026, 12:52 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv45775y4y", nombre: "Lampara para leer libros", detalles: "Con su cable", fecha: "24 oct 2026, 12:51 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv3to6x3xt", nombre: "Bolsas transparentes grandes", detalles: "Sellados", fecha: "24 oct 2026, 12:51 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlv30iwijul", nombre: "Colgantes de michis", detalles: "Sellados", fecha: "24 oct 2026, 12:51 a. m.", foto: null, cantidad: 10, prestadoA: "", porReponer: false },
+            { id: "it_mvlv2inm36wx", nombre: "Corcho suelto", detalles: "Casi del tamaño de la caja", fecha: "24 oct 2026, 12:50 a. m.", foto: null, cantidad: 1, prestadoA: "", porReponer: false }
+          ]
+        },
+        {
+          id: "c_mvlunbygjclu",
+          nombre: "Caja material",
+          ubicacion: "Abajo carrito rosa",
+          foto: null,
+          items: [
+            { id: "it_mvlurmc23glp", nombre: "To do list, 50 hojas", detalles: "", fecha: "24 oct 2026, 12:42 a. m.", foto: null, cantidad: 1, prestadoA: "", porReponer: false },
+            { id: "it_mvluqvhi0ii7", nombre: "Gomas para abultar lapices", detalles: "Sellado", fecha: "24 oct 2026, 12:41 a. m.", foto: null, cantidad: 4, prestadoA: "", porReponer: false },
+            { id: "it_mvluqddgp1xx", nombre: "Paquete de notas cafés", detalles: "Sellado", fecha: "24 oct 2026, 12:41 a. m.", foto: null, cantidad: 1, prestadoA: "", porReponer: false },
+            { id: "it_mvlupxvwt8qk", nombre: "Sobres sellados de notas", detalles: "Verde, 2 naranja y 1 amarilla", fecha: "24 oct 2026, 12:41 a. m.", foto: null, cantidad: 4, prestadoA: "", porReponer: false },
+            { id: "it_mvluox7vbr58", nombre: "Etiquetas adhesivas", detalles: "Sellado", fecha: "24 oct 2026, 12:40 a. m.", foto: null, cantidad: 143, prestadoA: "", porReponer: false }
+          ]
+        },
+        {
+          id: "c_mvluds5be4np",
+          nombre: "Caja negra",
+          ubicacion: "Abajo carrito rosa",
+          foto: null,
+          items: [
+            { id: "it_mvlvgvr836qm", nombre: "Control prender luces silla", detalles: "Sellado", fecha: "24 oct 2026, 01:01 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlulwe0xk78", nombre: "La goma del reloj rota", detalles: "", fecha: "24 oct 2026, 12:37 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlulntd7730", nombre: "Manual redmi", detalles: "", fecha: "24 oct 2026, 12:37 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlulhd8z7js", nombre: "Etiquetas parka lippi", detalles: "", fecha: "24 oct 2026, 12:37 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlul68o0lz9", nombre: "Manual de la bateria portatil", detalles: "", fecha: "24 oct 2026, 12:37 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluku790ek1", nombre: "Manual instrucciones teclado", detalles: "", fecha: "24 oct 2026, 12:36 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlukgsm54vx", nombre: "Manual lamina al telefono", detalles: "", fecha: "24 oct 2026, 12:36 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluk7d4ihzm", nombre: "Boleta del monitor", detalles: "", fecha: "24 oct 2026, 12:36 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlujook61zc", nombre: "Manual y herramientas caminadora", detalles: "", fecha: "24 oct 2026, 12:35 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlujdnwn10t", nombre: "Adorno silencio para puerta", detalles: "", fecha: "24 oct 2026, 12:35 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluj1ityw1d", nombre: "Cable y pinchos pizarras pared", detalles: "", fecha: "24 oct 2026, 12:35 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluintmob7y", nombre: "Adhesivos weekly planning", detalles: "", fecha: "24 oct 2026, 12:35 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluiak4uoru", nombre: "Aceite caminadora eléctrica", detalles: "", fecha: "24 oct 2026, 12:34 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluhittat5o", nombre: "Cable vibrar respaldo silla", detalles: "", fecha: "24 oct 2026, 12:34 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluh128o0rf", nombre: "Bolsa soportes y herramienta carrito", detalles: "", fecha: "24 oct 2026, 12:33 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlufwe5j7gq", nombre: "Soporte pizarra mensual murano", detalles: "", fecha: "24 oct 2026, 12:33 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvlufh62zukl", nombre: "Caja manual calculadora", detalles: "", fecha: "24 oct 2026, 12:32 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluf7kajcp6", nombre: "Manual audifonos Sony", detalles: "", fecha: "24 oct 2026, 12:32 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false },
+            { id: "it_mvluerpk0xow", nombre: "Sobre sellado del pc", detalles: "", fecha: "24 oct 2026, 12:32 a. m.", foto: null, cantidad: null, prestadoA: "", porReponer: false }
+          ]
+        }
+      ];
+    }
+    db = db.filter(c => c && typeof c === 'object').map(normCaja);
+
+    let cajaId = null, itemId = null, detId = null, popObj = null;
+    let vista = 'grid';
+    try { vista = localStorage.getItem(VKEY) === 'list' ? 'list' : 'grid'; } catch (e) {}
+    const fotos = { cajaFoto: null, itemFoto: null };
+
+    function guardar() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(db));
+      } catch (e) {
+        alert('No hay más espacio en el navegador. Haz un respaldo pronto.');
+      }
+      render();
+    }
+
+    /* Sincronización con Compras */
+    function leerCompras() { const d = leer(COMPRAS, []); return Array.isArray(d) ? d : []; }
+    function guardarCompras(d) { try { localStorage.setItem(COMPRAS, JSON.stringify(d)); return true; } catch (e) { return false; } }
+
+    function setReponer(c, it, on) {
+      const compras = leerCompras();
+      const hay = () => {
+        for (const k of compras) for (const p of (k.items || [])) if (p && p.deCaja === it.id) return [k, p];
+        return null;
+      };
+      const ya = hay();
+      if (on) {
+        it.porReponer = true;
+        if (ya && ya[1].tieneRepuesto === 'no') return;
+        if (ya) { Object.assign(ya[1], { tieneRepuesto:'no', lugarRepuesto:'', cantidadRepuesto:'' }); }
+        else {
+          let k = compras.find(x => x.nombre === CAT_COMPRAS);
+          if (!k) { k = { id: uid('cat_'), nombre: CAT_COMPRAS, items: [] }; compras.unshift(k); }
+          k.items = k.items || [];
+          k.items.unshift({
+            id: uid('p_'), nombre: it.nombre, tieneRepuesto:'no', lugarRepuesto:'', cantidadRepuesto:'',
+            queda: it.cantidad !== null ? String(it.cantidad) : '', cuando:'', urgente:false, donde:'', precio:'',
+            instrucciones:`Viene de la caja "${c.nombre}"${c.ubicacion ? ' (' + c.ubicacion + ')' : ''}`,
+            enlace:'', foto: it.foto || null, fotoTienda:null, deCaja: it.id
+          });
+        }
+        guardarCompras(compras);
+      } else {
+        it.porReponer = false;
+        if (ya && ya[1].tieneRepuesto === 'no') {
+          ya[0].items = ya[0].items.filter(p => p !== ya[1]);
+          guardarCompras(compras);
+        }
+      }
+    }
+
+    function sincronizar() {
+      const compras = leerCompras();
+      let cambio = false;
+      db.forEach(c => c.items.forEach(it => {
+        if (!it.porReponer) return;
+        let p = null;
+        compras.forEach(k => (k.items || []).forEach(x => { if (x && x.deCaja === it.id) p = x; }));
+        if (!p || p.tieneRepuesto === 'si') { it.porReponer = false; cambio = true; }
+      }));
+      return cambio;
+    }
+
+    /* Compresión de fotos */
+    function comprimir(file, max, cb) {
+      const r = new FileReader();
+      r.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const k = Math.min(1, max / Math.max(img.width, img.height));
+          const w = Math.round(img.width * k), h = Math.round(img.height * k);
+          const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+          cv.getContext('2d').drawImage(img, 0, 0, w, h);
+          cb(cv.toDataURL('image/jpeg', .65));
+        };
+        img.src = e.target.result;
+      };
+      r.readAsDataURL(file);
+    }
+
+    function setPrev(k) {
+      const b = $(`.pbox[data-k="${k}"]`), src = fotos[k], im = b.querySelector('img');
+      im.src = src || ''; im.style.display = src ? 'block' : 'none';
+      b.querySelector('.ph').style.display = src ? 'none' : 'block';
+      b.querySelector('.rm').style.display = src ? 'flex' : 'none';
+    }
+
+    document.addEventListener('click', e => {
+      const p = e.target.closest('[data-pick]');
+      if (p) {
+        const inp = $(`.pfile[data-k="${p.dataset.pick}"]`);
+        if (p.dataset.cam) inp.setAttribute('capture', 'environment'); else inp.removeAttribute('capture');
+        inp.click();
+      }
+      const r = e.target.closest('[data-rm]'); if (r) { fotos[r.dataset.rm] = null; $(`.pfile[data-k="${r.dataset.rm}"]`).value = ''; setPrev(r.dataset.rm); }
+    });
+    $$('.pfile').forEach(inp => inp.onchange = e => {
+      const f = e.target.files[0]; if (!f) return;
+      comprimir(f, 480, d => { fotos[inp.dataset.k] = d; setPrev(inp.dataset.k); });
+    });
+    function verFoto(src, titulo) { $('#viewer-img').src = src; $('#viewer-title').textContent = titulo || 'Foto'; abrir('#modal-viewer'); }
+
+    /* ═══════════════════════════════════════════════════
+       RENDERIZADO: TARJETAS DE CAJAS & FILAS MINIMALISTAS
+       ═══════════════════════════════════════════════════ */
+
+    /* Fila limpia minimalista para cada objeto (sin cajas pesadas) */
+    function filaObjetoHTML(c, it, showCajaNombre) {
+      const d = `data-c="${esc(c.id)}" data-i="${esc(it.id)}"`;
+      const tieneCant = it.cantidad !== null;
+      const reponer = it.porReponer ? `<span class="mini-tag buy">🛒 Reponer</span>` : '';
+      const cantTag = tieneCant ? `<span class="mini-tag qty">${it.cantidad} un.</span>` : '';
+      const prestadoTag = it.prestadoA ? `<span class="mini-tag" style="background:var(--warn-soft);color:var(--warn)">🤝 ${esc(it.prestadoA)}</span>` : '';
+      const detTag = it.detalles ? `<span class="mini-tag detail">${esc(it.detalles)}</span>` : '';
+      const cajaTag = showCajaNombre ? `<span class="mini-tag" style="background:var(--badge);color:var(--muted)">📦 ${esc(c.nombre)}</span>` : '';
+
+      if (showCajaNombre) {
+        const estado = (it.porReponer ? `<span class="mini-tag buy">🛒 Reponer</span>` : '') +
+                       (it.prestadoA ? `<span class="mini-tag" style="background:var(--warn-soft);color:var(--warn)">🤝 ${esc(it.prestadoA)}</span>` : '');
+        return `
+        <div class="item-row-simple" ${d} data-act="abrir-pop">
+          <div class="item-left">
+            <span class="item-bullet"></span>
+            <div class="item-title-wrap">
+              <div class="item-name">${esc(it.nombre)}</div>
+              <div class="item-sub"><span class="mini-tag" style="background:var(--badge);color:var(--muted)">📦 ${esc(c.nombre)}</span>${estado}</div>
+            </div>
+          </div>
+          <div class="item-quick-btns" onclick="event.stopPropagation()">
+            <button class="btn-icon" data-act="edit" ${d} title="Editar">✎</button>
+            <button class="btn-icon del" data-act="del" ${d} title="Eliminar">🗑</button>
+          </div>
+        </div>`;
+      }
+
+      return `
+        <div class="item-row-simple" ${d} data-act="abrir-pop">
+          <div class="item-left">
+            <span class="item-bullet"></span>
+            <div class="item-title-wrap">
+              <div class="item-name">${esc(it.nombre)}</div>
+              ${ (cantTag || reponer || prestadoTag || detTag || cajaTag) ? `<div class="item-badges-mini">${cantTag}${reponer}${prestadoTag}${detTag}${cajaTag}</div>` : '' }
+            </div>
+          </div>
+          <div class="item-quick-btns" onclick="event.stopPropagation()">
+            <button class="btn-icon" data-act="edit" ${d} title="Editar">✎</button>
+            <button class="btn-icon del" data-act="del" ${d} title="Eliminar">🗑</button>
+          </div>
+        </div>
+      `;
+    }
+
+    /* Color propio por caja, ubicación corta y filtro por ubicación */
+    const BANDAS = ['#c8643f', '#5f8f7a', '#b9567a', '#4f7fb5', '#8a6fb0', '#b98524'];
+    const hashId = id => { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
+    const nombreCorto = n => String(n).replace(/^caja\s+/i, '').replace(/^./, m => m.toUpperCase()) || n;
+    const ubiBase = u => String(u || '').split(',')[0].trim().split(/\s+/)[0] || '';
+    const ubiCorta = u => { const p = String(u || '').split(',').map(x => x.trim()).filter(Boolean); if (!p.length) return ''; const b = ubiBase(u); const b2 = b.charAt(0).toUpperCase() + b.slice(1).toLowerCase(); return [b2].concat(p.slice(1).map(x => x.replace(/^(\d+)\s+(\S+)$/, '$2 $1'))).join(' · '); };
+    let ubiFiltro = '';
+
+    function chipsUbi() {
+      let box = document.getElementById('chips-ubi');
+      if (!box) { box = document.createElement('div'); box.id = 'chips-ubi'; box.className = 'chips-ubi'; $('#contenedor-cajas').before(box); box.onclick = e => { const b = e.target.closest('button'); if (!b) return; ubiFiltro = b.dataset.u; render(); }; }
+      const ubis = []; db.forEach(c => { const b = ubiBase(c.ubicacion); if (b && !ubis.some(u => norm(u) === norm(b))) ubis.push(b.charAt(0).toUpperCase() + b.slice(1).toLowerCase()); });
+      if (ubiFiltro && !ubis.some(u => norm(u) === norm(ubiFiltro))) ubiFiltro = '';
+      box.style.display = ubis.length > 1 ? 'flex' : 'none';
+      box.innerHTML = ['', ...ubis].map(u => `<button data-u="${esc(u)}" class="${norm(u) === norm(ubiFiltro) ? 'on' : ''}">${u ? esc(u) : 'Todas'}</button>`).join('');
+    }
+
+    /* Tarjeta de cada caja (toca cualquier parte para ver los objetos) */
+    function tarjetaCaja(c) {
+      const d = `data-c="${esc(c.id)}"`, n = c.items.length, col = BANDAS[hashId(c.id) % BANDAS.length];
+      const barras = [0.55, 0.9, 0.4].map(f => `<s style="height:${Math.max(8, Math.round((10 + Math.min(n, 12) * 2.6) * f))}px"></s>`).join('');
+      const fondo = c.foto ? `background-image:linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.18)),url('${c.foto}')` : `background:${col}`;
+      const ubi = c.ubicacion ? `<span class="loc-pill" title="${esc(c.ubicacion)}">${esc(ubiCorta(c.ubicacion))}</span>` : '<span class="loc-pill vacia">Sin ubicación</span>';
+      return `
+        <div class="group-card tile" ${d} data-act="detalles">
+          <div class="tile-band" style="${fondo}">${c.foto ? '' : barras}</div>
+          <div class="tile-body">
+            <div class="c-name">${esc(nombreCorto(c.nombre))}</div>
+            <div class="c-sub">${n} objeto${n === 1 ? '' : 's'}</div>
+            <div class="tile-foot">${ubi}
+              <span class="tile-act"><button data-act="newitem" ${d} title="Agregar objeto" aria-label="Agregar objeto">＋</button><button data-act="delcaja" ${d} title="Eliminar caja" aria-label="Eliminar caja">🗑</button></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      const cont = $('#contenedor-cajas');
+      cont.className = 'card-list ' + vista;
+      $$('#view button').forEach(b => b.classList.toggle('on', b.dataset.v === vista));
+      const nIt = db.reduce((s, c) => s + c.items.length, 0);
+      $('#tot-cajas').textContent = db.length;
+      $('#tot-objs').textContent = db.length ? ` · ${nIt} objeto${nIt === 1 ? '' : 's'}` : '';
+
+      chipsUbi();
+      const vis = ubiFiltro ? db.filter(c => norm(ubiBase(c.ubicacion)) === norm(ubiFiltro)) : db;
+      cont.innerHTML = db.length
+        ? vis.map(tarjetaCaja).join('')
+        : `<div style="grid-column:1/-1; text-align:center; color:var(--muted); padding:48px 0; font-size:.9rem;">No tienes cajas creadas.<br>Toca <b>＋ Caja</b> para comenzar.</div>`;
+
+      buscar();
+      if (detId) renderDet();
+      if (popObj) actualizarPopCenter();
+    }
+
+    /* Hoja de objetos de la caja */
+    function abrirDet(id) {
+      detId = id;
+      renderDet();
+      abrir('#modal-det');
+    }
+
+    function renderDet() {
+      const c = db.find(x => x.id === detId);
+      if (!c) { detId = null; $('#modal-det').classList.remove('active'); return; }
+      const d = `data-c="${esc(c.id)}"`, n = c.items.length;
+      $('#det-edit').dataset.c = c.id;
+      $('#det-titulo').textContent = c.nombre;
+      $('#det-sub').textContent = `${n} objeto${n === 1 ? '' : 's'} · 📍 ${c.ubicacion || 'Sin ubicación'}`;
+      $('#det-foto').innerHTML = c.foto ? `<img src="${c.foto}" class="caja-thumb" data-act="fotocaja" ${d} alt="Foto">` : '';
+
+      const listContainer = $('#det-items-list');
+      if (n === 0) {
+        listContainer.innerHTML = `<div style="font-size:.85rem; color:var(--muted); font-style:italic; padding:24px 8px; text-align:center">Esta caja está vacía.<br>Toca el botón de arriba para agregar objetos.</div>`;
+      } else {
+        listContainer.innerHTML = c.items.map(it => filaObjetoHTML(c, it, false)).join('');
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       VENTANA EMERGENTE EN EL MEDIO (CENTRO DE PANTALLA)
+       ═══════════════════════════════════════════════════ */
+    function abrirPopCenter(cid, iid) {
+      vibrar();
+      const c = db.find(x => x.id === cid);
+      const it = c && c.items.find(x => x.id === iid);
+      if (!c || !it) return;
+
+      popObj = { c, it };
+      actualizarPopCenter();
+      abrir('#modal-popup-center');
+    }
+
+    function actualizarPopCenter() {
+      if (!popObj || !popObj.c || !popObj.it) return;
+      const { c, it } = popObj;
+
+      $('#pop-title').textContent = it.nombre;
+      $('#pop-subtitle').textContent = `Guardado en ${c.nombre}${c.ubicacion ? ' · 📍 ' + c.ubicacion : ''}`;
+
+      // Nota o detalle
+      const detBox = $('#pop-det-box');
+      if (it.detalles) {
+        $('#pop-details').textContent = it.detalles;
+        detBox.style.display = 'block';
+      } else {
+        $('#pop-details').textContent = 'Sin notas ni especificaciones adicionales';
+        detBox.style.display = 'block';
+      }
+
+      // Foto del objeto (marco horizontal)
+      const pf = $('#pop-photo-box');
+      if (it.foto) { $('#pop-photo').src = it.foto; pf.style.display = 'block'; }
+      else { $('#pop-photo').removeAttribute('src'); pf.style.display = 'none'; }
+
+      // Contador numérico
+      const qtyBox = $('#pop-qty-box');
+      if (it.cantidad !== null) {
+        qtyBox.style.display = 'flex';
+        $('#pop-qty-val').textContent = it.cantidad;
+      } else {
+        qtyBox.style.display = 'none';
+      }
+
+      // Prestado a
+      const loanBox = $('#pop-loan-box');
+      if (it.prestadoA) {
+        $('#pop-loan-name').textContent = it.prestadoA;
+        loanBox.style.display = 'block';
+      } else {
+        loanBox.style.display = 'none';
+      }
+
+      // Botón Reponer
+      const btnRep = $('#pop-btn-reponer');
+      const txtRep = $('#pop-reponer-txt');
+      if (it.porReponer) {
+        btnRep.classList.add('active');
+        txtRep.textContent = 'En Compras';
+      } else {
+        btnRep.classList.remove('active');
+        txtRep.textContent = 'Por reponer';
+      }
+    }
+
+    /* Búsqueda en vivo */
+    function buscar() {
+      const q = $('#busqueda').value, ws = norm(q).split(/\s+/).filter(Boolean);
+      $('#btn-limpiar').style.display = q ? 'block' : 'none';
+      const box = $('#search-box-results');
+      if (!ws.length) { box.style.display = 'none'; return; }
+
+      let h = '';
+      db.forEach(c => c.items.forEach(it => {
+        const hay = norm([it.nombre, it.detalles, it.prestadoA, c.nombre, c.ubicacion].join(' '));
+        if (ws.every(w => hay.includes(w))) h += filaObjetoHTML(c, it, true);
+      }));
+
+      $('#search-items').innerHTML = h || '<div style="font-size:.85rem; color:var(--muted); padding:10px 0; text-align:center">Sin coincidencias.</div>';
+      box.style.display = 'block';
+    }
+
+    /* ═══════════════════════════════════════════════════
+       DELEGACIÓN DE EVENTOS Y ACCIONES
+       ═══════════════════════════════════════════════════ */
+    function manejarAcciones(e) {
+      const b = e.target.closest('[data-act]');
+      if (!b) return;
+
+      const act = b.dataset.act;
+      const cid = b.dataset.c;
+      const iid = b.dataset.i;
+      const c = db.find(x => x.id === cid);
+      const it = c && c.items.find(x => x.id === iid);
+
+      // Clic en la tarjeta de caja abre sus detalles
+      if (act === 'detalles' && c) {
+        vibrar();
+        return abrirDet(c.id);
+      }
+
+      // Ver foto de la caja
+      if (act === 'fotocaja' && c) {
+        return verFoto(c.foto, c.nombre);
+      }
+
+      // Agregar objeto rápido a la caja
+      if (act === 'newitem' && c) {
+        vibrar();
+        return abrirItem(c.id);
+      }
+
+      // Editar caja
+      if (act === 'editcaja' && c) {
+        vibrar();
+        return abrirCaja(c.id);
+      }
+
+      // Eliminar caja
+      if (act === 'delcaja' && c) {
+        vibrar();
+        if (confirm(`¿Eliminar la caja "${c.nombre}" y todo su contenido?`)) {
+          db = db.filter(x => x.id !== c.id);
+          guardar();
+          toast('Caja eliminada');
+        }
+        return;
+      }
+
+      // Tocar fila abre ventana emergente en el medio
+      if (act === 'abrir-pop' && c && it) {
+        return abrirPopCenter(c.id, it.id);
+      }
+
+      // Editar objeto desde la fila
+      if (act === 'edit' && c && it) {
+        vibrar();
+        return abrirItem(c.id, it.id);
+      }
+
+      // Eliminar objeto desde la fila
+      if (act === 'del' && c && it) {
+        vibrar();
+        if (confirm(`¿Eliminar "${it.nombre}"?`)) {
+          if (it.porReponer) setReponer(c, it, false);
+          c.items = c.items.filter(x => x.id !== it.id);
+          guardar();
+          toast('Objeto eliminado');
+        }
+        return;
+      }
+    }
+
+    document.addEventListener('click', manejarAcciones);
+
+    // Botón dentro de la hoja de la caja para agregar objeto
+    $('#btn-add-obj-inside').onclick = () => {
+      if (detId) abrirItem(detId);
+    };
+
+    $('#pop-photo-box').onclick = () => { if (popObj && popObj.it.foto) verFoto(popObj.it.foto, popObj.it.nombre); };
+
+    // Acciones dentro del Popup emergente del medio
+    $('#pop-btn-plus').onclick = () => {
+      if (!popObj || popObj.it.cantidad === null) return;
+      popObj.it.cantidad = Math.min(99999, popObj.it.cantidad + 1);
+      guardar();
+    };
+
+    $('#pop-btn-minus').onclick = () => {
+      if (!popObj || popObj.it.cantidad === null) return;
+      popObj.it.cantidad = Math.max(0, popObj.it.cantidad - 1);
+      guardar();
+      if (popObj.it.cantidad === 0 && !popObj.it.porReponer) {
+        if (confirm(`Se acabó "${popObj.it.nombre}". ¿Enviar a Compras?`)) {
+          setReponer(popObj.c, popObj.it, true);
+          guardar();
+          toast('Enviado a Compras');
+        }
+      }
+    };
+
+    $('#pop-btn-reponer').onclick = () => {
+      if (!popObj) return;
+      const on = !popObj.it.porReponer;
+      setReponer(popObj.c, popObj.it, on);
+      guardar();
+      toast(on ? 'Enviado a Compras' : 'Quitado de Compras');
+    };
+
+    $('#pop-btn-mover').onclick = () => {
+      if (!popObj) return;
+      abrirMover(popObj.c.id, popObj.it.id);
+    };
+
+    $('#pop-btn-edit').onclick = () => {
+      if (!popObj) return;
+      const cid = popObj.c.id, iid = popObj.it.id;
+      cerrarUno($('#modal-popup-center'));
+      abrirItem(cid, iid);
+    };
+
+    $('#pop-btn-del').onclick = () => {
+      if (!popObj) return;
+      if (confirm(`¿Eliminar "${popObj.it.nombre}"?`)) {
+        if (popObj.it.porReponer) setReponer(popObj.c, popObj.it, false);
+        popObj.c.items = popObj.c.items.filter(x => x.id !== popObj.it.id);
+        guardar();
+        cerrarUno($('#modal-popup-center'));
+        toast('Objeto eliminado');
+      }
+    };
+
+    // Buscador
+    $('#busqueda').addEventListener('input', buscar);
+    $('#btn-limpiar').onclick = () => {
+      $('#busqueda').value = '';
+      buscar();
+    };
+
+    // Selector de vista de cuadrícula / lista
+    $('#view').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      vista = b.dataset.v;
+      try { localStorage.setItem(VKEY, vista); } catch(er){}
+      render();
+    };
+
+    /* ═══════════════════════════════════════════════════
+       FORMULARIO: CAJAS
+       ═══════════════════════════════════════════════════ */
+    function abrirCaja(id) {
+      cajaId = id || null;
+      const c = id ? db.find(x => x.id === id) : null;
+      $('#caja-titulo').textContent = c ? 'Editar caja' : 'Nueva Caja';
+      $('#caja-nombre').value = c ? c.nombre : '';
+      $('#caja-ubi').value = c ? c.ubicacion : '';
+      fotos.cajaFoto = c ? c.foto : null;
+      $$('.pfile').forEach(i => i.value = '');
+      setPrev('cajaFoto');
+      abrir('#modal-caja');
+      setTimeout(() => $('#caja-nombre').focus(), 150);
+    }
+
+    $('#btn-nueva-caja').onclick = () => { vibrar(); abrirCaja(); };
+
+    $('#btn-guardar-caja').onclick = () => {
+      const nombre = $('#caja-nombre').value.trim();
+      if (!nombre) return;
+      vibrar();
+      const ubicacion = $('#caja-ubi').value.trim();
+      if (cajaId) {
+        Object.assign(db.find(x => x.id === cajaId), { nombre, ubicacion, foto: fotos.cajaFoto });
+      } else {
+        db.unshift({ id: uid('c_'), nombre, ubicacion, foto: fotos.cajaFoto, items: [] });
+      }
+      cerrar();
+      guardar();
+      toast('Caja guardada');
+    };
+
+    /* ═══════════════════════════════════════════════════
+       FORMULARIO: OBJETOS
+       ═══════════════════════════════════════════════════ */
+    function abrirItem(cid, iid) {
+      cajaId = cid;
+      itemId = iid || null;
+      const c = db.find(x => x.id === cid);
+      const it = iid ? c.items.find(x => x.id === iid) : null;
+
+      $('#item-titulo').textContent = it ? 'Editar objeto' : 'Agregar objeto';
+      $('#item-nombre').value = it ? it.nombre : '';
+      $('#item-detalles').value = it ? it.detalles : '';
+      $('#item-cantidad').value = it && it.cantidad !== null ? it.cantidad : '';
+      $('#item-prestado').value = it ? it.prestadoA : '';
+      $('#item-reponer').checked = !!it && it.porReponer;
+      fotos.itemFoto = it ? it.foto : null;
+      $$('.pfile').forEach(i => i.value = '');
+      setPrev('itemFoto');
+      abrir('#modal-item');
+      setTimeout(() => $('#item-nombre').focus(), 150);
+    }
+
+    $('#btn-guardar-item').onclick = () => {
+      const nombre = $('#item-nombre').value.trim();
+      if (!nombre) return alert('Escribe el nombre del objeto');
+      vibrar();
+      const c = db.find(x => x.id === cajaId);
+      if (!c) return;
+
+      const datos = {
+        nombre,
+        detalles: $('#item-detalles').value.trim(),
+        cantidad: cantN($('#item-cantidad').value),
+        prestadoA: $('#item-prestado').value.trim(),
+        foto: fotos.itemFoto,
+        fecha: fechaActual()
+      };
+
+      let it;
+      if (itemId) {
+        it = c.items.find(x => x.id === itemId);
+        Object.assign(it, datos);
+      } else {
+        it = normItem({ id: uid('it_'), ...datos });
+        c.items.unshift(it);
+      }
+
+      const quiere = $('#item-reponer').checked;
+      if (quiere !== it.porReponer) setReponer(c, it, quiere);
+
+      cerrar();
+      guardar();
+      toast(quiere && it.porReponer ? 'Guardado y enviado a Compras' : 'Objeto guardado');
+    };
+
+    /* ═══════════════════════════════════════════════════
+       MOVER OBJETO A OTRA CAJA
+       ═══════════════════════════════════════════════════ */
+    function abrirMover(cid, iid) {
+      cajaId = cid;
+      itemId = iid;
+      const c = db.find(x => x.id === cid), it = c.items.find(x => x.id === iid);
+      const otras = db.filter(x => x.id !== cid);
+      if (!otras.length) return alert('Crea otra caja primero para poder mover objetos.');
+
+      $('#mover-titulo').textContent = `Mover "${it.nombre}"`;
+      $('#mover-destino').innerHTML = otras.map(x => `<option value="${esc(x.id)}">${esc(x.nombre)}${x.ubicacion ? ' — ' + esc(x.ubicacion) : ''}</option>`).join('');
+      abrir('#modal-mover');
+    }
+
+    $('#btn-confirmar-mover').onclick = () => {
+      const c = db.find(x => x.id === cajaId);
+      const dest = db.find(x => x.id === $('#mover-destino').value);
+      const it = c && c.items.find(x => x.id === itemId);
+      if (!it || !dest) return;
+
+      vibrar();
+      c.items = c.items.filter(x => x.id !== itemId);
+      it.fecha = fechaActual();
+      dest.items.unshift(it);
+
+      cerrar();
+      guardar();
+      cerrarUno($('#modal-popup-center'));
+      toast(`Movido a ${dest.nombre}`);
+    };
+
+    /* ═══════════════════════════════════════════════════
+       CONTROL DE MODALES
+       ═══════════════════════════════════════════════════ */
+    const abrir = s => $(s).classList.add('active');
+
+    function cerrarUno(ov) {
+      ov.classList.remove('active');
+      if (ov.id === 'modal-popup-center') popObj = null;
+      else if (ov.id === 'modal-det') detId = null;
+      else if (ov.id !== 'modal-viewer') { cajaId = null; itemId = null; }
+    }
+
+    function cerrar() {
+      $$('.modal-overlay').forEach(m => {
+        if (m.id !== 'modal-det' && m.classList.contains('active')) cerrarUno(m);
+      });
+    }
+
+    document.addEventListener('click', e => {
+      const ov = e.target.classList.contains('modal-overlay')
+        ? e.target
+        : (e.target.closest('[data-close]') && e.target.closest('.modal-overlay'));
+      if (ov) cerrarUno(ov);
+    });
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const a = $$('.modal-overlay.active');
+        if (a.length) cerrarUno(a[a.length - 1]);
+      }
+    });
+
+    /* Menú superior ⋮ */
+    $('#btn-menu').onclick = e => {
+      e.stopPropagation();
+      $('#menu').classList.toggle('open');
+    };
+    document.addEventListener('click', () => $('#menu').classList.remove('open'));
+
+    /* Cambio de tema */
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const temaPref = () => { try { return localStorage.getItem('app_tema') || 'oscuro'; } catch(e){ return 'oscuro'; } };
+    const oscuro = () => temaPref() === 'oscuro' || (temaPref() === 'auto' && mq.matches);
+
+    function aplicarTema() {
+      document.documentElement.dataset.theme = oscuro() ? 'dark' : 'light';
+      $('#btn-tema').textContent = oscuro() ? '☀️' : '🌙';
+      const m = $('meta[name=theme-color]');
+      if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    }
+
+    $('#btn-tema').onclick = () => {
+      vibrar();
+      try { localStorage.setItem('app_tema', oscuro() ? 'claro' : 'oscuro'); } catch(e){}
+      aplicarTema();
+    };
+    if (mq.addEventListener) mq.addEventListener('change', aplicarTema);
+
+    /* Acentos de color */
+    function aplicarAcc() {
+      let a = 'violeta';
+      try { a = localStorage.getItem('color_cajas') || 'violeta'; } catch(e){}
+      if (!['violeta', 'rosa', 'celeste', 'agua'].includes(a)) a = 'violeta';
+      document.documentElement.dataset.acc = a;
+      $$('#dots button').forEach(b => b.classList.toggle('on', b.dataset.c === a));
+    }
+    $('#dots').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      try { localStorage.setItem('color_cajas', b.dataset.c); } catch(er){}
+      aplicarAcc();
+    };
+
+    /* Respaldo JSON */
+    $('#btn-exportar').onclick = () => {
+      vibrar();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' }));
+      a.download = `respaldo-cajas-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      toast('Respaldo descargado');
+    };
+
+    $('#btn-importar').onclick = () => { vibrar(); $('#file-input').click(); };
+    $('#file-input').onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        try {
+          const d = JSON.parse(ev.target.result);
+          if (!Array.isArray(d) || !d.length || d.some(c => !c || typeof c !== 'object' || typeof c.nombre !== 'string')) throw 0;
+          const nuevo = d.map(normCaja), n = nuevo.reduce((s, c) => s + c.items.length, 0);
+          if (!confirm(`El archivo trae ${nuevo.length} cajas con ${n} objetos.\n¿Reemplazar las actuales (${db.length})?`)) return;
+          db = nuevo;
+          guardar();
+          toast('¡Cajas cargadas con éxito!');
+        } catch (err) {
+          alert('Archivo no válido: no parece un respaldo de Cajas.');
+        }
+        e.target.value = '';
+      };
+      r.readAsText(file);
+    };
+
+    /* Sincronización al volver a enfocar la pestaña */
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        aplicarTema();
+        if (sincronizar()) guardar();
+        else render();
+      }
+    });
+
+
+    /* Fuente de los títulos (se recuerda en app_fuente) */
+    const FUENTES = {
+      fraunces: "'Fraunces', Georgia, serif",
+      jakarta: "'Plus Jakarta Sans', system-ui, sans-serif",
+      fira: "'Fira Sans', system-ui, sans-serif",
+      chivo: "'Chivo', system-ui, sans-serif",
+      space: "'Space Grotesk', system-ui, sans-serif"
+    };
+    function aplicarFuente(avisar) {
+      let f = 'fraunces';
+      try { f = localStorage.getItem('app_fuente') || 'fraunces'; } catch(e){}
+      if (!FUENTES[f]) f = 'fraunces';
+      document.documentElement.style.setProperty('--serif', FUENTES[f]);
+      $$('#menu .font-btn').forEach(b => b.classList.toggle('on', b.dataset.f === f));
+      if (avisar) toast('Letra actualizada');
+    }
+    $('#menu').addEventListener('click', e => {
+      const b = e.target.closest('.font-btn');
+      if (!b) return;
+      e.stopPropagation(); // mantiene el menú abierto para ver el cambio
+      try { localStorage.setItem('app_fuente', b.dataset.f); } catch(er){}
+      aplicarFuente(true);
+    });
+
+    /* Inicio */
+    aplicarTema();
+    aplicarFuente();
+    aplicarAcc();
+    if (sincronizar()) { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch(e){} }
+    render();
+  </script>
+</body>
+</html>

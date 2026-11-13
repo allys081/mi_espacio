@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Espacio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fbf5ee">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mi Espacio">
+  <script>try{var t=localStorage.getItem('app_tema')||'auto';var d=t==='oscuro'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=d?'dark':'light'}catch(e){}</script>
+  <script>try{var F={fraunces:"'Fraunces',Georgia,serif",jakarta:"'Plus Jakarta Sans',system-ui,sans-serif",fira:"'Fira Sans',system-ui,sans-serif",chivo:"'Chivo',system-ui,sans-serif",space:"'Space Grotesk',system-ui,sans-serif"},f=localStorage.getItem("app_fuente");if(F[f])document.documentElement.style.setProperty("--serif",F[f])}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Fira+Sans:wght@500;600;700&family=Chivo:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:light;--bg:#fbf5ee;--bg1:#f3e6dc;--card:#fffdf9;--border:#eadfd2;--text:#3b2a22;--muted:#7a685d;--arrow:#cdbfae;--soft:#f6efe6;--badge-bg:#f6e1d6;--badge-ink:#c4623f;--g1:#7c5cd6;--g2:#c2417a;--ok:#2f7d5f;--warn:#c4623f;
+      --c-inv:#8a6fb0;--c-tra:#c4623f;--c-ins:#4f7fb5;--c-mal:#b98524;
+      --serif:'Fraunces',Georgia,serif;--shadow:0 1px 2px rgba(80,50,30,.06),0 6px 18px rgba(80,50,30,.06)}
+    [data-theme=dark]{color-scheme:dark;--bg:#14121a;--bg1:#1d1930;--card:#1e1b27;--border:#2d2939;--text:#efeaf7;--muted:#a39cb3;--arrow:#5b5470;--soft:#26222f;--badge-bg:#2b2445;--badge-ink:#c4b5fd;--g1:#a78bfa;--g2:#f472b6;--ok:#5ed3a4;--warn:#f0916d;
+      --c-inv:#c4b5fd;--c-tra:#f0916d;--c-ins:#7cb7ff;--c-mal:#fcd34d;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+    html{scroll-padding-top:env(safe-area-inset-top,0px)}
+    body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100dvh;background:radial-gradient(circle at top,var(--bg1) 0%,var(--bg) 70%);color:var(--text);padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(28px + env(safe-area-inset-bottom,0px))}
+    .wrap{max-width:440px;margin:0 auto}
+    .top{display:flex;justify-content:flex-end;gap:8px;margin-bottom:6px}
+    .ibtn{width:38px;height:38px;border-radius:12px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-size:1.05rem;cursor:pointer}
+    .ibtn.f{font-family:var(--serif);font-weight:800;font-size:.95rem}
+    .badge{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.8px;background:var(--badge-bg);color:var(--badge-ink);padding:5px 14px;border-radius:99px;margin:8px 0 12px}
+    h1{font-family:var(--serif);font-size:2.2rem;font-weight:700;line-height:1.15;margin-bottom:6px;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .sub{font-size:.92rem;color:var(--muted);margin-bottom:24px}
+    .cards{display:flex;flex-direction:column;gap:13px}
+    .card{position:relative;overflow:hidden;display:flex;align-items:center;gap:15px;padding:16px 18px 16px 22px;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:transform .15s ease}
+    .card:active{transform:scale(.97)}
+    .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+    .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.55rem;flex-shrink:0;background:color-mix(in srgb,var(--c) 16%,var(--card));border:1px solid color-mix(in srgb,var(--c) 32%,var(--card))}
+    .tx{flex:1;min-width:0}
+    .tt{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:2px}
+    .ds{font-size:.8rem;color:var(--muted);line-height:1.35}
+    .mini{display:none;margin-top:6px;font-size:.74rem;font-weight:700;color:var(--c)}
+    .mini.on{display:block}
+    .bar{height:5px;border-radius:99px;background:var(--soft);margin-top:5px;overflow:hidden}
+    .bar i{display:block;height:100%;background:var(--c);border-radius:99px}
+    .arrow{font-size:1.2rem;color:var(--arrow);font-weight:700}
+    .resp{margin-top:22px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow)}
+    .resp h2{font-family:var(--serif);font-size:1rem;margin-bottom:4px}
+    .resp p{font-size:.78rem;color:var(--muted);line-height:1.45}
+    .resp .row{display:flex;gap:8px;margin-top:12px}
+    .btn{flex:1;padding:11px 10px;border-radius:12px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .85rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer}
+    .btn.p{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;color:#fff}
+    .meter{height:6px;border-radius:99px;background:var(--soft);margin-top:12px;overflow:hidden}
+    .meter i{display:block;height:100%;background:var(--ok)}
+    .meter i.w{background:var(--warn)}
+    .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.82rem;font-weight:700;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .menu-f{position:fixed;top:calc(60px + env(safe-area-inset-top,0px));right:18px;z-index:50;min-width:220px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:6px;display:none}
+    .menu-f.open{display:block}
+    .menu-f .t{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:8px 12px 4px}
+    .menu-f button{display:block;width:100%;text-align:left;padding:11px 12px;border:0;background:none;border-radius:10px;font-size:.95rem;font-weight:700;color:var(--text);cursor:pointer}
+    .menu-f button.on{background:var(--badge-bg);color:var(--badge-ink)}
+    h1,.tt{font-family:var(--serif)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <button class="ibtn f" id="btn-fuente" aria-label="Cambiar la letra de los títulos">Aa</button>
+      <button class="ibtn" id="btn-tema" aria-label="Cambiar entre modo claro y oscuro"></button>
+    </div>
+    <div class="menu-f" id="menu-f"><div class="t">Letra de los títulos</div><button data-f="fraunces" style="font-family:'Fraunces',Georgia,serif">Fraunces</button><button data-f="jakarta" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif">Plus Jakarta (sin serif)</button><button data-f="fira" style="font-family:'Fira Sans',system-ui,sans-serif">Fira Sans</button><button data-f="chivo" style="font-family:'Chivo',system-ui,sans-serif">Chivo</button><button data-f="space" style="font-family:'Space Grotesk',system-ui,sans-serif">Space Grotesk</button></div>
+
+    <span class="badge">Mi espacio personal</span>
+    <h1 id="saludo">Hola, ¿qué revisamos?</h1>
+    <p class="sub">Cuatro secciones, un solo lugar.</p>
+
+    <div class="cards">
+      <a class="card" href="organizador.html" style="--c:var(--c-inv)">
+        <div class="ico">📦</div>
+        <div class="tx"><div class="tt">Mi Organizador</div><div class="ds">Cajas, compras y ahorros.</div><div class="mini" id="m-inv"></div></div>
+        <div class="arrow">→</div>
+      </a>
+      <a class="card" href="traslado.html" style="--c:var(--c-tra)">
+        <div class="ico">🚉</div>
+        <div class="tx"><div class="tt">Traslado</div><div class="ds">Checklist y cosas por llevar.</div><div class="mini" id="m-tra"></div><div class="bar" id="b-tra" style="display:none"><i></i></div></div>
+        <div class="arrow">→</div>
+      </a>
+      <a class="card" href="instituto.html" style="--c:var(--c-ins)">
+        <div class="ico">🏫</div>
+        <div class="tx"><div class="tt">Instituto</div><div class="ds">Próximo, calendario, apuntes y hábitos.</div><div class="mini" id="m-ins"></div></div>
+        <div class="arrow">→</div>
+      </a>
+      <a class="card" href="malla.html" style="--c:var(--c-mal)">
+        <div class="ico">🎓</div>
+        <div class="tx"><div class="tt">Malla Curricular</div><div class="ds">Ramos, notas y docentes.</div><div class="mini" id="m-mal"></div></div>
+        <div class="arrow">→</div>
+      </a>
+    </div>
+
+    <section class="resp">
+      <h2>Respaldo total</h2>
+      <p id="resp-estado">Último respaldo: nunca.</p>
+      <div class="meter" aria-hidden="true"><i id="meter-i" style="width:0%"></i></div>
+      <p id="meter-t" style="margin-top:6px"></p>
+      <div class="row">
+        <button class="btn p" id="btn-resp">Respaldar todo</button>
+        <button class="btn" id="btn-rest">Restaurar</button>
+      </div>
+      <input type="file" id="file-rest" accept=".json,application/json" style="display:none">
+    </section>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="/app.js"></script>
+  <script>
+    const $ = s => document.querySelector(s);
+    const leer = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
+    let tt; function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 2600); }
+    function mini(id, txt) { const el = $(id); if (!el || !txt) return; el.textContent = txt; el.classList.add('on'); }
+
+    /* ---------- Tema claro/oscuro y letra ---------- */
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const pref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch (e) { return 'auto'; } };
+    const oscuro = () => pref() === 'oscuro' || (pref() === 'auto' && mq.matches);
+    function aplicarTema() {
+      document.documentElement.dataset.theme = oscuro() ? 'dark' : 'light';
+      $('#btn-tema').textContent = oscuro() ? '☀️' : '🌙';
+      const m = document.querySelector('meta[name=theme-color]');
+      if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    }
+    $('#btn-tema').onclick = () => { try { localStorage.setItem('app_tema', oscuro() ? 'claro' : 'oscuro'); } catch (e) {} aplicarTema(); };
+    if (mq.addEventListener) mq.addEventListener('change', aplicarTema);
+    aplicarTema();
+
+    const FUENTES = {fraunces:"'Fraunces',Georgia,serif",jakarta:"'Plus Jakarta Sans',system-ui,sans-serif",fira:"'Fira Sans',system-ui,sans-serif",chivo:"'Chivo',system-ui,sans-serif",space:"'Space Grotesk',system-ui,sans-serif"};
+    function aplicarFuente() {
+      let f = 'fraunces'; try { f = localStorage.getItem('app_fuente') || 'fraunces'; } catch (e) {}
+      if (!FUENTES[f]) f = 'fraunces';
+      document.documentElement.style.setProperty('--serif', FUENTES[f]);
+      document.querySelectorAll('#menu-f button').forEach(b => b.classList.toggle('on', b.dataset.f === f));
+    }
+    $('#btn-fuente').onclick = e => { e.stopPropagation(); $('#menu-f').classList.toggle('open'); };
+    $('#menu-f').onclick = e => { e.stopPropagation(); const b = e.target.closest('button'); if (!b) return; try { localStorage.setItem('app_fuente', b.dataset.f); } catch (er) {} aplicarFuente(); };
+    document.addEventListener('click', () => $('#menu-f').classList.remove('open'));
+    aplicarFuente();
+
+    /* ---------- Mini resúmenes (si no hay datos, no se muestra nada) ---------- */
+    (function resumenes() {
+      const hoy = new Date(); const pad = n => String(n).padStart(2, '0');
+      const HOY = hoy.getFullYear() + '-' + pad(hoy.getMonth() + 1) + '-' + pad(hoy.getDate());
+      const u = s => { const a = String(s).split('-').map(Number); return Date.UTC(a[0], a[1] - 1, a[2]); };
+      const dias = s => Math.round((u(s) - u(HOY)) / 864e5);
+
+      // Organizador: productos por comprar (compras sin repuesto) y urgentes
+      const compras = leer('org_compras', null);
+      if (Array.isArray(compras)) {
+        let falta = 0, urg = 0;
+        compras.forEach(c => (c.items || []).forEach(p => { if (p.tieneRepuesto === 'no') { falta++; if (p.urgente) urg++; } }));
+        if (falta) mini('#m-inv', falta + (falta === 1 ? ' producto por comprar' : ' productos por comprar') + (urg ? ' · ' + urg + (urg === 1 ? ' urgente' : ' urgentes') : ''));
+      }
+
+      // Traslado: avance del equipaje
+      const dat = leer('estacion_detallada_data', null), cats = leer('estacion_categorias', null);
+      if (dat && cats && Array.isArray(dat.renaico) && Array.isArray(cats.renaico)) {
+        const lista = dat.renaico.filter(it => { const c = cats.renaico.find(x => x.key === it.cat); return c && c.packing; });
+        if (lista.length) {
+          const ok = lista.filter(i => i.checked).length, pct = Math.round(ok / lista.length * 100);
+          mini('#m-tra', 'Equipaje ' + pct + '% · ' + ok + '/' + lista.length);
+          $('#b-tra').style.display = 'block'; $('#b-tra i').style.width = pct + '%';
+        }
+      }
+
+      // Instituto: próxima evaluación
+      const cal = leer('estacion_cal_items_v2', []);
+      if (Array.isArray(cal)) {
+        const prox = cal.filter(x => x && !x.checked && x.evalDate && dias(x.evalDate) >= 0).sort((a, b) => dias(a.evalDate) - dias(b.evalDate))[0];
+        if (prox) { const n = dias(prox.evalDate); mini('#m-ins', 'Próximo: ' + prox.title + ' · ' + (n === 0 ? 'hoy' : n === 1 ? 'mañana' : 'en ' + n + ' días')); }
+      }
+
+      // Malla: ramos aprobados
+      const est = leer('mallaEstado', null);
+      if (est && typeof est === 'object') {
+        const n = Object.values(est).filter(Boolean).length;
+        if (n) mini('#m-mal', n + (n === 1 ? ' ramo aprobado' : ' ramos aprobados'));
+      }
+    })();
+
+    /* ---------- Respaldo total ---------- */
+    function pintarEstado() {
+      const t = leer('portada_ultimo_respaldo', null);
+      $('#resp-estado').textContent = t ? 'Último respaldo: ' + new Date(t).toLocaleString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + '.' : 'Último respaldo: nunca.';
+      const m = MiEspacio.uso();
+      $('#meter-i').style.width = Math.max(2, m.pct) + '%';
+      $('#meter-i').className = m.pct >= 80 ? 'w' : '';
+      $('#meter-t').textContent = 'Espacio usado en este navegador: ' + (m.bytes / 1048576).toFixed(1) + ' MB de unos 5 MB' + (m.pct >= 80 ? ' · cerca del límite: haz un respaldo y revisa las fotos.' : '.');
+    }
+    $('#btn-resp').onclick = () => {
+      try { localStorage.setItem('portada_ultimo_respaldo', JSON.stringify(new Date().toISOString())); } catch (e) {}
+      MiEspacio.descargar(MiEspacio.exportar(), 'mi-espacio-respaldo-' + MiEspacio.fechaArchivo() + '.json');
+      pintarEstado(); toast('Respaldo descargado');
+    };
+    $('#btn-rest').onclick = () => $('#file-rest').click();
+    $('#file-rest').onchange = async e => {
+      const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+      try {
+        const datos = await MiEspacio.leerArchivo(f);
+        const n = Object.keys(datos).length;
+        if (!confirm('Se reemplazarán los datos de este dispositivo con los del archivo (' + n + ' elementos). ¿Continuar?')) return;
+        MiEspacio.aplicar(datos);
+        toast('Datos restaurados'); setTimeout(() => location.reload(), 700);
+      } catch (er) { alert('No se pudo restaurar: ' + er.message); }
+    };
+    pintarEstado();
+    addEventListener('pageshow', pintarEstado);
+  </script>
+</body>
+</html>

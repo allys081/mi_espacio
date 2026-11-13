@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ahorros</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8fafc">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Organizador">  
+  <script>try{var t=localStorage.getItem('app_tema')||'auto';var d=t==='oscuro'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=d?'dark':'light'}catch(e){}</script>
+  <script>try{var F={fraunces:"'Fraunces',Georgia,serif",jakarta:"'Plus Jakarta Sans',system-ui,sans-serif",fira:"'Fira Sans',system-ui,sans-serif",chivo:"'Chivo',system-ui,sans-serif",space:"'Space Grotesk',system-ui,sans-serif"},f=localStorage.getItem("app_fuente");if(F[f])document.documentElement.style.setProperty("--serif",F[f])}catch(e){}</script>
+  <script>try{var a=localStorage.getItem('color_ahorros');if(['violeta','rosa','celeste','agua'].indexOf(a)>-1)document.documentElement.dataset.acc=a}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Fira+Sans:wght@500;600;700&family=Chivo:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:light;--bg:#fbf5ee;--card:#fffdf9;--border:#eadfd2;--text:#3b2a22;--muted:#7a685d;--green:#2f8a76;--green-soft:#d9f0ea;--green-line:#a8d9cd;--red:#b4412f;--red-soft:#f8e1db;--red-line:#eab9ad;--badge:#f1e8dd;--soft:#f6efe6;--hover:#eadfd2;--pill-ink:#475569;--info-soft:#fffbeb;--info-line:#fde68a;--info-ink:#92400e;--badge-ink:#65534a;--f0:#c4623f;--f1:#5f8f7a;--f2:#8a6fb0;--f3:#b98524;--f4:#4f7fb5;--f5:#b9567a;--f6:#6f8f3d;--f7:#a0675a;--serif:'Fraunces','Lora',Georgia,serif;--shadow:0 1px 2px rgba(80,50,30,.06),0 6px 18px rgba(80,50,30,.06)}
+    [data-theme=dark]{color-scheme:dark;--bg:#14121a;--card:#1e1b27;--border:#2d2939;--text:#efeaf7;--muted:#a39cb3;--green:#34d399;--green-soft:rgba(52,211,153,.14);--green-line:rgba(52,211,153,.35);--red:#fb7185;--red-soft:rgba(251,113,133,.14);--red-line:rgba(251,113,133,.35);--badge:#282434;--soft:#181521;--hover:#2d2939;--pill-ink:#bab2ca;--info-soft:rgba(252,211,77,.1);--info-line:rgba(252,211,77,.3);--info-ink:#fcd34d;--f0:#f0916d;--f1:#5eead4;--f2:#c4b5fd;--f3:#fcd34d;--f4:#7cb7ff;--f5:#f9a8d4;--f6:#bef264;--f7:#fdba74;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25)}
+    [data-theme=dark] .btn-green{color:#04281d}
+    .btn-tema{justify-self:end;width:38px;height:38px;border-radius:12px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-size:1.05rem;cursor:pointer}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+    body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 80px;-webkit-font-smoothing:antialiased}
+    .container{max-width:720px;margin:0 auto}
+    .top-bar{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;margin-bottom:18px;min-height:40px}
+    .btn-back{text-decoration:none;font-size:1.1rem;font-weight:700;color:var(--green);display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:var(--card);border:1.5px solid var(--border);box-shadow:0 2px 5px rgba(0,0,0,.03)}
+    h1{font-size:1.35rem;font-weight:800;text-align:center;letter-spacing:-.3px}
+
+    .sum-card{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-radius:18px;padding:16px 18px;box-shadow:0 8px 22px rgba(5,150,105,.28);margin-bottom:16px}
+    [data-theme=dark] .sum-card{color:#04281d;background:linear-gradient(135deg,#34d399,#6ee7b7);box-shadow:0 8px 22px rgba(52,211,153,.2)}
+    .sum-label{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.85}
+    .sum-value{font-size:2rem;font-weight:800;letter-spacing:-.5px;margin-top:2px}
+    .sum-sub{font-size:.78rem;font-weight:600;opacity:.85;margin-top:2px}
+
+    .actions-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px}
+    .btn{border:none;border-radius:12px;padding:10px 16px;font-weight:700;font-size:.82rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:inherit;transition:all .15s cubic-bezier(.16,1,.3,1)}
+    .btn:active{transform:scale(.94)}
+    .btn-green{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(5,150,105,.25)}
+    .btn-red{background:var(--red-soft);color:var(--red);border:1.5px solid var(--red-line)}
+    .btn-in{background:var(--green-soft);color:var(--green);border:1.5px solid var(--green-line)}
+    .btn-secondary{background:var(--card);border:1.5px solid var(--border);color:var(--text)}
+
+    .card-list{display:flex;flex-direction:column;gap:12px}
+    .group-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:14px 16px;box-shadow:0 4px 12px rgba(15,23,42,.03)}
+    .g-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .g-title{font-weight:700;font-size:1.02rem;overflow-wrap:anywhere}
+    .g-saldo{font-weight:800;font-size:1.25rem;color:var(--green);margin-top:2px}
+    .g-info{margin:10px 0 12px;background:var(--info-soft);border:1px solid var(--info-line);color:var(--info-ink);border-radius:10px;padding:7px 10px;font-size:.78rem;font-weight:600;line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
+    .g-btns{display:flex;gap:8px;margin-top:12px}
+    .g-btns .btn{flex:1}
+    .btn-icon{background:none;border:none;cursor:pointer;padding:6px 8px;font-size:.88rem;color:var(--muted);border-radius:8px}
+    .btn-icon:hover{background:var(--hover);color:var(--text)}
+    .toggle-movs{width:100%;text-align:left;background:none;border:none;border-top:1px dashed var(--border);margin-top:12px;padding:10px 0 2px;font-weight:700;font-size:.8rem;font-family:inherit;color:var(--muted);cursor:pointer}
+    .movs{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+    .mov{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--soft);border:1px solid var(--border);border-radius:12px;padding:9px 11px}
+    .mov-main{font-weight:700;font-size:.9rem}
+    .mov.in .mov-main{color:var(--green)}.mov.out .mov-main{color:var(--red)}
+    .mov-det{font-size:.78rem;font-weight:600;margin-top:3px;overflow-wrap:anywhere}
+    .mov-sub{font-size:.74rem;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+    .vacio{text-align:center;color:var(--muted);padding:44px 0;font-size:.9rem;line-height:1.6}
+    .vacio .btn{margin-top:14px}
+
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:20px 14px 40px;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .22s}
+    .modal-overlay.active{opacity:1;pointer-events:auto}
+    .modal{background:var(--card);border-radius:20px;width:100%;max-width:400px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.16);transform:translateY(16px) scale(.96);transition:transform .24s cubic-bezier(.16,1,.3,1);margin-top:24px}
+    .modal-overlay.active .modal{transform:none}
+    .modal h3{font-size:1.15rem;font-weight:800;margin-bottom:14px}
+    .sec{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:16px 0 8px;padding-top:12px;border-top:1px dashed var(--border)}
+    .form-group{margin-bottom:12px}
+    .form-label{display:block;font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:5px}
+    .form-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:.92rem;font-family:inherit;outline:none;color:var(--text);background:var(--card)}
+    .form-input.big{font-size:1.5rem;font-weight:800;padding:12px 14px}
+    .form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,.15)}
+    .hint{font-size:.74rem;color:var(--muted);margin-top:5px;line-height:1.4}
+    .info-box{background:var(--info-soft);border:1px solid var(--info-line);color:var(--info-ink);border-radius:10px;padding:8px 11px;font-size:.78rem;font-weight:600;margin-bottom:12px;overflow-wrap:anywhere;white-space:pre-wrap}
+    .chips{display:flex;gap:6px}
+    .chip{flex:1;border:1.5px solid var(--border);background:var(--card);border-radius:12px;padding:10px 6px;font-weight:700;font-size:.82rem;font-family:inherit;color:var(--muted);cursor:pointer}
+    .chip.on{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+    .chip.on.out{background:var(--red-soft);border-color:var(--red);color:var(--red)}
+    .error{display:none;color:var(--red);font-size:.8rem;font-weight:600;margin-top:8px}
+    .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+  
+    /* ===== Estilo Fanfics: serif, franja de color, etiquetas suaves ===== */
+    h1,.group-title,.g-title,.modal h3,.card-title,.vacio .big{font-family:var(--serif)}
+    h1{letter-spacing:-.4px}
+    .group-card,.nav-card{position:relative;overflow:hidden;border-width:1px;box-shadow:var(--shadow);padding-left:16px}
+    /* sin franja lateral de color */
+    .card-list>.group-card:nth-child(8n+1){--c:var(--f2)}
+    .card-list>.group-card:nth-child(8n+2){--c:var(--f5)}
+    .card-list>.group-card:nth-child(8n+3){--c:var(--f1)}
+    .card-list>.group-card:nth-child(8n+4){--c:var(--f3)}
+    .card-list>.group-card:nth-child(8n+5){--c:var(--f4)}
+    .card-list>.group-card:nth-child(8n+6){--c:var(--f0)}
+    .card-list>.group-card:nth-child(8n+7){--c:var(--f6)}
+    .card-list>.group-card:nth-child(8n+8){--c:var(--f7)}
+    .group-title{font-weight:700;font-size:1.05rem;letter-spacing:-.1px}
+    .group-count{background:var(--badge);color:var(--badge-ink);font-weight:700}
+    .badge{border-color:transparent!important;border-radius:8px;padding:3px 8px;font-size:.7rem}
+    .badge.cat{border-radius:8px}
+    .btn,.sq,.btn-back,.btn-tema,.mini,.chip{border-radius:13px}
+    .btn-add-item,.btn-clear{border-radius:13px}
+    .sq,.btn-back,.btn-tema{border-width:1px}
+    .search-box,.group-card,.item-row,.mov,.modal{border-width:1px}
+    .search-box{border-width:1.5px;border-radius:15px;box-shadow:none}
+    .seg{background:var(--badge)}
+    .modal-overlay,.overlay{background:rgba(30,18,10,.45)}
+    [data-theme=dark] .modal-overlay,[data-theme=dark] .overlay{background:rgba(0,0,0,.6)}
+    .item-row{border-radius:14px}
+
+    .btn-green{box-shadow:none}
+    .sum-card{background:linear-gradient(135deg,#2f8a76,#5f8f7a);box-shadow:var(--shadow);border-radius:18px}
+    [data-theme=dark] .sum-card{background:#173b36;color:#5eead4;box-shadow:var(--shadow);border:1px solid rgba(94,234,212,.25)}
+    .sum-value{font-family:var(--serif)}
+    .g-saldo{font-family:var(--serif)}
+    [data-theme=dark] .btn-green{color:#04281d}
+  
+    /* ===== Estructura nueva (boceto): barra, filtros, tarjetas compactas, flotante ===== */
+    :root{--pk:#c2417a;--pk-soft:#fbe1ec;--on-pk:#fff;--acc:var(--green)}
+    [data-theme=dark]{--pk:#f472b6;--pk-soft:#40202f;--on-pk:#14121a}
+    body{padding-bottom:110px}
+    .top-bar{grid-template-columns:84px 1fr 84px}
+    .sq{width:38px;height:38px;border-radius:12px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:1.05rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;font-family:inherit;box-shadow:none}
+    .top-bar>a.sq{color:var(--acc);justify-self:start}
+    .top-right{display:flex;gap:8px;justify-self:end;position:relative}
+    .top-right .sq{color:var(--text)}
+    .menu,.pop{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:6px;display:none;z-index:60}
+    .menu{right:0;top:46px;min-width:170px}
+    .pop{left:0;top:44px;min-width:240px;z-index:40}
+    .menu.open,.pop.open{display:block}
+    .menu button,.pop button{display:flex;width:100%;gap:8px;align-items:center;padding:11px 12px;border:0;background:none;border-radius:10px;font-weight:700;font-size:.86rem;font-family:inherit;color:var(--text);cursor:pointer;text-align:left}
+    .menu button:hover,.pop button:hover{background:var(--badge)}
+    .pop button.on{background:var(--pk-soft);color:var(--pk)}
+    .tools{display:flex;gap:8px;align-items:center;margin:2px 0 12px;position:relative;min-height:38px}
+    .fbtn{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:12px;background:var(--card);border:1px solid var(--border);font-weight:700;font-size:.82rem;color:var(--text);cursor:pointer;font-family:inherit}
+    .fbtn svg,.view svg{width:19px;height:19px;flex:none}
+    .fbtn i{display:none;width:8px;height:8px;border-radius:50%;background:var(--pk)}
+    .fbtn.has i{display:inline-block}
+    .view{display:flex;margin-left:auto;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .view button{width:38px;height:36px;display:grid;place-items:center;color:var(--muted);background:none;border:0;cursor:pointer}
+    .view button.on{background:var(--pk-soft);color:var(--pk)}
+    .tot{font-size:.82rem;color:var(--muted);font-weight:600}
+    .tot b{color:var(--text);font-family:var(--serif);font-size:1.05rem}
+    .card-list.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch}
+    @media(max-width:330px){.card-list.grid{grid-template-columns:1fr}}
+    .card-list.grid .group-card{padding:12px 8px 12px 16px}
+    .card-list .vacio{grid-column:1/-1}
+    .group-card{display:flex;flex-direction:column;gap:6px}
+    .c-head{display:flex;justify-content:space-between;align-items:flex-start;gap:4px}
+    .c-name{font-family:var(--serif);font-weight:700;font-size:1rem;line-height:1.2;overflow-wrap:anywhere;min-width:0;padding-top:4px}
+    .c-ic{display:flex;flex:none;margin:-4px 0 0 0}
+    .c-ic .btn-icon{padding:6px 5px}
+    .c-sub{font-size:.76rem;color:var(--muted);font-weight:600;overflow-wrap:anywhere}
+    .c-line{font-size:.8rem;color:var(--muted);font-weight:600}
+    .c-line b{color:var(--text)}
+    .c-line b.v{font-family:var(--serif);font-size:1.1rem;color:var(--acc)}
+    .c-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto;padding-top:6px}
+    .c-acts .btn{padding:9px 4px;font-size:.78rem;border-radius:11px;width:100%}
+    .btn-det{background:var(--card);border:1.5px solid var(--border);color:var(--text)}
+    .btn-add{background:var(--pk-soft);color:var(--pk);border:1.5px solid transparent}
+    .caja-thumb{width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--hover);border:1px solid var(--border);cursor:pointer;flex:none}
+    .card-list.grid .caja-thumb{width:32px;height:32px;border-radius:8px}
+    .badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:4px}
+    .fab{position:fixed;z-index:30;right:max(16px,calc(50% - 346px));bottom:calc(18px + env(safe-area-inset-bottom));height:52px;padding:0 20px 0 16px;border-radius:17px;background:var(--pk);color:var(--on-pk);border:0;font-weight:800;font-size:.92rem;display:flex;align-items:center;gap:8px;box-shadow:0 10px 24px rgba(0,0,0,.25);cursor:pointer;font-family:inherit}
+    .fab:active{transform:scale(.95)}
+    .modal.wide{max-width:560px}
+    .det-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+    .det-head .grow h3{margin:0;overflow-wrap:anywhere}
+    textarea.form-input{display:block;resize:none;overflow:hidden;min-height:44px;line-height:1.4}
+    .mov>div:first-child{min-width:0;flex:1}
+    .sum-card{margin-bottom:12px}
+    .bar{height:7px;border-radius:99px;background:var(--badge);overflow:hidden}
+    .bar i{display:block;height:100%;background:var(--green);border-radius:99px}
+    .badge{display:inline-block;padding:3px 8px;border-radius:8px;font-weight:700;font-size:.7rem}
+    .badge.ok{background:var(--green-soft);color:var(--green)}
+    .c-acts.t3{grid-template-columns:1fr 1fr 1fr}
+    .card-list.grid .c-acts.t3{grid-template-columns:1fr 1fr}
+    .card-list.grid .c-acts.t3 .btn-det{grid-column:1/-1}
+    .c-acts.t3 .btn{padding:9px 2px}
+    .g-info{margin:12px 0}
+    .mov-det,.mov-sub,.mov-main{overflow-wrap:anywhere}
+  
+    .menu{min-width:220px;max-height:75vh;overflow-y:auto}
+    .menu hr{border:0;border-top:1px dashed var(--border);margin:6px 4px}
+    .menu-t{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:8px 12px 4px}
+    .menu .dots{display:flex;gap:10px;padding:6px 12px 10px}
+    .menu .dots button{width:32px;height:32px;padding:0;border-radius:50%;border:2px solid transparent;display:grid;place-items:center;color:#fff;font-size:.85rem;background:var(--c)}
+    .menu .dots button[data-c=violeta]{--c:#7c5cd6}.menu .dots button[data-c=rosa]{--c:#c2417a}.menu .dots button[data-c=celeste]{--c:#3b82c4}.menu .dots button[data-c=agua]{--c:#2f8a76}
+    [data-theme=dark] .menu .dots button[data-c=violeta]{--c:#a78bfa}[data-theme=dark] .menu .dots button[data-c=rosa]{--c:#f472b6}[data-theme=dark] .menu .dots button[data-c=celeste]{--c:#7cb7ff}[data-theme=dark] .menu .dots button[data-c=agua]{--c:#5eead4}
+    [data-theme=dark] .menu .dots button{color:#14121a}
+    .menu .dots button.on{border-color:var(--text)}
+    .menu .dots button.on::after{content:"✓";font-weight:800}
+    .menu #fonts button.on{background:var(--badge);color:var(--acc)}
+
+    .sum-card,[data-theme=dark] .sum-card{background:linear-gradient(135deg,#2f8a76,#5f8f7a);color:#fff;border:0}
+    .sum-card .sum-label,.sum-card .sum-sub{color:#fff;opacity:1}
+    .sum-card .sum-value{color:#000}
+
+    /* Total ahorrado: verde más claro */
+    .sum-card,[data-theme=dark] .sum-card{background:linear-gradient(135deg,#bfe6da,#e3f5ef);color:#14473a;border:1px solid #a8d9cd;box-shadow:var(--shadow)}
+    .sum-card .sum-label,.sum-card .sum-sub{color:#2c6a59;opacity:1}
+    .sum-card .sum-value{color:#0f3d31}
+    [data-theme=dark] .sum-card{background:linear-gradient(135deg,#2a6b5c,#3a8472);border-color:rgba(94,234,212,.25);color:#fff}
+    [data-theme=dark] .sum-card .sum-label,[data-theme=dark] .sum-card .sum-sub{color:#d9f0ea}
+    [data-theme=dark] .sum-card .sum-value{color:#fff}
+
+    /* Mixto, reglas de la caja */
+    .mix-box{border:1px solid var(--border);background:var(--soft);border-radius:14px;padding:12px;margin-bottom:12px}
+    .mix-t{font-weight:800;font-size:.85rem;margin-bottom:8px}
+    .mix-box .form-group:last-child{margin-bottom:0}
+    .chips.wrap{flex-wrap:wrap;margin-top:8px}
+    .chips.wrap .chip{flex:none;padding:8px 12px}
+    .c-sub.rule{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+    /* Títulos de contenedores: máx. 2 líneas; si no caben, se achican y al final se cortan con … */
+    .group-title,.c-name,#det-titulo{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;line-height:1.2;min-width:0}
+    .group-title-box{min-width:0;flex:1}
+    .group-count{flex:none}
+
+    /* Hoja inferior para Detalles */
+    .group-card[data-id]{cursor:pointer}
+    #modal-det{align-items:flex-end;padding:0}
+    #modal-det .modal{
+      max-width:560px;width:100%;margin:0;
+      border-radius:24px 24px 0 0;
+      max-height:calc(100dvh - 56px);
+      display:flex;flex-direction:column;
+      padding:10px 20px calc(20px + env(safe-area-inset-bottom));
+      transform:translateY(100%);
+      transition:transform .32s cubic-bezier(.16,1,.3,1);
+    }
+    #modal-det.active .modal{transform:none}
+    #modal-det #det-body{overflow-y:auto;flex:1;min-height:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+    .sheet-handle{width:42px;height:5px;border-radius:99px;background:var(--border);margin:0 auto 14px;flex:none}
+    #modal-det .det-head{flex:none}
+  </style>
+  <style>
+    /* ===== Color de acento (se aplica solo si lo eliges en el menú ⋮) ===== */
+    [data-acc=violeta]{--green:#7c5cd6;--green-soft:#ece6fb;--green-line:#cdbff2;--acc:#7c5cd6;--pk:#7c5cd6;--pk-soft:#ece6fb;--on-pk:#fff;--s1:#dccff8;--s2:#efe9fc;--sl:#5b3fb0;--sv:#3a2580;--d1:#5b3fb0;--d2:#7c5cd6}
+    [data-theme=dark][data-acc=violeta]{--green:#a78bfa;--green-soft:rgba(167,139,250,.14);--green-line:rgba(167,139,250,.35);--acc:#a78bfa;--pk:#a78bfa;--pk-soft:rgba(167,139,250,.14);--on-pk:#14121a}
+    [data-acc=rosa]{--green:#c2417a;--green-soft:#fbe1ec;--green-line:#f0b6cf;--acc:#c2417a;--pk:#c2417a;--pk-soft:#fbe1ec;--on-pk:#fff;--s1:#f6cfe0;--s2:#fbe9f1;--sl:#a3336a;--sv:#6e1c45;--d1:#8a2c58;--d2:#b13a73}
+    [data-theme=dark][data-acc=rosa]{--green:#f472b6;--green-soft:rgba(244,114,182,.14);--green-line:rgba(244,114,182,.35);--acc:#f472b6;--pk:#f472b6;--pk-soft:rgba(244,114,182,.14);--on-pk:#14121a}
+    [data-acc=celeste]{--green:#3b82c4;--green-soft:#dcebf8;--green-line:#b3d3ee;--acc:#3b82c4;--pk:#3b82c4;--pk-soft:#dcebf8;--on-pk:#fff;--s1:#c4dcf3;--s2:#e6f1fb;--sl:#2e6aa3;--sv:#17406b;--d1:#2a5f96;--d2:#3b7ab8}
+    [data-theme=dark][data-acc=celeste]{--green:#7cb7ff;--green-soft:rgba(124,183,255,.14);--green-line:rgba(124,183,255,.35);--acc:#7cb7ff;--pk:#7cb7ff;--pk-soft:rgba(124,183,255,.14);--on-pk:#14121a}
+    [data-acc=agua]{--green:#2f8a76;--green-soft:#d9f0ea;--green-line:#a8d9cd;--acc:#2f8a76;--pk:#2f8a76;--pk-soft:#d9f0ea;--on-pk:#fff;--s1:#bfe6da;--s2:#e3f5ef;--sl:#2c6a59;--sv:#0f3d31;--d1:#2a6b5c;--d2:#3a8472}
+    [data-theme=dark][data-acc=agua]{--green:#5eead4;--green-soft:rgba(94,234,212,.14);--green-line:rgba(94,234,212,.35);--acc:#5eead4;--pk:#5eead4;--pk-soft:rgba(94,234,212,.14);--on-pk:#14121a}
+    [data-acc] .sum-card{background:linear-gradient(135deg,var(--s1),var(--s2));border:1px solid var(--green-line);color:var(--sv)}
+    [data-acc] .sum-card .sum-label,[data-acc] .sum-card .sum-sub{color:var(--sl)}
+    [data-acc] .sum-card .sum-value{color:var(--sv)}
+    [data-theme=dark][data-acc] .sum-card{background:linear-gradient(135deg,var(--d1),var(--d2));color:#fff}
+    [data-theme=dark][data-acc] .sum-card .sum-label,[data-theme=dark][data-acc] .sum-card .sum-sub{color:rgba(255,255,255,.85)}
+    [data-theme=dark][data-acc] .sum-card .sum-value{color:#fff}
+    [data-theme=dark][data-acc] .btn-green{color:#14121a}
+  </style>
+  <script src="/app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="organizador.html" class="sq" title="Volver al menú">←</a>
+      <h1>Ahorros</h1>
+      <div class="top-right">
+        <button class="sq" id="btn-tema" aria-label="Cambiar entre modo claro y oscuro"></button>
+        <button class="sq" id="btn-menu" aria-label="Más opciones">⋮</button>
+        <div class="menu" id="menu">
+          <button id="btn-exportar">💾 Respaldar</button>
+          <button id="btn-importar">📂 Cargar</button>
+          <hr>
+          <div class="menu-sec"><div class="menu-t">Letra de los títulos</div><div id="fonts"><button data-f="fraunces" style="font-family:'Fraunces',Georgia,serif">Fraunces (la de ahora)</button><button data-f="jakarta" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif">Plus Jakarta (sin serif)</button><button data-f="fira" style="font-family:'Fira Sans',system-ui,sans-serif">Fira Sans</button><button data-f="chivo" style="font-family:'Chivo',system-ui,sans-serif">Chivo</button><button data-f="space" style="font-family:'Space Grotesk',system-ui,sans-serif">Space Grotesk</button></div></div>
+          <hr>
+          <div class="menu-sec"><div class="menu-t">Color de acento</div>
+            <div class="dots" id="dots">
+              <button data-c="violeta" aria-label="Morado"></button>
+              <button data-c="rosa" aria-label="Rosa"></button>
+              <button data-c="celeste" aria-label="Celeste"></button>
+              <button data-c="agua" aria-label="Aguamarina"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="file-input" style="display:none" accept=".json">
+    </div>
+
+    <div class="sum-card">
+      <div class="sum-label">Total ahorrado</div>
+      <div class="sum-value" id="s-total">$0</div>
+      <div class="sum-sub" id="s-sub"></div>
+    </div>
+
+    <div class="tools">
+      <button class="fbtn" id="btn-filtros"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg>Filtros<i></i></button>
+      <div class="pop" id="pop">
+        <button data-v="todas">📋 Todas</button>
+        <button data-v="progreso">🌱 En progreso</button>
+        <button data-v="cumplida">🎉 Meta cumplida</button>
+        <button data-v="sin">➖ Sin meta</button>
+      </div>
+      <div class="view" id="view">
+        <button data-v="list" aria-label="Vista de lista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+        <button data-v="grid" aria-label="Vista de cuadrícula"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></button>
+      </div>
+    </div>
+
+    <div id="lista" class="card-list grid"></div>
+  </div>
+
+  <button class="fab" id="btn-nueva"><span style="font-size:1.2rem;line-height:1">＋</span> Agregar</button>
+
+  <datalist id="dl-b"><option value="1.000"><option value="2.000"><option value="5.000"><option value="10.000"><option value="20.000"></datalist>
+  <datalist id="dl-m"><option value="10"><option value="50"><option value="100"><option value="500"></datalist>
+
+  <!-- Detalles de una caja (resumen + todos los movimientos con fecha) -->
+  <div class="modal-overlay" id="modal-det">
+    <div class="modal wide">
+      <div class="sheet-handle"></div>
+      <div class="det-head">
+        <div class="grow" style="flex:1;min-width:0"><h3 id="det-titulo"></h3></div>
+        <button class="sq" data-close aria-label="Cerrar">✕</button>
+      </div>
+      <div id="det-body"></div>
+    </div>
+  </div>
+
+  <!-- Modal Caja (nueva / editar) -->
+  <div class="modal-overlay" id="modal-caja">
+    <div class="modal">
+      <h3 id="caja-titulo">Nueva Caja</h3>
+      <div class="form-group">
+        <label class="form-label">Nombre del lugar</label>
+        <input class="form-input" id="caja-nombre" placeholder="Ej: Kindle o Kobo, Escritorio ajustable..." autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Meta (opcional)</label>
+        <input class="form-input money" id="caja-meta" inputmode="numeric" placeholder="Ej: 120.000" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Regla de uso de la caja (opcional)</label>
+        <textarea class="form-input auto" id="caja-detalle" rows="1" placeholder="Ej: Solo sacar cuando sea necesario"></textarea>
+        <div class="chips wrap" id="caja-reglas">
+          <button type="button" class="chip" data-p="No sacar">🔒 No sacar</button>
+          <button type="button" class="chip" data-p="Solo sacar si es necesario">⚠️ Solo si es necesario</button>
+          <button type="button" class="chip" data-p="Uso ocasional">🎈 Uso ocasional</button>
+        </div>
+      </div>
+
+      <div class="sec" id="caja-sec">Saldo inicial (opcional)</div>
+      <div class="form-group" id="caja-monto-box">
+        <label class="form-label" id="caja-monto-label">Monto ($)</label>
+        <input class="form-input big money" id="caja-monto" inputmode="numeric" placeholder="0" autocomplete="off">
+        <div class="hint" id="caja-hint" style="display:none">Si lo cambias, queda registrado como un "Ajuste de saldo" en el historial.</div>
+      </div>
+      <div id="caja-fmt-box">
+        <div class="form-group">
+          <label class="form-label">¿Es en billetes o monedas?</label>
+          <div class="chips" id="caja-fmt">
+            <button class="chip" data-v="b"> Billetes</button>
+            <button class="chip" data-v="m"> Monedas</button>
+            <button class="chip" data-v="x">Mixto</button>
+          </div>
+        </div>
+        <div id="caja-mix" style="display:none">
+          <div class="mix-box">
+            <div class="mix-t"> Billetes</div>
+            <div class="form-group"><label class="form-label">Monto en billetes ($)</label><input class="form-input money" id="caja-mb" inputmode="numeric" placeholder="Ej: 5.000" autocomplete="off"></div>
+            <div class="form-group"><label class="form-label">¿Cuáles billetes? (especificar)</label><textarea class="form-input auto" id="caja-mbd" rows="1" placeholder="Ej: 3 de mil y 1 de 2 mil"></textarea></div>
+          </div>
+          <div class="mix-box">
+            <div class="mix-t"> Monedas</div>
+            <div class="form-group"><label class="form-label">Monto en monedas ($)</label><input class="form-input money" id="caja-mm" inputmode="numeric" placeholder="Ej: 2.000" autocomplete="off"></div>
+            <div class="form-group"><label class="form-label">¿Cuáles monedas? (especificar)</label><textarea class="form-input auto" id="caja-mmd" rows="1" placeholder="Ej: monedas de 100 y 500"></textarea></div>
+          </div>
+          <div class="hint" id="caja-mix-tot" style="margin:-4px 0 12px;font-weight:700"></div>
+        </div>
+        <div class="form-group" id="caja-den-box">
+          <label class="form-label" id="caja-den-label">Billetes de ($)</label>
+          <input class="form-input money" id="caja-den" inputmode="numeric" list="dl-b" placeholder="Ej: 10.000" autocomplete="off">
+          <div class="hint" id="caja-den-hint"></div>
+        </div>
+      </div>
+      <div class="error" id="caja-error"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-green" id="btn-guardar-caja">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Movimiento -->
+  <div class="modal-overlay" id="modal-mov">
+    <div class="modal">
+      <h3 id="mov-titulo">Movimiento</h3>
+      <div class="info-box" id="mov-info" style="display:none"></div>
+      <div class="form-group">
+        <label class="form-label">Operación</label>
+        <div class="chips" id="mov-tipo">
+          <button class="chip" data-v="in">+ Ingresar</button>
+          <button class="chip" data-v="out">− Retirar</button>
+        </div>
+      </div>
+      <div class="form-group" id="mov-monto-box">
+        <label class="form-label">Monto ($)</label>
+        <input class="form-input big money" id="mov-monto" inputmode="numeric" placeholder="5.000" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿Fue en billetes o monedas?</label>
+        <div class="chips" id="mov-fmt">
+          <button class="chip" data-v="b"> Billetes</button>
+          <button class="chip" data-v="m"> Monedas</button>
+          <button class="chip" data-v="x">Mixto</button>
+        </div>
+      </div>
+      <div id="mov-mix" style="display:none">
+          <div class="mix-box">
+            <div class="mix-t"> Billetes</div>
+            <div class="form-group"><label class="form-label">Monto en billetes ($)</label><input class="form-input money" id="mov-mb" inputmode="numeric" placeholder="Ej: 5.000" autocomplete="off"></div>
+            <div class="form-group"><label class="form-label">¿Cuáles billetes? (especificar)</label><textarea class="form-input auto" id="mov-mbd" rows="1" placeholder="Ej: 3 de mil y 1 de 2 mil"></textarea></div>
+          </div>
+          <div class="mix-box">
+            <div class="mix-t"> Monedas</div>
+            <div class="form-group"><label class="form-label">Monto en monedas ($)</label><input class="form-input money" id="mov-mm" inputmode="numeric" placeholder="Ej: 2.000" autocomplete="off"></div>
+            <div class="form-group"><label class="form-label">¿Cuáles monedas? (especificar)</label><textarea class="form-input auto" id="mov-mmd" rows="1" placeholder="Ej: monedas de 100 y 500"></textarea></div>
+          </div>
+          <div class="hint" id="mov-mix-tot" style="margin:-4px 0 12px;font-weight:700"></div>
+        </div>
+        <div class="form-group" id="mov-den-box">
+        <label class="form-label" id="mov-den-label">Billetes de ($)</label>
+        <input class="form-input money" id="mov-den" inputmode="numeric" list="dl-b" placeholder="Ej: 10.000" autocomplete="off">
+        <div class="hint" id="mov-den-hint"></div>
+      </div>
+      <div class="form-group" id="mov-det-box">
+        <label class="form-label">Detalle (solo informativo, no se suma)</label>
+        <textarea class="form-input auto" id="mov-det" rows="1" placeholder="Ej: más 3 monedas de 100"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Motivo / nota (opcional)</label>
+        <textarea class="form-input auto" id="mov-nota" rows="1" placeholder="Ej: Ahorro semanal, vuelto de la feria..."></textarea>
+      </div>
+      <div class="error" id="mov-error"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-green" id="btn-confirmar">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const KEY = 'org_ahorros', VKEY = 'vista_ahorros';
+    const FMT = { b:' Billetes', m:' Monedas', x:' Mixto' };
+    const EMO = { b:'', m:'', x:'' };
+
+    const $ = s => document.querySelector(s);
+    const $$ = s => [...document.querySelectorAll(s)];
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const money = n => '$' + Math.round(n || 0).toLocaleString('es-CL');
+    const num = v => parseInt(String(v).replace(/\D/g, ''), 10) || 0;
+    const vibrar = () => { if (navigator.vibrate) navigator.vibrate(10); };
+    const fecha = () => new Date().toLocaleDateString('es-CL', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+    const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+
+    /* Normaliza datos nuevos y también los antiguos (que separaban billetes y monedas) */
+    function normMov(m) {
+      const old = m.monto === undefined;
+      const b = +m.b || 0, mo = +m.m || 0;
+      return {
+        id: String(m.id || uid('m_')),
+        tipo: m.tipo === 'out' ? 'out' : 'in',
+        monto: old ? b + mo : Math.max(0, +m.monto || 0),
+        formato: FMT[m.formato] ? m.formato : (b && mo ? 'x' : b ? 'b' : mo ? 'm' : ''),
+        detalle: String(m.detalle || (old && b && mo ? `Billetes ${money(b)} + Monedas ${money(mo)}` : '')).trim(),
+        nota: String(m.nota || '').trim(),
+        fecha: String(m.fecha || '')
+      };
+    }
+    function normCaja(c) {
+      const saldo = c.saldo !== undefined ? Math.max(0, +c.saldo || 0) : (+c.b || 0) + (+c.m || 0);
+      return {
+        id: String(c.id || uid('a_')), nombre: String(c.nombre || 'Caja').trim() || 'Caja',
+        detalle: String(c.detalle || '').trim(), saldo, meta: Math.max(0, Math.round(+c.meta || 0)),
+        movs: (Array.isArray(c.movs) ? c.movs : []).filter(m => m && typeof m === 'object').map(normMov)
+      };
+    }
+    let db = [];
+    try { const v = JSON.parse(localStorage.getItem(KEY) || '[]'); if (Array.isArray(v)) db = v.filter(c => c && typeof c === 'object').map(normCaja); } catch (e) {}
+    let cajaId = null, detId = null, tipo = 'in', fmt = 'b', cajaFmt = 'b', filtro = 'todas';
+    let disp = 'grid'; try { disp = localStorage.getItem(VKEY) === 'list' ? 'list' : 'grid'; } catch (e) {}
+    const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { alert('No pude guardar en este navegador. Haz un respaldo.'); } render(); };
+
+    /* Textos que se alargan hacia abajo (no hacia el lado) */
+    function grow(el) { el.style.height = 'auto'; const h = el.scrollHeight; if (h) el.style.height = h + 'px'; }
+    document.addEventListener('input', e => { if (e.target.matches('textarea.auto')) grow(e.target); });
+    const setVal = (s, v) => { const el = $(s); el.value = v; if (el.matches('textarea.auto')) grow(el); };
+
+    /* Puntos de miles automáticos en los montos (5000 → 5.000) */
+    const fmtN = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    document.addEventListener('input', e => {
+      const el = e.target; if (!el.matches('input.money')) return;
+      const pos = el.selectionStart, antes = el.value.slice(0, pos).replace(/\D/g, '').length;
+      const d = el.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+      el.value = d ? fmtN(d) : '';
+      let n = 0, i = 0; while (i < el.value.length && n < antes) { if (/\d/.test(el.value[i])) n++; i++; }
+      try { el.setSelectionRange(i, i); } catch (er) {}
+    });
+
+    /* Mixto: monto + qué es, por separado para billetes y monedas */
+    function totMix(p) { const t = num($(`#${p}-mb`).value) + num($(`#${p}-mm`).value); $(`#${p}-mix-tot`).textContent = t ? `Total: ${money(t)}` : ''; }
+    ['caja', 'mov'].forEach(p => ['mb', 'mm'].forEach(k => $(`#${p}-${k}`).addEventListener('input', () => totMix(p))));
+    function textoMixto(mb, db, mm, dm) {
+      const p = [];
+      if (mb) p.push(` ${money(mb)}${db ? ` (${db})` : ''}`);
+      if (mm) p.push(` ${money(mm)}${dm ? ` (${dm})` : ''}`);
+      return p.join(' + ');
+    }
+
+    /* Reglas rápidas de la caja */
+    const splitRegla = v => v.split(/\s*·\s*/).map(x => x.trim()).filter(Boolean);
+    function marcarReglas() { const p = splitRegla($('#caja-detalle').value); $$('#caja-reglas .chip').forEach(b => b.classList.toggle('on', p.includes(b.dataset.p))); }
+    $('#caja-reglas').onclick = e => {
+      const b = e.target.closest('.chip'); if (!b) return;
+      const p = splitRegla($('#caja-detalle').value), i = p.indexOf(b.dataset.p);
+      if (i >= 0) p.splice(i, 1); else p.push(b.dataset.p);
+      setVal('#caja-detalle', p.join(' · ')); marcarReglas();
+    };
+    $('#caja-detalle').addEventListener('input', marcarReglas);
+
+    /* Billetes / monedas: monto + "de cuánto" → calcula cuántos son (solo informativo) */
+    function actDen(p) {
+      const f = p === 'caja' ? cajaFmt : fmt, box = $(`#${p}-den-box`), vis = f === 'b' || f === 'm', mx = f === 'x';
+      $(`#${p}-mix`).style.display = mx ? 'block' : 'none';
+      $(`#${p}-monto-box`).style.display = mx ? 'none' : 'block';
+      if (p === 'mov') $('#mov-det-box').style.display = mx ? 'none' : 'block';
+      box.style.display = vis ? 'block' : 'none';
+      if (!vis) return;
+      $(`#${p}-den-label`).textContent = f === 'b' ? 'Billetes de ($)' : 'Monedas de ($)';
+      $(`#${p}-den`).setAttribute('list', f === 'b' ? 'dl-b' : 'dl-m');
+      $(`#${p}-den`).placeholder = f === 'b' ? 'Ej: 10.000' : 'Ej: 100';
+      hintDen(p);
+    }
+    function hintDen(p) {
+      const f = p === 'caja' ? cajaFmt : fmt, monto = num($(`#${p}-monto`).value), den = num($(`#${p}-den`).value), h = $(`#${p}-den-hint`);
+      if (!(monto && den) || (f !== 'b' && f !== 'm')) { h.textContent = ''; return; }
+      const n = monto / den, u = f === 'b' ? 'billete' : 'moneda';
+      h.textContent = Number.isInteger(n) ? `= ${n} ${u}${n === 1 ? '' : 's'} de ${money(den)}` : `No cuadra exacto: ${money(monto)} ÷ ${money(den)} = ${n.toLocaleString('es-CL', { maximumFractionDigits: 2 })}`;
+    }
+    function textoDinero(monto, f, den, extra) {
+      const p = [];
+      if ((f === 'b' || f === 'm') && den && monto) {
+        const n = monto / den, u = f === 'b' ? 'billete' : 'moneda';
+        p.push(Number.isInteger(n) ? `${n} ${u}${n === 1 ? '' : 's'} de ${money(den)}` : `${u}s de ${money(den)}`);
+      }
+      if (extra) p.push(extra);
+      return p.join(' · ');
+    }
+    ['caja', 'mov'].forEach(p => { $(`#${p}-monto`).addEventListener('input', () => hintDen(p)); $(`#${p}-den`).addEventListener('input', () => hintDen(p)); });
+
+    /* ── Render ── */
+    const cumple = (c, f) => { const m = c.meta || 0; return f === 'todas' || (f === 'progreso' && m > 0 && c.saldo < m) || (f === 'cumplida' && m > 0 && c.saldo >= m) || (f === 'sin' && !m); };
+
+    function tarjeta(c) {
+      const meta = c.meta || 0, pct = meta ? Math.min(100, Math.round(c.saldo / meta * 100)) : 0, d = `data-id="${esc(c.id)}"`;
+      return `<div class="group-card" ${d}><div class="c-head"><div class="c-name"> ${esc(c.nombre)}</div>
+        <div class="c-ic"><button class="btn-icon" data-act="edit" ${d} aria-label="Editar">✎</button><button class="btn-icon" data-act="del" ${d} aria-label="Eliminar">🗑</button></div></div>
+        <div class="c-line">Actual: <b class="v">${money(c.saldo)}</b></div>
+        <div class="c-line">Meta: <b>${meta ? money(meta) : 'sin meta'}</b>${meta ? ` · ${pct}%` : ''}</div>
+        ${meta ? `<div class="bar"><i style="width:${pct}%"></i></div>` : ''}
+        ${meta && c.saldo >= meta ? '<div><span class="badge ok">🎉 Meta cumplida</span></div>' : ''}
+        ${c.detalle ? `<div class="c-sub rule"> ${esc(c.detalle)}</div>` : ''}
+        <div class="c-acts t3"><button class="btn btn-det" data-act="detalles" ${d}>Detalles</button><button class="btn btn-in" data-act="in" ${d}>+ Ingresar</button><button class="btn btn-red" data-act="out" ${d}>− Sacar</button></div></div>`;
+    }
+
+    function render() {
+      const total = db.reduce((s, c) => s + c.saldo, 0);
+      $('#s-total').textContent = money(total);
+      $('#s-sub').textContent = db.length ? `en ${db.length} caja${db.length === 1 ? '' : 's'}` : '';
+      $('#btn-filtros').classList.toggle('has', filtro !== 'todas');
+      $$('#pop button').forEach(b => b.classList.toggle('on', b.dataset.v === filtro));
+      $$('#view button').forEach(b => b.classList.toggle('on', b.dataset.v === disp));
+      const cont = $('#lista'); cont.className = 'card-list ' + disp;
+      if (!db.length) {
+        cont.innerHTML = `<div class="vacio">Aún no tienes cajas de ahorro.<br>Toca <b>＋ Agregar</b> para comenzar.<br><button class="btn btn-secondary" data-act="demo">Ver con datos de ejemplo</button></div>`;
+      } else {
+        const lista = db.filter(c => cumple(c, filtro));
+        cont.innerHTML = lista.length ? lista.map(tarjeta).join('') : '<div class="vacio">Ninguna caja cumple este filtro.</div>';
+      }
+      if (detId) renderDet();
+    }
+
+    function movHTML(c, m) {
+      const det = m.formato ? (m.detalle ? (m.formato === 'x' ? '' : EMO[m.formato] + ' ') + m.detalle : FMT[m.formato]) : m.detalle;
+      return `<div class="mov ${m.tipo}">
+        <div><div class="mov-main">${m.tipo === 'in' ? ' +' : ' −'} ${money(m.monto)}</div>
+        ${det ? `<div class="mov-det">${esc(det)}</div>` : ''}
+        <div class="mov-sub">${m.nota ? esc(m.nota) + ' · ' : ''}${esc(m.fecha)}</div></div>
+        <button class="btn-icon" data-act="delmov" data-id="${esc(c.id)}" data-mid="${esc(m.id)}" aria-label="Deshacer movimiento">🗑</button></div>`;
+    }
+
+    /* Detalles: resumen + todos los movimientos con su fecha */
+    function abrirDet(id) { detId = id; renderDet(); abrir('#modal-det'); }
+    function renderDet() {
+      const c = db.find(x => x.id === detId);
+      if (!c) { detId = null; $('#modal-det').classList.remove('active'); return; }
+      const meta = c.meta || 0, pct = meta ? Math.min(100, Math.round(c.saldo / meta * 100)) : 0, d = `data-id="${esc(c.id)}"`;
+      $('#det-titulo').textContent = ' ' + c.nombre;
+      $('#det-body').innerHTML = `
+        <div class="c-line">Actual: <b class="v">${money(c.saldo)}</b></div>
+        <div class="c-line" style="margin-bottom:6px">Meta: <b>${meta ? money(meta) : 'sin meta'}</b>${meta ? ` · ${pct}%` : ''}</div>
+        ${meta ? `<div class="bar"><i style="width:${pct}%"></i></div><div class="c-sub" style="margin-top:6px">${c.saldo >= meta ? '🎉 ¡Meta cumplida!' : 'Faltan ' + money(meta - c.saldo)}</div>` : ''}
+        ${c.detalle ? `<div class="g-info"> ${esc(c.detalle)}</div>` : ''}
+        <div class="g-btns"><button class="btn btn-in" data-act="in" ${d}>+ Ingresar</button><button class="btn btn-red" data-act="out" ${d}>− Sacar</button></div>
+        <div class="sec">Movimientos (${c.movs.length})</div>
+        <div class="movs">${c.movs.map(m => movHTML(c, m)).join('') || '<div class="mov-sub" style="padding:6px 2px">Sin movimientos todavía.</div>'}</div>`;
+    }
+
+    function acc(e) {
+      const b = e.target.closest('[data-act]');
+      if (!b) {
+        const k = e.target.closest('.group-card[data-id]');
+        if (k) { vibrar(); abrirDet(k.dataset.id); }
+        return;
+      }
+      const a = b.dataset.act, id = b.dataset.id;
+      vibrar();
+      if (a === 'demo') return cargarDemo();
+      if (a === 'detalles') return abrirDet(id);
+      if (a === 'in' || a === 'out') return abrirMov(id, a);
+      if (a === 'edit') return abrirCaja(id);
+      if (a === 'del') { const c = db.find(x => x.id === id); if (c && confirm(`¿Eliminar "${c.nombre}" y su historial?`)) { db = db.filter(x => x.id !== id); guardar(); } return; }
+      if (a === 'delmov') return deshacerMov(id, b.dataset.mid);
+    }
+    $('#lista').addEventListener('click', acc);
+    $('#det-body').addEventListener('click', acc);
+    $('#btn-filtros').onclick = e => { e.stopPropagation(); $('#menu').classList.remove('open'); $('#pop').classList.toggle('open'); };
+    $('#pop').onclick = e => { const b = e.target.closest('button'); if (b) { filtro = b.dataset.v; render(); } };
+    $('#view').onclick = e => { const b = e.target.closest('button'); if (!b) return; disp = b.dataset.v; try { localStorage.setItem(VKEY, disp); } catch (er) {} render(); };
+
+    /* ── Cajas ── */
+    function setCajaFmt() { $$('#caja-fmt .chip').forEach(c => c.classList.toggle('on', c.dataset.v === cajaFmt)); actDen('caja'); }
+    $('#caja-fmt').onclick = e => { const c = e.target.closest('.chip'); if (c) { cajaFmt = c.dataset.v; setCajaFmt(); } };
+    function abrirCaja(id) {
+      cajaId = id || null;
+      const c = id ? db.find(x => x.id === id) : null;
+      $('#caja-titulo').textContent = c ? 'Editar caja' : 'Nueva Caja';
+      $('#caja-sec').textContent = c ? 'Saldo' : 'Saldo inicial (opcional)';
+      $('#caja-monto-label').textContent = c ? 'Saldo actual ($)' : 'Monto ($)';
+      $('#caja-hint').style.display = c ? 'block' : 'none';
+      $('#caja-fmt-box').style.display = c ? 'none' : 'block';
+      $('#caja-nombre').value = c ? c.nombre : '';
+      $('#caja-meta').value = c && c.meta ? fmtN(c.meta) : '';
+      $('#caja-monto').value = c && c.saldo ? fmtN(c.saldo) : '';
+      $('#caja-den').value = ''; $('#caja-mb').value = ''; $('#caja-mm').value = ''; cajaFmt = 'b'; setCajaFmt();
+      abrir('#modal-caja');
+      setVal('#caja-detalle', c ? c.detalle : ''); setVal('#caja-mbd', ''); setVal('#caja-mmd', ''); marcarReglas(); totMix('caja');
+      $('#caja-error').style.display = 'none';
+      setTimeout(() => $('#caja-nombre').focus(), 150);
+    }
+    $('#btn-nueva').onclick = () => { vibrar(); abrirCaja(); };
+    $('#btn-guardar-caja').onclick = () => {
+      const nombre = $('#caja-nombre').value.trim(); if (!nombre) return;
+      vibrar();
+      const detalle = $('#caja-detalle').value.trim(), meta = num($('#caja-meta').value);
+      let monto = num($('#caja-monto').value), mixDet = '';
+      if (!cajaId && cajaFmt === 'x') { const mb = num($('#caja-mb').value), mm = num($('#caja-mm').value); monto = mb + mm; mixDet = textoMixto(mb, $('#caja-mbd').value.trim(), mm, $('#caja-mmd').value.trim()); }
+      if (cajaId) {
+        const c = db.find(x => x.id === cajaId);
+        c.nombre = nombre; c.detalle = detalle; c.meta = meta;
+        if (monto !== c.saldo) {
+          const dif = monto - c.saldo;
+          c.movs.unshift({ id: uid('m_'), tipo: dif > 0 ? 'in' : 'out', monto: Math.abs(dif), formato: '', detalle: '', nota: 'Ajuste de saldo', fecha: fecha() });
+          c.saldo = monto;
+        }
+      } else {
+        const c = { id: uid('a_'), nombre, detalle, saldo: monto, meta, movs: [] };
+        if (monto) c.movs.push({ id: uid('m_'), tipo: 'in', monto, formato: cajaFmt, detalle: cajaFmt === 'x' ? mixDet : textoDinero(monto, cajaFmt, num($('#caja-den').value), ''), nota: 'Saldo inicial', fecha: fecha() });
+        db.unshift(c);
+      }
+      cerrar(); guardar();
+    };
+
+    /* ── Movimientos ── */
+    function setChips() {
+      $$('#mov-tipo .chip').forEach(c => { c.classList.toggle('on', c.dataset.v === tipo); c.classList.toggle('out', tipo === 'out'); });
+      $$('#mov-fmt .chip').forEach(c => c.classList.toggle('on', c.dataset.v === fmt));
+      const c = db.find(x => x.id === cajaId) || {};
+      $('#mov-titulo').textContent = (tipo === 'in' ? 'Ingresar plata' : 'Sacar plata') + ' · ' + (c.nombre || '');
+      const info = $('#mov-info');   /* al retirar, se recuerda qué hay guardado en la caja */
+      info.style.display = tipo === 'out' && c.detalle ? 'block' : 'none';
+      info.textContent = c.detalle ? `Recuerda: ${c.detalle}` : '';
+      actDen('mov');
+    }
+    function abrirMov(id, t) {
+      cajaId = id; tipo = t; fmt = 'b';
+      ['#mov-monto', '#mov-den', '#mov-mb', '#mov-mm'].forEach(s => $(s).value = '');
+      $('#mov-error').style.display = 'none';
+      setChips(); abrir('#modal-mov');
+      setVal('#mov-det', ''); setVal('#mov-nota', ''); setVal('#mov-mbd', ''); setVal('#mov-mmd', ''); totMix('mov');
+      setTimeout(() => $('#mov-monto').focus(), 150);
+    }
+    $('#mov-tipo').onclick = e => { const c = e.target.closest('.chip'); if (c) { tipo = c.dataset.v; setChips(); } };
+    $('#mov-fmt').onclick = e => { const c = e.target.closest('.chip'); if (c) { fmt = c.dataset.v; setChips(); } };
+    const error = t => { const el = $('#mov-error'); el.textContent = t; el.style.display = 'block'; };
+
+    $('#btn-confirmar').onclick = () => {
+      const c = db.find(x => x.id === cajaId); if (!c) return;
+      let monto = num($('#mov-monto').value), detMov = '';
+      if (fmt === 'x') { const mb = num($('#mov-mb').value), mm = num($('#mov-mm').value); monto = mb + mm; detMov = textoMixto(mb, $('#mov-mbd').value.trim(), mm, $('#mov-mmd').value.trim()); }
+      else detMov = textoDinero(monto, fmt, num($('#mov-den').value), $('#mov-det').value.trim());
+      if (!monto) return error('Escribe un monto mayor a $0.');
+      if (tipo === 'out' && monto > c.saldo) return error(`No alcanza: esta caja tiene ${money(c.saldo)}.`);
+      vibrar();
+      c.saldo += tipo === 'in' ? monto : -monto;
+      c.movs.unshift({ id: uid('m_'), tipo, monto, formato: fmt, detalle: detMov, nota: $('#mov-nota').value.trim(), fecha: fecha() });
+      cerrar(); guardar();
+    };
+
+    function deshacerMov(id, mid) {
+      const c = db.find(x => x.id === id), m = c && c.movs.find(x => x.id === mid); if (!m) return;
+      const nuevo = c.saldo + (m.tipo === 'in' ? -m.monto : m.monto);
+      if (nuevo < 0) return alert('No se puede deshacer: el saldo quedaría negativo.');
+      if (!confirm('¿Deshacer este movimiento? El saldo se ajusta.')) return;
+      c.saldo = nuevo; c.movs = c.movs.filter(x => x.id !== mid); guardar();
+    }
+
+    /* ── Modales (el de Detalles queda abierto cuando se cierra uno que se abrió encima) ── */
+    const abrir = s => $(s).classList.add('active');
+    function cerrarUno(ov) { ov.classList.remove('active'); if (ov.id === 'modal-det') detId = null; }
+    function cerrar() { $$('.modal-overlay.active').forEach(m => { if (m.id !== 'modal-det') cerrarUno(m); }); }
+    document.addEventListener('click', e => {
+      const ov = e.target.classList.contains('modal-overlay') ? e.target : (e.target.closest('[data-close]') && e.target.closest('.modal-overlay'));
+      if (ov) cerrarUno(ov);
+    });
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') { const a = $$('.modal-overlay.active'); if (a.length) cerrarUno(a[a.length - 1]); } });
+
+    /* ── Menús (⋮ y Filtros) ── */
+    $('#btn-menu').onclick = e => { e.stopPropagation(); $('#pop').classList.remove('open'); $('#menu').classList.toggle('open'); };
+    document.addEventListener('click', () => { $('#menu').classList.remove('open'); $('#pop').classList.remove('open'); });
+
+    /* ── Respaldo (acepta también respaldos antiguos) ── */
+    $('#btn-exportar').onclick = () => {
+      vibrar();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' }));
+      a.download = `respaldo-ahorros-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+    };
+    $('#btn-importar').onclick = () => { vibrar(); $('#file-input').click(); };
+    $('#file-input').onchange = e => {
+      const file = e.target.files[0]; if (!file) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        try {
+          const d = JSON.parse(ev.target.result);
+          if (!Array.isArray(d) || d.some(c => !c || typeof c !== 'object')) throw 0;
+          if (!confirm('Esto reemplaza tus ahorros actuales por los del archivo. ¿Continuar?')) return;
+          db = d.map(normCaja); guardar(); alert('¡Ahorros cargados con éxito!');
+        } catch (err) { alert('Archivo no válido.'); }
+        e.target.value = '';
+      };
+      r.readAsText(file);
+    };
+
+    function cargarDemo() {
+      db = [
+        { id:'a_1', nombre:'Kindle o Kobo', detalle:'Solo sacar si es necesario', saldo:45000, meta:120000, movs:[
+          { id:'m1', tipo:'in', monto:5000, formato:'b', detalle:'1 billete de $5.000', nota:'Vuelto de la feria', fecha:'14 oct' },
+          { id:'m2', tipo:'in', monto:1500, formato:'m', detalle:'monedas de 100 y 500', nota:'Monedas sueltas', fecha:'12 oct' },
+          { id:'m3', tipo:'out', monto:2000, formato:'m', detalle:'20 monedas de $100', nota:'Panadería', fecha:'10 oct' }] },
+        { id:'a_2', nombre:'Sobre de emergencias', detalle:'No sacar', saldo:90000, meta:0, movs:[{ id:'m4', tipo:'in', monto:90000, formato:'b', detalle:'9 billetes de $10.000', nota:'Saldo inicial', fecha:'01 oct' }] }
+      ];
+      guardar();
+    }
+
+    /* ── Tema claro / oscuro (clave compartida app_tema) ── */
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const temaPref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch (e) { return 'auto'; } };
+    const oscuro = () => temaPref() === 'oscuro' || (temaPref() === 'auto' && mq.matches);
+    function aplicarTema() {
+      document.documentElement.dataset.theme = oscuro() ? 'dark' : 'light';
+      $('#btn-tema').textContent = oscuro() ? '☀️' : '🌙';
+      const m = document.querySelector('meta[name=theme-color]');
+      if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    }
+    $('#btn-tema').onclick = () => { vibrar(); try { localStorage.setItem('app_tema', oscuro() ? 'claro' : 'oscuro'); } catch (e) {} aplicarTema(); };
+    if (mq.addEventListener) mq.addEventListener('change', aplicarTema);
+    aplicarTema();
+    render();
+  </script>
+  <script>
+    /* ── Letra de los títulos y color (se guardan en el navegador) ── */
+    const FUENTES = {fraunces:"'Fraunces',Georgia,serif",jakarta:"'Plus Jakarta Sans',system-ui,sans-serif",fira:"'Fira Sans',system-ui,sans-serif",chivo:"'Chivo',system-ui,sans-serif",space:"'Space Grotesk',system-ui,sans-serif"};
+    function aplicarFuente() {
+      let f = 'fraunces'; try { f = localStorage.getItem('app_fuente') || 'fraunces'; } catch (e) {}
+      if (!FUENTES[f]) f = 'fraunces';
+      document.documentElement.style.setProperty('--serif', FUENTES[f]);
+      $$('#fonts button').forEach(b => b.classList.toggle('on', b.dataset.f === f));
+    }
+    $('#fonts').onclick = e => { const b = e.target.closest('button'); if (!b) return; try { localStorage.setItem('app_fuente', b.dataset.f); } catch (er) {} aplicarFuente(); };
+    aplicarFuente();
+    function aplicarAcc() {
+      let a = ''; try { a = localStorage.getItem('color_ahorros') || ''; } catch (e) {}
+      if (['violeta', 'rosa', 'celeste', 'agua'].includes(a)) document.documentElement.dataset.acc = a;
+      else delete document.documentElement.dataset.acc;
+      $$('#dots button').forEach(b => b.classList.toggle('on', b.dataset.c === a));
+      const m = document.querySelector('meta[name=theme-color]');
+      if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    }
+    $('#dots').onclick = e => { const b = e.target.closest('button'); if (!b) return; try { localStorage.setItem('color_ahorros', b.dataset.c); } catch (er) {} aplicarAcc(); };
+    aplicarAcc();
+    $('#menu').addEventListener('click', e => { if (e.target.closest('.menu-sec')) e.stopPropagation(); });
+  </script>
+  <script>
+    /* Títulos largos: bajan de tamaño hasta caber en 2 líneas; si aun así no caben, se cortan con … */
+    (function () {
+      const SEL = '.group-title, .c-name, #det-titulo';
+      let raf = 0;
+      function ajustar() {
+        raf = 0;
+        document.querySelectorAll(SEL).forEach(el => {
+          el.style.fontSize = ''; el.style.overflowWrap = 'normal';   /* se mide sin partir palabras */
+          const base = parseFloat(getComputedStyle(el).fontSize), min = Math.max(11, base * .62);
+          let fs = base;
+          const mal = () => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+          while (mal() && fs > min) { fs -= .5; el.style.fontSize = fs + 'px'; }
+          el.style.overflowWrap = '';   /* si una palabra no cabe ni en el mínimo, ahí sí se corta */
+        });
+      }
+      const pedir = () => { if (!raf) raf = requestAnimationFrame(ajustar); };
+      new MutationObserver(pedir).observe(document.body, { childList: true, subtree: true, characterData: true });
+      new MutationObserver(pedir).observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'data-theme'] });
+      addEventListener('resize', pedir);
+      if (document.fonts) { if (document.fonts.ready) document.fonts.ready.then(pedir); if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', pedir); }
+      pedir();
+    })();
+  </script>
+</body>
+</html>
