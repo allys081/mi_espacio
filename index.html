@@ -5,9 +5,9 @@
   <title>Mi Espacio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#fbf5ee">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Mi Espacio">
@@ -17,203 +17,283 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Fira+Sans:wght@500;600;700&family=Chivo:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{color-scheme:light;--bg:#fbf5ee;--bg1:#f3e6dc;--card:#fffdf9;--border:#eadfd2;--text:#3b2a22;--muted:#7a685d;--arrow:#cdbfae;--soft:#f6efe6;--badge-bg:#f6e1d6;--badge-ink:#c4623f;--g1:#7c5cd6;--g2:#c2417a;--ok:#2f7d5f;--warn:#c4623f;
-      --c-inv:#8a6fb0;--c-tra:#c4623f;--c-ins:#4f7fb5;--c-mal:#b98524;
-      --serif:'Fraunces',Georgia,serif;--shadow:0 1px 2px rgba(80,50,30,.06),0 6px 18px rgba(80,50,30,.06)}
-    [data-theme=dark]{color-scheme:dark;--bg:#14121a;--bg1:#1d1930;--card:#1e1b27;--border:#2d2939;--text:#efeaf7;--muted:#a39cb3;--arrow:#5b5470;--soft:#26222f;--badge-bg:#2b2445;--badge-ink:#c4b5fd;--g1:#a78bfa;--g2:#f472b6;--ok:#5ed3a4;--warn:#f0916d;
-      --c-inv:#c4b5fd;--c-tra:#f0916d;--c-ins:#7cb7ff;--c-mal:#fcd34d;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25)}
+    :root{color-scheme:light;--bg:#fbf5ee;--bg1:#f3e6dc;--card:#fffdf9;--border:#eadfd2;--text:#3b2a22;--muted:#7a685d;--soft:#f6efe6;--g1:#7c5cd6;--g2:#c2417a;--ok:#2f7d5f;--warn:#c4623f;--serif:'Fraunces',Georgia,serif;--shadow:0 1px 2px rgba(80,50,30,.06),0 6px 18px rgba(80,50,30,.06)}
+    [data-theme=dark]{color-scheme:dark;--bg:#14121a;--bg1:#1d1930;--card:#1e1b27;--border:#2d2939;--text:#efeaf7;--muted:#a39cb3;--soft:#26222f;--g1:#a78bfa;--g2:#f472b6;--ok:#5ed3a4;--warn:#f0916d;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25)}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-    html{scroll-padding-top:env(safe-area-inset-top,0px)}
-    body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100dvh;background:radial-gradient(circle at top,var(--bg1) 0%,var(--bg) 70%);color:var(--text);padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(28px + env(safe-area-inset-bottom,0px))}
-    .wrap{max-width:440px;margin:0 auto}
-    .top{display:flex;justify-content:flex-end;gap:8px;margin-bottom:6px}
-    .ibtn{width:38px;height:38px;border-radius:12px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-size:1.05rem;cursor:pointer}
-    .ibtn.f{font-family:var(--serif);font-weight:800;font-size:.95rem}
-    .badge{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.8px;background:var(--badge-bg);color:var(--badge-ink);padding:5px 14px;border-radius:99px;margin:8px 0 12px}
-    h1{font-family:var(--serif);font-size:2.2rem;font-weight:700;line-height:1.15;margin-bottom:6px;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-    .sub{font-size:.92rem;color:var(--muted);margin-bottom:24px}
-    .cards{display:flex;flex-direction:column;gap:13px}
-    .card{position:relative;overflow:hidden;display:flex;align-items:center;gap:15px;padding:16px 18px 16px 22px;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:transform .15s ease}
-    .card:active{transform:scale(.97)}
-    .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
-    .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.55rem;flex-shrink:0;background:color-mix(in srgb,var(--c) 16%,var(--card));border:1px solid color-mix(in srgb,var(--c) 32%,var(--card))}
-    .tx{flex:1;min-width:0}
-    .tt{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:2px}
-    .ds{font-size:.8rem;color:var(--muted);line-height:1.35}
-    .mini{display:none;margin-top:6px;font-size:.74rem;font-weight:700;color:var(--c)}
-    .mini.on{display:block}
-    .bar{height:5px;border-radius:99px;background:var(--soft);margin-top:5px;overflow:hidden}
-    .bar i{display:block;height:100%;background:var(--c);border-radius:99px}
-    .arrow{font-size:1.2rem;color:var(--arrow);font-weight:700}
-    .resp{margin-top:22px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow)}
-    .resp h2{font-family:var(--serif);font-size:1rem;margin-bottom:4px}
-    .resp p{font-size:.78rem;color:var(--muted);line-height:1.45}
-    .resp .row{display:flex;gap:8px;margin-top:12px}
-    .btn{flex:1;padding:11px 10px;border-radius:12px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .85rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer}
+    html,body{min-height:100%}
+    body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100dvh;background:radial-gradient(circle at top,var(--bg1) 0%,var(--bg) 70%);color:var(--text);padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(96px + env(safe-area-inset-bottom,0px))}
+    .wrap{max-width:440px;margin:0 auto;display:flex;flex-direction:column;min-height:calc(100dvh - 110px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+    svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+    .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+    .eyebrow{font-size:.68rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+    .ibtns{display:flex;gap:8px;position:relative}
+    .ibtn{width:44px;height:44px;border-radius:14px;background:var(--card);border:1.5px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font:800 .95rem var(--serif);position:relative}
+    .ibtn .dot{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--warn);display:none}
+    .ibtn .dot.on{display:block}
+    h1{text-align:center;font-family:var(--serif);font-size:2rem;font-weight:700;line-height:1.15;margin-top:6px;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .sub{text-align:center;font-size:.85rem;color:var(--muted);margin:4px 0 14px}
+    .stack{flex:1;display:flex;flex-direction:column;gap:12px}
+    .hero{flex:1;min-height:250px;border-radius:26px;padding:22px 20px 16px;color:#fff;background:linear-gradient(135deg,#7c5cd6 0%,#a04aa0 55%,#c2417a 100%);display:flex;flex-direction:column;box-shadow:var(--shadow);text-decoration:none}
+    .hero .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:120px}
+    .lbl{font-size:.68rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;opacity:.85}
+    .hero h2{font-family:var(--serif);font-size:1.75rem;font-weight:600;line-height:1.15;margin:6px 0}
+    .hero .meta{font-size:.85rem;opacity:.9}
+    .lst{margin-top:12px;border-top:1px solid rgba(255,255,255,.25);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+    .lst .lbl{margin-bottom:2px}
+    .row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.14);border-radius:14px;padding:9px 12px;min-height:44px;text-decoration:none;color:#fff}
+    .row .sh{width:10px;height:10px;flex-shrink:0;background:#fff}
+    .row .sh.c{border-radius:50%}.row .sh.t{clip-path:polygon(50% 0,100% 100%,0 100%);width:12px;height:11px}
+    .row .tx{flex:1;min-width:0;font-size:.85rem;font-weight:700;line-height:1.25}
+    .row .tx small{display:block;font-weight:500;opacity:.85;font-size:.72rem}
+    .row .tag{font-size:.7rem;font-weight:800;white-space:nowrap;background:rgba(0,0,0,.22);border-radius:99px;padding:4px 9px}
+    .row .tag.u{background:#fff;color:#a02a62}
+    .mini{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);position:relative;overflow:hidden;padding-left:20px}
+    .mini::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+    .mini .tx{flex:1;min-width:0}
+    .mini .k{font-size:.64rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+    .mini .v{font-size:.95rem;font-weight:800;margin-top:1px}
+    .mini .s{font-size:.72rem;color:var(--muted);margin-top:1px}
+    .btn{min-height:44px;padding:0 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .85rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
     .btn.p{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;color:#fff}
-    .meter{height:6px;border-radius:99px;background:var(--soft);margin-top:12px;overflow:hidden}
-    .meter i{display:block;height:100%;background:var(--ok)}
-    .meter i.w{background:var(--warn)}
-    .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.82rem;font-weight:700;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center}
+    .btn.d{background:none;border-color:var(--border);color:var(--muted)}
+    .resp{background:none;border:0;color:var(--muted);font:600 .76rem 'Plus Jakarta Sans',system-ui,sans-serif;text-align:center;min-height:44px;cursor:pointer}
+    .resp.w{color:var(--warn)}
+    nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
+    nav.bar div{max-width:440px;margin:0 auto;display:flex;background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:6px}
+    nav.bar a{flex:1;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.62rem;font-weight:700;color:var(--muted);text-decoration:none;border-radius:16px;position:relative}
+    nav.bar a.on{background:color-mix(in srgb,var(--g1) 16%,var(--card));color:var(--g1)}
+    nav.bar a b{position:absolute;top:2px;left:calc(50% + 4px);min-width:16px;height:16px;border-radius:99px;background:var(--g1);color:#fff;font-size:.6rem;display:none;align-items:center;justify-content:center;padding:0 4px}
+    nav.bar a b.on{display:flex}
+    .ov{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:18px}
+    .ov.open{display:flex}
+    .dlg{width:100%;max-width:380px;max-height:88dvh;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+    .dlg h3{font-family:var(--serif);font-size:1.15rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+    .dlg h3 button{width:44px;height:44px;margin:-8px -8px -8px 0;border:0;background:none;color:var(--muted);cursor:pointer}
+    .dlg label{display:block;font-size:.64rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+    .dlg input[type=text],.dlg textarea{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:600 .92rem 'Plus Jakarta Sans',system-ui,sans-serif}
+    .dlg textarea{min-height:90px;resize:vertical}
+    .acts{display:flex;gap:8px;margin-top:14px}.acts .btn{flex:1}
+    .cols{display:flex;gap:10px}
+    .cols button{width:44px;height:44px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+    .cols button.on{border-color:var(--text)}
+    .chk{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700;font-size:.9rem;margin-top:6px}
+    .chk input{width:22px;height:22px;accent-color:var(--g1)}
+    .opt{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;padding:0 12px;margin-bottom:6px;border-radius:14px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .9rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-align:left}
+    .opt.on{border-color:var(--g1)}
+    .opt small{display:block;font-weight:500;color:var(--muted);font-size:.72rem}
+    .meter{height:6px;border-radius:99px;background:var(--soft);margin:8px 0;overflow:hidden}.meter i{display:block;height:100%;background:var(--ok)}.meter i.w{background:var(--warn)}
+    .note{font-size:.76rem;color:var(--muted);line-height:1.45}
+    .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.82rem;font-weight:700;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center;z-index:80}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .menu-f{position:fixed;top:calc(60px + env(safe-area-inset-top,0px));right:18px;z-index:50;min-width:220px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:6px;display:none}
-    .menu-f.open{display:block}
-    .menu-f .t{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:8px 12px 4px}
-    .menu-f button{display:block;width:100%;text-align:left;padding:11px 12px;border:0;background:none;border-radius:10px;font-size:.95rem;font-weight:700;color:var(--text);cursor:pointer}
-    .menu-f button.on{background:var(--badge-bg);color:var(--badge-ink)}
-    h1,.tt{font-family:var(--serif)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <button class="ibtn f" id="btn-fuente" aria-label="Cambiar la letra de los títulos">Aa</button>
-      <button class="ibtn" id="btn-tema" aria-label="Cambiar entre modo claro y oscuro"></button>
+      <span class="eyebrow">Mi espacio personal</span>
+      <div class="ibtns">
+        <button class="ibtn" id="btn-fuente" aria-label="Letra de los títulos">Aa</button>
+        <button class="ibtn" id="btn-tema" aria-label="Cambiar tema"><svg class="i"><use href="#i-tema"/></svg><span class="dot" id="dot-resp"></span></button>
+      </div>
     </div>
-    <div class="menu-f" id="menu-f"><div class="t">Letra de los títulos</div><button data-f="fraunces" style="font-family:'Fraunces',Georgia,serif">Fraunces</button><button data-f="jakarta" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif">Plus Jakarta (sin serif)</button><button data-f="fira" style="font-family:'Fira Sans',system-ui,sans-serif">Fira Sans</button><button data-f="chivo" style="font-family:'Chivo',system-ui,sans-serif">Chivo</button><button data-f="space" style="font-family:'Space Grotesk',system-ui,sans-serif">Space Grotesk</button></div>
-
-    <span class="badge">Mi espacio personal</span>
-    <h1 id="saludo">Hola, ¿qué revisamos?</h1>
+    <h1>Hola, ¿qué revisamos?</h1>
     <p class="sub">Cuatro secciones, un solo lugar.</p>
 
-    <div class="cards">
-      <a class="card" href="organizador.html" style="--c:var(--c-inv)">
-        <div class="ico">📦</div>
-        <div class="tx"><div class="tt">Mi Organizador</div><div class="ds">Cajas, compras y ahorros.</div><div class="mini" id="m-inv"></div></div>
-        <div class="arrow">→</div>
-      </a>
-      <a class="card" href="traslado.html" style="--c:var(--c-tra)">
-        <div class="ico">🚉</div>
-        <div class="tx"><div class="tt">Traslado</div><div class="ds">Checklist y cosas por llevar.</div><div class="mini" id="m-tra"></div><div class="bar" id="b-tra" style="display:none"><i></i></div></div>
-        <div class="arrow">→</div>
-      </a>
-      <a class="card" href="instituto.html" style="--c:var(--c-ins)">
-        <div class="ico">🏫</div>
-        <div class="tx"><div class="tt">Instituto</div><div class="ds">Próximo, calendario, apuntes y hábitos.</div><div class="mini" id="m-ins"></div></div>
-        <div class="arrow">→</div>
-      </a>
-      <a class="card" href="malla.html" style="--c:var(--c-mal)">
-        <div class="ico">🎓</div>
-        <div class="tx"><div class="tt">Malla Curricular</div><div class="ds">Ramos, notas y docentes.</div><div class="mini" id="m-mal"></div></div>
-        <div class="arrow">→</div>
-      </a>
+    <div class="stack">
+      <section class="hero" id="hero"></section>
+      <div class="mini" style="--c:#3b82f6"><div class="tx"><div class="k" id="n-k">Notas importantes</div><div class="v" id="n-v"></div></div><button class="btn p" id="btn-nota">Nueva nota</button></div>
+      <div class="mini" style="--c:#e11d48"><div class="tx"><div class="k">Me falta comprar</div><div class="v" id="c-v"></div><div class="s" id="c-s"></div></div><a class="btn" id="c-b" href="compras.html">Agregar</a></div>
+      <button class="resp" id="resp-linea">Respaldo total · último: nunca</button>
     </div>
-
-    <section class="resp">
-      <h2>Respaldo total</h2>
-      <p id="resp-estado">Último respaldo: nunca.</p>
-      <div class="meter" aria-hidden="true"><i id="meter-i" style="width:0%"></i></div>
-      <p id="meter-t" style="margin-top:6px"></p>
-      <div class="row">
-        <button class="btn p" id="btn-resp">Respaldar todo</button>
-        <button class="btn" id="btn-rest">Restaurar</button>
-      </div>
-      <input type="file" id="file-rest" accept=".json,application/json" style="display:none">
-    </section>
   </div>
+
+  <nav class="bar"><div>
+    <a class="on" href="index.html"><svg class="i"><use href="#i-home"/></svg>Inicio</a>
+    <a href="organizador.html"><svg class="i"><use href="#i-box"/></svg>Organizador<b id="b-inv"></b></a>
+    <a href="traslado.html"><svg class="i"><use href="#i-tren"/></svg>Traslado<b id="b-tra"></b></a>
+    <a href="instituto.html"><svg class="i"><use href="#i-inst"/></svg>Instituto<b id="b-ins"></b></a>
+    <a href="malla.html"><svg class="i"><use href="#i-gorro"/></svg>Malla</a>
+  </div></nav>
+
+  <!-- Ventanas en medio -->
+  <div class="ov" id="ov-nota"><div class="dlg"><h3>Nueva nota importante <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
+    <label for="nt">Título</label><input type="text" id="nt" maxlength="80">
+    <label for="nx">Nota</label><textarea id="nx"></textarea>
+    <label>Color</label><div class="cols" id="nc"></div>
+    <label class="chk"><input type="checkbox" id="nf" checked> Fijar arriba</label>
+    <div class="acts"><button class="btn" data-x>Cancelar</button><button class="btn p" id="ng">Guardar en Instituto</button></div></div></div>
+
+  <div class="ov" id="ov-resp"><div class="dlg"><h3>Respaldo total <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
+    <p class="note" id="r-est" style="font-weight:700"></p><div class="meter"><i id="r-bar"></i></div><p class="note" id="r-txt"></p>
+    <div class="acts"><button class="btn p" id="btn-resp">Respaldar todo</button><button class="btn" id="btn-rest">Restaurar</button></div>
+    <label class="chk"><input type="checkbox" id="r-rec"> Recordarme cada 7 días</label><p class="note">Abre el menú de compartir del teléfono.</p>
+    <input type="file" id="file-rest" accept=".json,application/json" style="display:none"></div></div>
+
+  <div class="ov" id="ov-tema"><div class="dlg"><h3>Cambiar tema <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
+    <button class="opt" data-t="auto">Automático<small>Sigue al teléfono</small></button>
+    <button class="opt" data-t="claro">Claro<small>Fondo crema y tarjetas blancas</small></button>
+    <button class="opt" data-t="oscuro">Oscuro<small>Fondo violeta muy oscuro</small></button>
+    <p class="note" style="margin:6px 0 10px">Se aplica a todas las páginas. Cada sección mantiene su color de acento.</p>
+    <button class="opt" id="btn-fuente2">Letra de los títulos<small id="f-act">Fraunces</small></button></div></div>
+
+  <div class="ov" id="ov-fuente"><div class="dlg"><h3>Letra de los títulos <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3><div id="f-lista"></div></div></div>
   <div class="toast" id="toast"></div>
 
-  <script src="/app.js"></script>
-  <script>
-    const $ = s => document.querySelector(s);
-    const leer = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
-    let tt; function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 2600); }
-    function mini(id, txt) { const el = $(id); if (!el || !txt) return; el.textContent = txt; el.classList.add('on'); }
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></symbol>
+    <symbol id="i-tren" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l2-4M15 21l-2-4"/></symbol>
+    <symbol id="i-inst" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M10 21v-6h4v6"/></symbol>
+    <symbol id="i-gorro" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></symbol>
+    <symbol id="i-tema" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 010 18z" fill="currentColor"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  </defs></svg>
 
-    /* ---------- Tema claro/oscuro y letra ---------- */
+  <script src="app.js"></script>
+  <script>
+    const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+    const leer = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    let tt; function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 2600); }
+    const abrir = id => $('#' + id).classList.add('open');
+    const cerrar = () => $$('.ov').forEach(o => o.classList.remove('open'));
+    $$('.ov').forEach(o => o.addEventListener('click', e => { if (e.target === o || e.target.closest('[data-x]')) cerrar(); }));
+
+    /* ---------- Tema (se guarda una vez en app_tema y todas las páginas lo leen) ---------- */
     const mq = matchMedia('(prefers-color-scheme: dark)');
     const pref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch (e) { return 'auto'; } };
-    const oscuro = () => pref() === 'oscuro' || (pref() === 'auto' && mq.matches);
     function aplicarTema() {
-      document.documentElement.dataset.theme = oscuro() ? 'dark' : 'light';
-      $('#btn-tema').textContent = oscuro() ? '☀️' : '🌙';
-      const m = document.querySelector('meta[name=theme-color]');
-      if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+      const d = pref() === 'oscuro' || (pref() === 'auto' && mq.matches);
+      document.documentElement.dataset.theme = d ? 'dark' : 'light';
+      $$('[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === pref()));
+      const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
     }
-    $('#btn-tema').onclick = () => { try { localStorage.setItem('app_tema', oscuro() ? 'claro' : 'oscuro'); } catch (e) {} aplicarTema(); };
+    $$('[data-t]').forEach(b => b.onclick = () => { try { localStorage.setItem('app_tema', b.dataset.t); } catch (e) {} aplicarTema(); });
     if (mq.addEventListener) mq.addEventListener('change', aplicarTema);
+    $('#btn-tema').onclick = () => abrir('ov-tema');
     aplicarTema();
 
-    const FUENTES = {fraunces:"'Fraunces',Georgia,serif",jakarta:"'Plus Jakarta Sans',system-ui,sans-serif",fira:"'Fira Sans',system-ui,sans-serif",chivo:"'Chivo',system-ui,sans-serif",space:"'Space Grotesk',system-ui,sans-serif"};
+    const FUENTES = { fraunces: ['Fraunces', "'Fraunces',Georgia,serif"], jakarta: ['Plus Jakarta Sans', "'Plus Jakarta Sans',system-ui,sans-serif"], fira: ['Fira Sans', "'Fira Sans',system-ui,sans-serif"], chivo: ['Chivo', "'Chivo',system-ui,sans-serif"], space: ['Space Grotesk', "'Space Grotesk',system-ui,sans-serif"] };
     function aplicarFuente() {
-      let f = 'fraunces'; try { f = localStorage.getItem('app_fuente') || 'fraunces'; } catch (e) {}
-      if (!FUENTES[f]) f = 'fraunces';
-      document.documentElement.style.setProperty('--serif', FUENTES[f]);
-      document.querySelectorAll('#menu-f button').forEach(b => b.classList.toggle('on', b.dataset.f === f));
+      let f = 'fraunces'; try { f = localStorage.getItem('app_fuente') || 'fraunces'; } catch (e) {} if (!FUENTES[f]) f = 'fraunces';
+      document.documentElement.style.setProperty('--serif', FUENTES[f][1]); $('#f-act').textContent = FUENTES[f][0];
+      $('#f-lista').innerHTML = Object.keys(FUENTES).map(k => `<button class="opt ${k === f ? 'on' : ''}" data-f="${k}" style="font-family:${FUENTES[k][1]}">${FUENTES[k][0]}</button>`).join('');
     }
-    $('#btn-fuente').onclick = e => { e.stopPropagation(); $('#menu-f').classList.toggle('open'); };
-    $('#menu-f').onclick = e => { e.stopPropagation(); const b = e.target.closest('button'); if (!b) return; try { localStorage.setItem('app_fuente', b.dataset.f); } catch (er) {} aplicarFuente(); };
-    document.addEventListener('click', () => $('#menu-f').classList.remove('open'));
+    $('#f-lista').onclick = e => { const b = e.target.closest('[data-f]'); if (!b) return; try { localStorage.setItem('app_fuente', b.dataset.f); } catch (er) {} aplicarFuente(); };
+    $('#btn-fuente').onclick = () => abrir('ov-fuente');
+    $('#btn-fuente2').onclick = () => { cerrar(); abrir('ov-fuente'); };
     aplicarFuente();
 
-    /* ---------- Mini resúmenes (si no hay datos, no se muestra nada) ---------- */
-    (function resumenes() {
-      const hoy = new Date(); const pad = n => String(n).padStart(2, '0');
-      const HOY = hoy.getFullYear() + '-' + pad(hoy.getMonth() + 1) + '-' + pad(hoy.getDate());
-      const u = s => { const a = String(s).split('-').map(Number); return Date.UTC(a[0], a[1] - 1, a[2]); };
-      const dias = s => Math.round((u(s) - u(HOY)) / 864e5);
+    /* ---------- Fechas ---------- */
+    const pad = n => String(n).padStart(2, '0'), hoy = new Date();
+    const HOY = hoy.getFullYear() + '-' + pad(hoy.getMonth() + 1) + '-' + pad(hoy.getDate());
+    const u = s => { const a = String(s).split('-').map(Number); return Date.UTC(a[0], a[1] - 1, a[2]); };
+    const dias = s => Math.round((u(s) - u(HOY)) / 864e5);
+    const fechaLarga = s => new Date(u(s) + 12 * 36e5).toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+    const cuando = n => n === 0 ? 'Hoy' : n === 1 ? 'Mañana' : 'En ' + n + ' días';
 
-      // Organizador: productos por comprar (compras sin repuesto) y urgentes
-      const compras = leer('org_compras', null);
-      if (Array.isArray(compras)) {
-        let falta = 0, urg = 0;
-        compras.forEach(c => (c.items || []).forEach(p => { if (p.tieneRepuesto === 'no') { falta++; if (p.urgente) urg++; } }));
-        if (falta) mini('#m-inv', falta + (falta === 1 ? ' producto por comprar' : ' productos por comprar') + (urg ? ' · ' + urg + (urg === 1 ? ' urgente' : ' urgentes') : ''));
-      }
+    /* ---------- Próximo + los que siguen + los que conviene empezar antes ---------- */
+    // Ramos de 4 créditos de la malla: los certámenes de estos ramos se estudian con más antelación.
+    const RAMOS_PESADOS = ['matemática', 'análisis y diseño', 'inglés i', 'taller integrado', 'taller de programación'];
+    const ANTELACION = { trabajo: 7, presentacion: 5, certamen: 3 };
+    const FORMA = { certamen: 'c', trabajo: '', presentacion: 't' };
+    function antelacion(it) {
+      const k = it.kind || 'certamen', t = (it.title + ' ' + (it.summary || '')).toLowerCase();
+      if (k === 'certamen' && RAMOS_PESADOS.some(r => t.includes(r))) return 5;
+      return ANTELACION[k] ?? 3;
+    }
+    function pintarProximo() {
+      const cal = leer('estacion_cal_items_v2', []);
+      const items = (Array.isArray(cal) ? cal : []).filter(x => x && !x.checked && x.evalDate && dias(x.evalDate) >= 0).sort((a, b) => dias(a.evalDate) - dias(b.evalDate));
+      const h = $('#hero');
+      if (!items.length) { h.innerHTML = '<div class="main"><div class="lbl">Al día</div><h2>Sin evaluaciones próximas</h2><div class="meta">Aún no hay datos. Empieza por cualquier sección de abajo.</div></div>'; h.style.minHeight = '150px'; return; }
+      const p = items[0], n = dias(p.evalDate), est = leer('mallaEstado', {}), apr = Object.values(est || {}).filter(Boolean).length;
+      const fila = (it, tag, extra, urg) => { const k = it.kind || 'certamen'; return `<a class="row" href="instituto.html"><span class="sh ${FORMA[k] ?? ''}"></span><span class="tx">${esc(it.title)}<small>${extra}</small></span><span class="tag ${urg ? 'u' : ''}">${tag}</span></a>`; };
+      const despues = items.slice(1, 4).map(it => fila(it, cuando(dias(it.evalDate)), esc(fechaLarga(it.evalDate)))).join('');
+      const empezar = items.map(it => { const ini = dias(it.evalDate) - antelacion(it); return { it, ini }; })
+        .filter(x => x.ini <= 7 && ['trabajo', 'presentacion'].includes(x.it.kind || '') || (x.it.kind === 'certamen' && antelacion(x.it) >= 5 && x.ini <= 7))
+        .sort((a, b) => a.ini - b.ini).slice(0, 3)
+        .map(({ it, ini }) => fila(it, ini <= 0 ? 'Empieza ya' : 'Empieza en ' + ini + (ini === 1 ? ' día' : ' días'), 'Entrega ' + esc(fechaLarga(it.evalDate)) + ' · prepara ~' + antelacion(it) + ' días', ini <= 0)).join('');
+      h.innerHTML = `<a class="main" href="instituto.html" style="color:inherit;text-decoration:none"><div class="lbl">Próximo</div><h2>${esc(p.title)}</h2><div class="meta">${cuando(n)}${apr ? ' · ' + apr + (apr === 1 ? ' ramo aprobado' : ' ramos aprobados') : ''}</div></a>`
+        + (despues ? `<div class="lst"><div class="lbl">Siguen después</div>${despues}</div>` : '')
+        + (empezar ? `<div class="lst"><div class="lbl">Conviene empezar antes</div>${empezar}</div>` : '');
+    }
+    pintarProximo();
 
-      // Traslado: avance del equipaje
+    /* ---------- Notas importantes (misma lista de Instituto) ---------- */
+    const COL = ['#e11d48', '#eab308', '#10b981', '#3b82f6', '#8b5cf6']; let ncol = COL[1];
+    function pintarNotas() {
+      const n = leer('estacion_notas_importantes', []), l = Array.isArray(n) ? n : [];
+      const f = l.find(x => x.pin) || l[l.length - 1];
+      $('#n-k').textContent = l.length ? l.length + (l.length === 1 ? ' nota importante' : ' notas importantes') : 'Notas importantes';
+      $('#n-v').textContent = f ? f.title : 'Aún no tienes notas';
+    }
+    function pintarColores() { $('#nc').innerHTML = COL.map(c => `<button type="button" class="${c === ncol ? 'on' : ''}" style="background:${c}" data-c="${c}" aria-label="Color"></button>`).join(''); }
+    $('#nc').onclick = e => { const b = e.target.closest('[data-c]'); if (b) { ncol = b.dataset.c; pintarColores(); } };
+    $('#btn-nota').onclick = () => { $('#nt').value = ''; $('#nx').value = ''; $('#nf').checked = true; ncol = COL[1]; pintarColores(); abrir('ov-nota'); };
+    $('#ng').onclick = () => {
+      const t = $('#nt').value.trim(); if (!t) { $('#nt').focus(); return toast('Escribe un título'); }
+      const l = leer('estacion_notas_importantes', []); const arr = Array.isArray(l) ? l : [];
+      arr.push({ id: 'n' + Date.now().toString(36), ts: Date.now(), title: t, text: $('#nx').value.trim(), color: ncol, pin: $('#nf').checked });
+      try { localStorage.setItem('estacion_notas_importantes', JSON.stringify(arr)); } catch (e) { return toast('Almacenamiento lleno'); }
+      cerrar(); pintarNotas(); toast('Nota guardada en Instituto');
+    };
+
+    /* ---------- Me falta comprar ---------- */
+    function pintarCompras() {
+      const comp = leer('org_compras', []), por = {}; let n = 0;
+      (Array.isArray(comp) ? comp : []).forEach(c => (c.items || []).forEach(p => { if (p.tieneRepuesto === 'no') { n++; por[c.nombre] = (por[c.nombre] || 0) + 1; } }));
+      $('#c-v').textContent = n ? n + (n === 1 ? ' producto por reponer' : ' productos por reponer') : 'Nada por comprar';
+      $('#c-s').textContent = Object.entries(por).map(([k, v]) => k + ' (' + v + ')').join(' · ');
+      $('#c-b').textContent = n ? 'Ver lista' : 'Agregar'; $('#c-b').href = n ? 'compras.html#falta' : 'compras.html';
+      const bi = $('#b-inv'); if (n) { bi.textContent = n; bi.classList.add('on'); }
+    }
+
+    /* ---------- Insignias de la barra ---------- */
+    (function () {
       const dat = leer('estacion_detallada_data', null), cats = leer('estacion_categorias', null);
       if (dat && cats && Array.isArray(dat.renaico) && Array.isArray(cats.renaico)) {
-        const lista = dat.renaico.filter(it => { const c = cats.renaico.find(x => x.key === it.cat); return c && c.packing; });
-        if (lista.length) {
-          const ok = lista.filter(i => i.checked).length, pct = Math.round(ok / lista.length * 100);
-          mini('#m-tra', 'Equipaje ' + pct + '% · ' + ok + '/' + lista.length);
-          $('#b-tra').style.display = 'block'; $('#b-tra i').style.width = pct + '%';
-        }
+        const falta = dat.renaico.filter(it => { const c = cats.renaico.find(x => x.key === it.cat); return c && c.packing && !it.checked; }).length;
+        if (falta) { $('#b-tra').textContent = falta; $('#b-tra').classList.add('on'); }
       }
-
-      // Instituto: próxima evaluación
-      const cal = leer('estacion_cal_items_v2', []);
-      if (Array.isArray(cal)) {
-        const prox = cal.filter(x => x && !x.checked && x.evalDate && dias(x.evalDate) >= 0).sort((a, b) => dias(a.evalDate) - dias(b.evalDate))[0];
-        if (prox) { const n = dias(prox.evalDate); mini('#m-ins', 'Próximo: ' + prox.title + ' · ' + (n === 0 ? 'hoy' : n === 1 ? 'mañana' : 'en ' + n + ' días')); }
-      }
-
-      // Malla: ramos aprobados
-      const est = leer('mallaEstado', null);
-      if (est && typeof est === 'object') {
-        const n = Object.values(est).filter(Boolean).length;
-        if (n) mini('#m-mal', n + (n === 1 ? ' ramo aprobado' : ' ramos aprobados'));
-      }
+      const cal = leer('estacion_cal_items_v2', []), s = (Array.isArray(cal) ? cal : []).filter(x => x && !x.checked && x.evalDate && dias(x.evalDate) >= 0 && dias(x.evalDate) <= 7).length;
+      if (s) { $('#b-ins').textContent = s; $('#b-ins').classList.add('on'); }
     })();
 
     /* ---------- Respaldo total ---------- */
-    function pintarEstado() {
-      const t = leer('portada_ultimo_respaldo', null);
-      $('#resp-estado').textContent = t ? 'Último respaldo: ' + new Date(t).toLocaleString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + '.' : 'Último respaldo: nunca.';
-      const m = MiEspacio.uso();
-      $('#meter-i').style.width = Math.max(2, m.pct) + '%';
-      $('#meter-i').className = m.pct >= 80 ? 'w' : '';
-      $('#meter-t').textContent = 'Espacio usado en este navegador: ' + (m.bytes / 1048576).toFixed(1) + ' MB de unos 5 MB' + (m.pct >= 80 ? ' · cerca del límite: haz un respaldo y revisa las fotos.' : '.');
+    function pintarRespaldo() {
+      const t = leer('portada_ultimo_respaldo', null), d = t ? Math.floor((Date.now() - new Date(t)) / 864e5) : null;
+      const txt = t ? (d <= 0 ? 'hoy' : 'hace ' + d + (d === 1 ? ' día' : ' días')) : 'nunca', viejo = d !== null && d >= 30;
+      $('#resp-linea').textContent = 'Respaldo total · último: ' + txt; $('#resp-linea').classList.toggle('w', viejo);
+      $('#dot-resp').classList.toggle('on', viejo);
+      $('#r-est').textContent = 'Último respaldo: ' + txt; $('#r-est').style.color = viejo ? 'var(--warn)' : '';
+      const m = MiEspacio.uso(); $('#r-bar').style.width = Math.max(2, m.pct) + '%'; $('#r-bar').className = m.pct >= 80 ? 'w' : '';
+      $('#r-txt').textContent = 'Textos: ' + (m.bytes / 1048576).toFixed(1) + ' MB de unos 5 MB' + (m.pct >= 80 ? ' · cerca del límite: respalda y revisa las fotos.' : '.');
+      $('#r-rec').checked = !!leer('portada_recordar', false);
     }
-    $('#btn-resp').onclick = () => {
+    $('#resp-linea').onclick = () => { pintarRespaldo(); abrir('ov-resp'); };
+    $('#r-rec').onchange = e => { try { localStorage.setItem('portada_recordar', JSON.stringify(e.target.checked)); } catch (er) {} };
+    $('#btn-resp').onclick = async () => {
+      const nombre = 'mi-espacio-respaldo-' + MiEspacio.fechaArchivo() + '.json', obj = MiEspacio.exportar();
       try { localStorage.setItem('portada_ultimo_respaldo', JSON.stringify(new Date().toISOString())); } catch (e) {}
-      MiEspacio.descargar(MiEspacio.exportar(), 'mi-espacio-respaldo-' + MiEspacio.fechaArchivo() + '.json');
-      pintarEstado(); toast('Respaldo descargado');
+      const file = new File([JSON.stringify(obj)], nombre, { type: 'application/json' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: 'Respaldo Mi Espacio' }); } catch (e) {} }
+      else MiEspacio.descargar(obj, nombre);
+      pintarRespaldo(); toast('Respaldo listo');
     };
     $('#btn-rest').onclick = () => $('#file-rest').click();
     $('#file-rest').onchange = async e => {
       const f = e.target.files[0]; e.target.value = ''; if (!f) return;
       try {
         const datos = await MiEspacio.leerArchivo(f);
-        const n = Object.keys(datos).length;
-        if (!confirm('Se reemplazarán los datos de este dispositivo con los del archivo (' + n + ' elementos). ¿Continuar?')) return;
-        MiEspacio.aplicar(datos);
-        toast('Datos restaurados'); setTimeout(() => location.reload(), 700);
-      } catch (er) { alert('No se pudo restaurar: ' + er.message); }
+        if (!confirm('Se reemplazarán los datos de este dispositivo con los del archivo (' + Object.keys(datos).length + ' elementos). ¿Continuar?')) return;
+        MiEspacio.aplicar(datos); toast('Datos restaurados'); setTimeout(() => location.reload(), 700);
+      } catch (er) { toast('No se pudo restaurar: ' + er.message); }
     };
-    pintarEstado();
-    addEventListener('pageshow', pintarEstado);
+
+    pintarNotas(); pintarCompras(); pintarRespaldo();
+    { const t = leer('portada_ultimo_respaldo', null), r = leer('portada_recordar', false); if (r && t && Date.now() - new Date(t) >= 7 * 864e5) setTimeout(() => toast('Toca "Respaldo total" para guardar tu respaldo'), 800); }
+    addEventListener('pageshow', () => { pintarProximo(); pintarNotas(); pintarCompras(); pintarRespaldo(); });
   </script>
 </body>
 </html>
