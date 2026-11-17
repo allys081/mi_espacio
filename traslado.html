@@ -60,12 +60,12 @@
       return T;
     }
     try {
-      var t = localStorage.getItem('estacion_tema') || 'dark';
-      var d = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      var t = localStorage.getItem('app_tema') || 'auto';
+      var d = t === 'oscuro' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
       var a = localStorage.getItem('estacion_acento') || 'lila';
       var tid = estTheme(a).id;
       estApplyTheme(tid, d ? 'dark' : 'light');
-      var f = localStorage.getItem('estacion_fuente_titulos') || 'fraunces';
+      var f = localStorage.getItem('app_fuente') || localStorage.getItem('estacion_fuente_titulos') || 'fraunces';
       var F = {
         fraunces: "'Fraunces', Georgia, serif",
         jakarta: "'Plus Jakarta Sans', system-ui, sans-serif",
@@ -78,9 +78,9 @@
   </script>
 
   <!-- Ícono SVG embebido de alta resolución -->
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Mi Espacio">
   <meta name="mobile-web-app-capable" content="yes">
@@ -294,8 +294,8 @@
   
     /* ===== Mi Espacio: páginas separadas ===== */
     .bottom-nav { display: none !important; }
-    body { padding-bottom: 96px; }
-    .fab-bar { bottom: calc(18px + env(safe-area-inset-bottom)) !important; }
+    body { padding-bottom: 160px; }
+    .fab-bar { bottom: calc(88px + env(safe-area-inset-bottom)) !important; }
     .modal-overlay { align-items: flex-end; padding: 0; }
     .modal-card { max-width: 520px !important; border-radius: 22px 22px 0 0; transform: translateY(26px); padding-bottom: calc(20px + env(safe-area-inset-bottom)); max-height: 90vh; }
     .modal-overlay.active .modal-card { transform: none; }
@@ -341,14 +341,14 @@
     .col-row button { width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; }
     .col-row button.on { border-color: var(--text); }
   </style>
-  <script src="/app.js"></script>
+  <script src="app.js?v=4"></script>
 </head>
 <body>
   <div class="container">
     <!-- Barra Superior -->
     <header class="top-bar">
       <div class="top-left">
-        <a href="/" class="icon-btn" aria-label="Volver al inicio" title="Inicio" style="text-decoration:none">←</a>
+        <a href="index.html" class="icon-btn" aria-label="Volver al inicio" title="Inicio" style="text-decoration:none">←</a>
         <div class="top-titles">
           <h1 class="font-title" id="headerTitle"><span id="headerTitleText">Traslado a</span> <select class="lugar-select" id="selLugar" aria-label="Lugar de traslado"><option value="renaico">Renaico</option><option value="hualqui">Hualqui</option></select></h1>
           <p id="headerSubtitle">Resumen & detalle para no olvidar nada</p>
@@ -407,7 +407,7 @@
     <div class="estado-tabs" id="estadoTabs">
       <button id="tabPor" class="on" onclick="setEstado('por')">Por empacar</button>
       <button id="tabEmp" onclick="setEstado('emp')">Empacado</button>
-      <button id="tabQue" onclick="$('#btnCosas').click()">Quedaron</button>
+      <button id="tabQue" onclick="setEstado('que')">Quedaron</button>
     </div>
 
     <!-- Sección de Instituto con Sub-navegación (Próximo, Calendario, Apuntes) -->
@@ -768,7 +768,12 @@
     let estadoFiltro = 'por'; // Traslado: 'por' | 'emp'
     const esCal = () => institutoSubView !== 'apuntes' && institutoSubView !== 'notas';
     let searchQuery = '';
-    let openCats = { llevar_tec: true, estudio: true };
+    let openCats = {};
+    {
+      const firstRen = (catData.renaico || []).find(c => (appData.renaico || []).some(it => it.cat === c.key && !it.checked)) || (catData.renaico || [])[0];
+      if (firstRen) openCats[firstRen.key] = true;
+      openCats.estudio = true;
+    }
     let selectedDetailId = null;
     let editingId = null;
     let editingCatKey = null;
@@ -807,7 +812,7 @@
 
     let temaId = estTheme(localStorage.getItem(KEY_ACC) || 'lila').id;
     function applyTheme(themeName) {
-      try { localStorage.setItem(KEY_THEME, themeName); } catch (e) {}
+      try { localStorage.setItem('app_tema', themeName === 'dark' ? 'oscuro' : 'claro'); } catch (e) {}
       estApplyTheme(temaId, themeName);
       $('#btnThemeToggle').textContent = themeName === 'dark' ? '☀️' : '🌙';
     }
@@ -827,12 +832,12 @@
       space: "'Space Grotesk', system-ui, sans-serif"
     };
 
-    function setFont(key) {
+    function setFont(key, silent) {
       if (!FONTS[key]) key = 'fraunces';
-      localStorage.setItem(KEY_FONT, key);
+      try { localStorage.setItem(KEY_FONT, key); localStorage.setItem('app_fuente', key); } catch (e) {}
       document.documentElement.style.setProperty('--font-title', FONTS[key]);
       $$('#fontDropdown .font-btn').forEach(b => b.classList.toggle('active', b.dataset.f === key));
-      toast('Letra actualizada');
+      if (!silent) toast('Letra actualizada');
     }
 
     function renderTemas() {
@@ -849,11 +854,11 @@
       $('#temaActual').textContent = '· ' + estTheme(temaId).n;
     }
 
-    function setTema(id) {
+    function setTema(id, inicial) {
       const T = estTheme(id);
       temaId = T.id;
       localStorage.setItem(KEY_ACC, temaId);
-      applyTheme(T.m);
+      if (!inicial) applyTheme(T.m);
       renderTemas();
       if (window.__listo) toast('Tema: ' + T.n);
     }
@@ -880,8 +885,8 @@
       $('#cosasBtnTxt').textContent = `📦 Cosas que hay/quedaron en ${LUGAR_NOMBRE[lugar]}`;
       $('#btnCosas').style.display = 'none'; // ahora es la pestaña "Quedaron"
       $('#estadoTabs').style.display = isRen ? 'grid' : 'none';
-      $('#btnCatManager').style.display = (!isRen && institutoSubView !== 'apuntes') ? 'none' : '';
-      $('#fabAddTxt').textContent = isRen ? 'Agregar tarea' : (institutoSubView === 'notas' ? 'Agregar nota' : institutoSubView !== 'apuntes' ? 'Agregar evento' : 'Agregar apunte');
+      $('#btnCatManager').style.display = (isRen && estadoFiltro === 'que') || (!isRen && institutoSubView !== 'apuntes') ? 'none' : '';
+      $('#fabAddTxt').textContent = isRen ? (estadoFiltro === 'que' ? 'Agregar cosa' : 'Agregar tarea') : (institutoSubView === 'notas' ? 'Agregar nota' : institutoSubView !== 'apuntes' ? 'Agregar evento' : 'Agregar apunte');
       $('#packingCard').style.display = isRen ? 'block' : 'none';
       $('#institutoSectionView').style.display = isRen ? 'none' : 'block';
     }
@@ -1068,18 +1073,111 @@
       });
 
       $('#institutoApuntesArea').innerHTML = html || '<div style="text-align:center;padding:36px;color:var(--muted);">No hay categorías.</div>';
-      $('#mainContentArea').innerHTML = currentSection === 'renaico' ? html : '';
+      if (currentSection === 'renaico' && estadoFiltro === 'que' && !isSearching) {
+        $('#mainContentArea').innerHTML = renderCosasInline();
+      } else {
+        $('#mainContentArea').innerHTML = currentSection === 'renaico' ? html : '';
+      }
       if (currentSection === 'instituto') { renderProximo(); renderHabitos(); renderNotas(); }
       updatePackingProgress();
       updateCalendarUI();
+      if (window.MiEspacio && MiEspacio.actualizarNav) MiEspacio.actualizarNav();
     }
 
     function setEstado(e) {
       estadoFiltro = e;
       $('#tabPor').classList.toggle('on', e === 'por');
       $('#tabEmp').classList.toggle('on', e === 'emp');
+      $('#tabQue').classList.toggle('on', e === 'que');
+      aplicarCabecera();
       render();
     }
+
+    /* ---------- Cosas que quedaron en el lugar ---------- */
+    let cosaEditId = null, cosaFotoData = null;
+    function getCosasLugar() {
+      if (!cosasData || typeof cosasData !== 'object') cosasData = { renaico: [], hualqui: [] };
+      if (!Array.isArray(cosasData[lugar])) cosasData[lugar] = [];
+      return cosasData[lugar];
+    }
+    function renderCosasInline() {
+      const list = getCosasLugar();
+      if (!list.length) {
+        return `<div class="cat-accordion open"><div class="cat-header" style="cursor:default"><span class="cat-title-text font-title">📦 Quedaron en ${esc(LUGAR_NOMBRE[lugar])}</span><span class="cat-counter">0</span></div><div class="cat-content" style="display:block"><div style="font-size:0.8rem;color:var(--muted);text-align:center;padding:18px 8px;">Aún no has registrado cosas que quedaron en ${esc(LUGAR_NOMBRE[lugar])}.<br><small>Usa "＋ Agregar cosa" abajo para anotar lo que dejaste allá.</small></div></div></div>`;
+      }
+      return `<div class="cat-accordion open"><div class="cat-header" style="cursor:default"><span class="cat-title-text font-title">📦 Quedaron en ${esc(LUGAR_NOMBRE[lugar])}</span><span class="cat-counter">${list.length}</span></div><div class="cat-content" style="display:block">${list.map(c => `
+        <div class="cosa-row">
+          <div class="cosa-thumb">${c.foto ? `<img src="${c.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:11px" alt="">` : '📦'}</div>
+          <div class="cosa-info">
+            <div class="cosa-name">${esc(c.nombre)}</div>
+            ${c.ubi ? `<div class="cosa-loc">📍 ${esc(c.ubi)}</div>` : ''}
+          </div>
+          <button class="mini-btn" onclick="openCosaForm('${c.id}')">✎</button>
+          <button class="mini-btn" onclick="deleteCosa('${c.id}')">🗑</button>
+        </div>`).join('')}</div></div>`;
+    }
+    function updateCosaPhotoPreview() {
+      const box = $('#cosaPbox'); if (!box) return;
+      const img = box.querySelector('img'), sp = box.querySelector('span'), rm = $('#cosaRm');
+      if (cosaFotoData) { img.src = cosaFotoData; img.style.display = 'block'; sp.style.display = 'none'; rm.style.display = 'grid'; }
+      else { img.removeAttribute('src'); img.style.display = 'none'; sp.style.display = 'block'; rm.style.display = 'none'; }
+    }
+    function openCosaForm(id) {
+      const list = getCosasLugar();
+      const c = id ? list.find(x => x.id === id) : null;
+      cosaEditId = c ? c.id : null;
+      cosaFotoData = c ? (c.foto || null) : null;
+      $('#cosaFormTitle').textContent = c ? 'Editar cosa' : 'Nueva cosa en ' + LUGAR_NOMBRE[lugar];
+      $('#cosaNombre').value = c ? c.nombre : '';
+      $('#cosaUbi').value = c ? (c.ubi || '') : '';
+      updateCosaPhotoPreview();
+      $('#modalCosaForm').classList.add('active');
+      setTimeout(() => $('#cosaNombre').focus(), 120);
+    }
+    function deleteCosa(id) {
+      if (!confirm('¿Eliminar este objeto de la lista?')) return;
+      cosasData[lugar] = getCosasLugar().filter(x => x.id !== id);
+      saveAll(); render(); toast('Eliminado');
+    }
+    if ($('#btnCosaCam')) $('#btnCosaCam').onclick = () => $('#cosaFileCam').click();
+    if ($('#btnCosaGal')) $('#btnCosaGal').onclick = () => $('#cosaFileGal').click();
+    if ($('#cosaRm')) $('#cosaRm').onclick = () => { cosaFotoData = null; updateCosaPhotoPreview(); };
+    ['#cosaFileCam', '#cosaFileGal'].forEach(sel => {
+      const inp = $(sel);
+      if (inp) inp.onchange = e => {
+        const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+        const r = new FileReader();
+        r.onload = ev => {
+          const im = new Image();
+          im.onload = () => {
+            const k = Math.min(1, 480 / Math.max(im.width, im.height));
+            const cv = document.createElement('canvas'); cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+            cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+            cosaFotoData = cv.toDataURL('image/jpeg', 0.65);
+            updateCosaPhotoPreview();
+          };
+          im.src = ev.target.result;
+        };
+        r.readAsDataURL(f);
+      };
+    });
+    if ($('#btnSaveCosa')) $('#btnSaveCosa').onclick = () => {
+      const nombre = $('#cosaNombre').value.trim();
+      if (!nombre) return alert('Escribe el nombre del objeto');
+      const ubi = $('#cosaUbi').value.trim();
+      const list = getCosasLugar();
+      if (cosaEditId) {
+        const c = list.find(x => x.id === cosaEditId);
+        if (c) { c.nombre = nombre; c.ubi = ubi; c.foto = cosaFotoData; }
+      } else {
+        list.unshift({ id: 'cs_' + Date.now().toString(36), nombre, ubi, foto: cosaFotoData });
+      }
+      saveAll(); $('#modalCosaForm').classList.remove('active'); render(); toast('Guardado');
+    };
+    document.addEventListener('click', e => {
+      if (e.target.closest('[data-close-cosa]')) $('#modalCosaForm').classList.remove('active');
+      if (e.target.closest('[data-close-cat]')) $('#modalCategory').classList.remove('active');
+    });
 
     /* ---------- Instituto · Próximo ---------- */
     const KIND_NOM = { certamen: 'Certamen', trabajo: 'Trabajo', presentacion: 'Presentación', tarea: 'Tarea' };
@@ -1295,7 +1393,11 @@
       setTimeout(() => $('#inpTitle').focus(), 150);
     }
 
-    $('#btnFabAdd').onclick = () => (currentSection === 'instituto' && institutoSubView === 'notas') ? openNotaForm() : openAddTaskModal();
+    $('#btnFabAdd').onclick = () => {
+      if (currentSection === 'renaico' && estadoFiltro === 'que') return openCosaForm();
+      if (currentSection === 'instituto' && institutoSubView === 'notas') return openNotaForm();
+      return openAddTaskModal();
+    };
 
     /* ===== Notas importantes (Instituto) ===== */
     const KEY_NOTAS = 'estacion_notas_importantes';
@@ -1451,9 +1553,9 @@
     };
     addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
 
-    applyTheme(localStorage.getItem(KEY_THEME) === 'light' ? 'light' : 'dark');
-    setFont(localStorage.getItem(KEY_FONT) || 'fraunces');
-    setTema(temaId);
+    applyTheme((function(){var t=localStorage.getItem('app_tema')||'auto';return (t==='oscuro'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'dark':'light';})());
+    setFont(localStorage.getItem('app_fuente') || localStorage.getItem(KEY_FONT) || 'fraunces', true);
+    setTema(temaId, true);
     switchSection(PAGE);
     if (PAGE === 'instituto') switchInstitutoSub('prox');
     window.__listo = true;

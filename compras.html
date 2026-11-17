@@ -5,16 +5,16 @@
   <title>Reposición & Compras</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#14121a">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Organizador">
   <script>
     /* Prevención de parpadeo de tema y color de acento */
     try {
-      var t = localStorage.getItem('app_tema') || 'oscuro';
+      var t = localStorage.getItem('app_tema') || 'auto';
       var d = t === 'oscuro' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.dataset.theme = d ? 'dark' : 'light';
       var a = localStorage.getItem('color_compras') || 'rosa';
@@ -864,7 +864,7 @@
     .toast {
       position: fixed;
       left: 50%;
-      bottom: calc(24px + env(safe-area-inset-bottom));
+      bottom: calc(92px + env(safe-area-inset-bottom));
       transform: translate(-50%, 20px);
       opacity: 0;
       pointer-events: none;
@@ -884,7 +884,7 @@
     .menu { max-height: 75vh; overflow-y: auto; min-width: 230px; }
     .menu .font-btn.on { background: var(--p-soft); color: var(--p); }
   </style>
-  <script src="/app.js"></script>
+  <script src="app.js?v=4"></script>
 </head>
 <body>
   <div class="container">
@@ -2210,7 +2210,7 @@
 
     /* Cambios de tema y acento */
     const mq = matchMedia('(prefers-color-scheme: dark)');
-    const temaPref = () => { try { return localStorage.getItem('app_tema') || 'oscuro'; } catch(e){ return 'oscuro'; } };
+    const temaPref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch(e){ return 'oscuro'; } };
     const oscuro = () => temaPref() === 'oscuro' || (temaPref() === 'auto' && mq.matches);
 
     function aplicarTema() {

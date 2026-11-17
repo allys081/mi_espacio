@@ -60,12 +60,12 @@
       return T;
     }
     try {
-      var t = localStorage.getItem('estacion_tema') || 'dark';
-      var d = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      var t = localStorage.getItem('app_tema') || 'auto';
+      var d = t === 'oscuro' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
       var a = localStorage.getItem('estacion_acento') || 'lila';
       var tid = estTheme(a).id;
       estApplyTheme(tid, d ? 'dark' : 'light');
-      var f = localStorage.getItem('estacion_fuente_titulos') || 'fraunces';
+      var f = localStorage.getItem('app_fuente') || localStorage.getItem('estacion_fuente_titulos') || 'fraunces';
       var F = {
         fraunces: "'Fraunces', Georgia, serif",
         jakarta: "'Plus Jakarta Sans', system-ui, sans-serif",
@@ -78,9 +78,9 @@
   </script>
 
   <!-- Ícono SVG embebido de alta resolución -->
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Mi Espacio">
   <meta name="mobile-web-app-capable" content="yes">
@@ -294,8 +294,8 @@
   
     /* ===== Mi Espacio: páginas separadas ===== */
     .bottom-nav { display: none !important; }
-    body { padding-bottom: 96px; }
-    .fab-bar { bottom: calc(18px + env(safe-area-inset-bottom)) !important; }
+    body { padding-bottom: 160px; }
+    .fab-bar { bottom: calc(88px + env(safe-area-inset-bottom)) !important; }
     .modal-overlay { align-items: flex-end; padding: 0; }
     .modal-card { max-width: 520px !important; border-radius: 22px 22px 0 0; transform: translateY(26px); padding-bottom: calc(20px + env(safe-area-inset-bottom)); max-height: 90vh; }
     .modal-overlay.active .modal-card { transform: none; }
@@ -341,14 +341,14 @@
     .col-row button { width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; }
     .col-row button.on { border-color: var(--text); }
   </style>
-  <script src="/app.js"></script>
+  <script src="app.js?v=4"></script>
 </head>
 <body>
   <div class="container">
     <!-- Barra Superior -->
     <header class="top-bar">
       <div class="top-left">
-        <a href="/" class="icon-btn" aria-label="Volver al inicio" title="Inicio" style="text-decoration:none">←</a>
+        <a href="index.html" class="icon-btn" aria-label="Volver al inicio" title="Inicio" style="text-decoration:none">←</a>
         <div class="top-titles">
           <h1 class="font-title" id="headerTitle"><span id="headerTitleText">Traslado a</span> <select class="lugar-select" id="selLugar" aria-label="Lugar de traslado"><option value="renaico">Renaico</option><option value="hualqui">Hualqui</option></select></h1>
           <p id="headerSubtitle">Resumen & detalle para no olvidar nada</p>
@@ -807,7 +807,7 @@
 
     let temaId = estTheme(localStorage.getItem(KEY_ACC) || 'lila').id;
     function applyTheme(themeName) {
-      try { localStorage.setItem(KEY_THEME, themeName); } catch (e) {}
+      try { localStorage.setItem('app_tema', themeName === 'dark' ? 'oscuro' : 'claro'); } catch (e) {}
       estApplyTheme(temaId, themeName);
       $('#btnThemeToggle').textContent = themeName === 'dark' ? '☀️' : '🌙';
     }
@@ -827,12 +827,12 @@
       space: "'Space Grotesk', system-ui, sans-serif"
     };
 
-    function setFont(key) {
+    function setFont(key, silent) {
       if (!FONTS[key]) key = 'fraunces';
-      localStorage.setItem(KEY_FONT, key);
+      try { localStorage.setItem(KEY_FONT, key); localStorage.setItem('app_fuente', key); } catch (e) {}
       document.documentElement.style.setProperty('--font-title', FONTS[key]);
       $$('#fontDropdown .font-btn').forEach(b => b.classList.toggle('active', b.dataset.f === key));
-      toast('Letra actualizada');
+      if (!silent) toast('Letra actualizada');
     }
 
     function renderTemas() {
@@ -849,11 +849,11 @@
       $('#temaActual').textContent = '· ' + estTheme(temaId).n;
     }
 
-    function setTema(id) {
+    function setTema(id, inicial) {
       const T = estTheme(id);
       temaId = T.id;
       localStorage.setItem(KEY_ACC, temaId);
-      applyTheme(T.m);
+      if (!inicial) applyTheme(T.m);
       renderTemas();
       if (window.__listo) toast('Tema: ' + T.n);
     }
@@ -1451,9 +1451,9 @@
     };
     addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
 
-    applyTheme(localStorage.getItem(KEY_THEME) === 'light' ? 'light' : 'dark');
-    setFont(localStorage.getItem(KEY_FONT) || 'fraunces');
-    setTema(temaId);
+    applyTheme((function(){var t=localStorage.getItem('app_tema')||'auto';return (t==='oscuro'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'dark':'light';})());
+    setFont(localStorage.getItem('app_fuente') || localStorage.getItem(KEY_FONT) || 'fraunces', true);
+    setTema(temaId, true);
     switchSection(PAGE);
     if (PAGE === 'instituto') switchInstitutoSub('prox');
     window.__listo = true;
