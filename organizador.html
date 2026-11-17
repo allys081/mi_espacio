@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Mi Organizador Personal</title>
+  <title>Mi Organizador · Mi Espacio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#fbf5ee">
   <link rel="manifest" href="manifest.webmanifest">
@@ -17,188 +17,384 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Fira+Sans:wght@500;600;700&family=Chivo:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{color-scheme:light;--bg1:#f3e6dc;--bg2:#fbf5ee;--card:#fffdf9;--border:#eadfd2;--text:#3b2a22;--title:#3b2a22;--muted:#7a685d;--arrow:#cdbfae;--badge-bg:#f6e1d6;--badge-ink:#c4623f;--hover-line:#cdbff2;--hover-glow:rgba(124,92,214,.12);--i-cajas:#ece6fb;--i-cajas-l:#cdbff2;--i-compras:#fbe1ec;--i-compras-l:#f0b6cf;--i-ahorros:#d9f0ea;--i-ahorros-l:#a8d9cd;--g1:#7c5cd6;--g2:#c2417a;--bg:#fbf5ee;--soft:#f6efe6;--hover:#eadfd2;--badge:#f1e8dd;--f0:#c4623f;--f1:#5f8f7a;--f2:#8a6fb0;--f3:#b98524;--f4:#4f7fb5;--f5:#b9567a;--f6:#6f8f3d;--f7:#a0675a;--serif:'Fraunces','Lora',Georgia,serif;--shadow:0 1px 2px rgba(80,50,30,.06),0 6px 18px rgba(80,50,30,.06)}
-    [data-theme=dark]{color-scheme:dark;--bg1:#1d1930;--bg2:#14121a;--card:#1e1b27;--border:#2d2939;--text:#efeaf7;--title:#efeaf7;--muted:#a39cb3;--arrow:#5b5470;--badge-bg:#2b2445;--badge-ink:#c4b5fd;--hover-line:#4c3f7a;--hover-glow:rgba(167,139,250,.14);--i-cajas:#2b2445;--i-cajas-l:#4c3f7a;--i-compras:#3a1d2e;--i-compras-l:#5b2a45;--i-ahorros:rgba(52,211,153,.14);--i-ahorros-l:rgba(52,211,153,.35);--g1:#a78bfa;--g2:#f472b6;--f0:#f0916d;--f1:#5eead4;--f2:#c4b5fd;--f3:#fcd34d;--f4:#7cb7ff;--f5:#f9a8d4;--f6:#bef264;--f7:#fdba74;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25)}
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-    html, body { position: static; height: auto; min-height: 100dvh; overflow: auto; overscroll-behavior: auto; }
-    body {
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-      background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 100%);
-      color: var(--text);
-      display: block;
-      padding: calc(16px + env(safe-area-inset-top)) 16px calc(104px + env(safe-area-inset-bottom));
-    }
-    .wrap { max-width: 440px; margin: 0 auto; }
-    .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-    .hd a.back, .hd button { height: 38px; min-width: 38px; border-radius: 12px; background: var(--card); border: 1.5px solid var(--border); color: var(--text); font-size: 1rem; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
-    .hd h1 { flex: 1; min-width: 0; font-family: var(--serif); font-size: 1.35rem; font-weight: 700; margin: 0; text-align: left; color: var(--title); }
-    .hd .btn-fuente { font-family: var(--serif); padding: 0 10px; font-size: .95rem; }
-    .hd .btn-tema { padding: 0 10px; font-size: 1.05rem; }
-    .menu-f { position: fixed; top: calc(60px + env(safe-area-inset-top)); right: 16px; z-index: 50; min-width: 220px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); padding: 6px; display: none; }
-    .menu-f.open { display: block; }
-    .menu-f .t { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 8px 12px 4px; }
-    .menu-f button { display: block; width: 100%; text-align: left; padding: 11px 12px; border: 0; background: none; border-radius: 10px; font-size: .95rem; font-weight: 700; color: var(--text); cursor: pointer; }
-    .menu-f button.on { background: var(--badge-bg); color: var(--badge-ink); }
-    .busca { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font: 600 .92rem 'Plus Jakarta Sans', system-ui, sans-serif; margin-bottom: 12px; outline: none; }
-    .busca:focus { border-color: var(--g1); }
-    .res { width: 100%; text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 6px; margin-bottom: 16px; }
-    .res a { display: block; text-decoration: none; color: inherit; padding: 10px 12px; border-radius: 10px; }
-    .res a:active { background: var(--badge-bg); }
-    .res b { display: block; font-size: .9rem; }
-    .res small { color: var(--muted); font-size: .75rem; }
-    .res .vacio { padding: 12px; color: var(--muted); font-size: .85rem; }
-    .alerta { background: #fdeae4; border: 1px solid #f3c5b6; color: #a8431f; border-radius: 14px; padding: 12px 14px; font-size: .86rem; font-weight: 700; line-height: 1.4; margin-bottom: 16px; }
-    [data-theme=dark] .alerta { background: #3a2026; border-color: #5b2f38; color: #f5a58a; }
-    .alerta.ok { background: var(--i-ahorros); border-color: var(--i-ahorros-l); color: #2f7d5f; }
-    .sec-t { font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 4px 2px 8px; }
-    .esp { display: flex; flex-direction: column; gap: 10px; }
-    .esp a { position: relative; overflow: hidden; display: flex; align-items: center; gap: 12px; padding: 13px 14px 13px 18px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); text-decoration: none; color: inherit; }
-    .esp a:active { transform: scale(.98); }
-    .esp a::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--c); }
-    .esp .ib { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.25rem; flex: none; }
-    .icon-cajas   { background: var(--i-cajas);   border: 1px solid var(--i-cajas-l); }
-    .icon-compras { background: var(--i-compras); border: 1px solid var(--i-compras-l); }
-    .icon-ahorros { background: var(--i-ahorros); border: 1px solid var(--i-ahorros-l); }
-    .esp .tx { flex: 1; min-width: 0; }
-    .esp .tt { font-family: var(--serif); font-weight: 700; font-size: 1rem; }
-    .esp .ss { font-size: .78rem; color: var(--muted); margin-top: 2px; line-height: 1.35; }
-    .esp .ch { color: var(--arrow); font-size: 1.3rem; font-weight: 700; }
-    .esp .monto { font-family: var(--serif); font-weight: 700; font-size: 1.05rem; color: #2f7d5f; white-space: nowrap; }
-    [data-theme=dark] .esp .monto { color: #5ed3a4; }
-    .barra { height: 6px; border-radius: 99px; background: var(--badge-bg); margin-top: 8px; overflow: hidden; }
-    .barra i { display: block; height: 100%; background: var(--f5); border-radius: 99px; }
-    .pie { text-align: center; font-size: .78rem; color: var(--muted); margin-top: 22px; }
-    .pie a, .pie button { color: var(--f0); font-weight: 800; background: none; border: 0; font: inherit; font-weight: 800; cursor: pointer; text-decoration: none; }
+    :root{color-scheme:light;--bg1:#f3e6dc;--bg2:#fbf5ee;--card:#fffdf9;--border:#eadfd2;--text:#3b2a22;--title:#3b2a22;--muted:#7a685d;--soft:#f6efe6;--arrow:#b8a898;--g1:#7c5cd6;--g2:#c2417a;--ok:#2f8a76;--warn:#c4623f;--i-cajas:#ece6fb;--i-cajas-c:#7c5cd6;--i-compras:#fbe1ec;--i-compras-c:#c2417a;--i-ahorros:#d9f0ea;--i-ahorros-c:#2f8a76;--serif:'Fraunces',Georgia,serif;--shadow:0 1px 2px rgba(80,50,30,.06),0 6px 18px rgba(80,50,30,.06)}
+    [data-theme=dark]{color-scheme:dark;--bg1:#1d1930;--bg2:#14121a;--card:#1e1b27;--border:#2d2939;--text:#efeaf7;--title:#efeaf7;--muted:#a39cb3;--soft:#26222f;--arrow:#6e6685;--g1:#a78bfa;--g2:#f472b6;--ok:#34d399;--warn:#f0916d;--i-cajas:#2b2445;--i-cajas-c:#c4b5fd;--i-compras:#3a1d2e;--i-compras-c:#f472b6;--i-ahorros:rgba(52,211,153,.14);--i-ahorros-c:#5eead4;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+    html,body{min-height:100dvh}
+    body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:radial-gradient(circle at top,var(--bg1) 0%,var(--bg2) 100%);color:var(--text);padding:calc(12px + env(safe-area-inset-top)) 16px calc(92px + env(safe-area-inset-bottom)) !important;display:flex;flex-direction:column}
+    .wrap{width:100%;max-width:440px;margin:0 auto;flex:1;display:flex;flex-direction:column;min-height:0}
+    svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+    .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+    .hd h1{font-family:var(--serif);font-size:1.55rem;font-weight:700;color:var(--title);letter-spacing:-.3px}
+    .ibtns{display:flex;gap:8px;position:relative}
+    .ibtn{width:44px;height:44px;border-radius:14px;background:var(--card);border:1.5px solid var(--border);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font:800 .95rem var(--serif);position:relative}
+    .ibtn .dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--warn);display:none}
+    .ibtn .dot.on{display:block}
+    .search-wrap{position:relative;margin-bottom:12px}
+    .search-box{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:15px;padding:0 12px;height:46px;box-shadow:var(--shadow)}
+    .search-box:focus-within{border-color:var(--g1)}
+    .search-box svg{color:var(--muted)}
+    .busca{flex:1;min-width:0;border:0;background:none;color:var(--text);font:600 .9rem 'Plus Jakarta Sans',system-ui,sans-serif;outline:none}
+    .busca::placeholder{color:var(--muted);font-weight:500}
+    .btn-clr{width:30px;height:30px;border:0;background:none;color:var(--muted);cursor:pointer;display:none;place-items:center;border-radius:8px}
+    .sec-t{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:2px 2px 8px}
+    /* Tres tarjetas grandes que llenan la pantalla */
+    .esp{flex:1;display:flex;flex-direction:column;gap:12px;justify-content:space-between}
+    .card-esp{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:16px 16px 16px 20px;background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);text-decoration:none;color:inherit;cursor:pointer;transition:transform .14s ease}
+    .card-esp:active{transform:scale(.985)}
+    .card-esp::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+    .ce-top{display:flex;align-items:center;gap:12px}
+    .ce-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex-shrink:0}
+    .ce-ic.cajas{background:var(--i-cajas);color:var(--i-cajas-c)}
+    .ce-ic.compras{background:var(--i-compras);color:var(--i-compras-c)}
+    .ce-ic.ahorros{background:var(--i-ahorros);color:var(--i-ahorros-c)}
+    .ce-tx{flex:1;min-width:0}
+    .ce-tt{font-family:var(--serif);font-weight:700;font-size:1.12rem;line-height:1.2}
+    .ce-ss{font-size:.78rem;color:var(--muted);margin-top:2px}
+    .ce-ch{color:var(--arrow);font-size:1.25rem;font-weight:700}
+    .ce-mid{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+    .big-stats{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+    .big-stat b{font-family:var(--serif);font-size:1.45rem;font-weight:700;color:var(--text);margin-right:4px}
+    .big-stat span{font-size:.82rem;color:var(--muted);font-weight:600}
+    .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .pill{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--soft);border:1px solid var(--border);color:var(--muted)}
+    .barra{height:6px;border-radius:99px;background:var(--soft);margin:8px 0 6px;overflow:hidden}
+    .barra i{display:block;height:100%;background:linear-gradient(90deg,var(--g1),var(--g2));border-radius:99px}
+    .ah-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+    .ah-val{display:flex;align-items:center;gap:8px}
+    .ah-monto{font-family:var(--serif);font-weight:700;font-size:1.55rem;color:var(--ok);line-height:1.1}
+    .btn-eye{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--soft);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+    .ah-sub{font-size:.75rem;color:var(--muted);margin-top:3px}
+    .btn-add-quick{min-height:42px;padding:0 16px;border-radius:13px;border:0;background:var(--g1);color:#fff;font:800 .84rem 'Plus Jakarta Sans',system-ui,sans-serif;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap}
+    [data-theme=dark] .btn-add-quick{color:#14121a}
+    /* Panel de búsqueda (recientes y resultados agrupados) */
+    .search-panel{display:none;flex:1;flex-direction:column;gap:12px}
+    .search-panel.on{display:flex}
+    .esp.hide{display:none}
+    .sec-t.hide{display:none}
+    .rec-list,.grp-list{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+    .rec-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer}
+    .rec-item:last-child{border-bottom:0}
+    .rec-item span{flex:1;font-weight:600;font-size:.9rem}
+    .rec-item button{width:32px;height:32px;border:0;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:8px}
+    .res-item{display:block;padding:12px 14px;border-bottom:1px solid var(--border);text-decoration:none;color:inherit}
+    .res-item:last-child{border-bottom:0}
+    .res-item b{display:block;font-size:.92rem;font-weight:700}
+    .res-item small{display:block;font-size:.76rem;color:var(--muted);margin-top:2px}
+    .res-item mark{background:color-mix(in srgb,var(--g1) 28%,transparent);color:inherit;border-radius:4px;padding:0 2px}
+    .res-empty{padding:12px 14px;font-size:.82rem;color:var(--muted)}
+    /* Ventanas emergentes en medio */
+    .ov{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.58);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px}
+    .ov.open{display:flex}
+    .dlg{width:100%;max-width:380px;max-height:88dvh;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+    .dlg h3{font-family:var(--serif);font-size:1.15rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+    .dlg h3 button{width:44px;height:44px;margin:-8px -8px -8px 0;border:0;background:none;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+    .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:8px 12px;margin-bottom:8px;border-radius:14px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .88rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-align:left;text-decoration:none}
+    .opt.on{border-color:var(--g1);background:color-mix(in srgb,var(--g1) 12%,var(--soft))}
+    .opt .sw{width:26px;height:26px;border-radius:8px;border:1px solid var(--border);flex-shrink:0}
+    .opt .sw.auto{background:linear-gradient(90deg,#fbf5ee 50%,#14121a 50%)}
+    .opt .sw.claro{background:#fbf5ee}
+    .opt .sw.oscuro{background:#14121a}
+    .opt .tx{flex:1;min-width:0}
+    .opt small{display:block;font-weight:500;color:var(--muted);font-size:.72rem;margin-top:1px}
+    .opt .rad{width:20px;height:20px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;flex-shrink:0}
+    .opt.on .rad{border-color:var(--g1)}
+    .opt.on .rad::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--g1)}
+    .note{font-size:.76rem;color:var(--muted);line-height:1.45}
   </style>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </head>
 <body>
 <div class="wrap">
   <div class="hd">
-    <a class="back" href="index.html" aria-label="Volver a Mi Espacio">←</a>
     <h1>Mi Organizador</h1>
-    <button class="btn-fuente" id="btn-fuente" aria-label="Cambiar la letra de los títulos">Aa</button>
-    <button class="btn-tema" id="btn-tema" aria-label="Cambiar entre modo claro y oscuro"></button>
-  </div>
-  <div class="menu-f" id="menu-f"><div class="t">Letra de los títulos</div><button data-f="fraunces" style="font-family:'Fraunces',Georgia,serif">Fraunces (la de ahora)</button><button data-f="jakarta" style="font-family:'Plus Jakarta Sans',system-ui,sans-serif">Plus Jakarta (sin serif)</button><button data-f="fira" style="font-family:'Fira Sans',system-ui,sans-serif">Fira Sans</button><button data-f="chivo" style="font-family:'Chivo',system-ui,sans-serif">Chivo</button><button data-f="space" style="font-family:'Space Grotesk',system-ui,sans-serif">Space Grotesk</button></div>
-
-  <input class="busca" id="q" type="search" placeholder="Buscar en todo: objeto, producto, caja…" autocomplete="off" aria-label="Buscar en todo el organizador">
-  <div class="res" id="res" hidden></div>
-
-  <div class="alerta" id="alerta" hidden></div>
-
-  <div class="sec-t">Tus espacios</div>
-  <div class="esp">
-    <a href="cajas.html" style="--c:var(--f2)">
-      <div class="ib icon-cajas">📦</div>
-      <div class="tx"><div class="tt">Cajas y Espacios</div><div class="ss" id="d-cajas">Cajas, cajones y objetos con fotos</div></div>
-      <div class="ch">›</div>
-    </a>
-    <a href="compras.html" style="--c:var(--f5)">
-      <div class="ib icon-compras">🛍️</div>
-      <div class="tx"><div class="tt">Reposición y Compras</div><div class="ss" id="d-compras">Higiene, skincare, stock y lugares</div>
-        <div class="barra" id="barra" hidden><i></i></div><div class="ss" id="d-stock" hidden></div></div>
-      <div class="ch">›</div>
-    </a>
-    <a href="ahorros.html" style="--c:var(--f1)">
-      <div class="ib icon-ahorros">💰</div>
-      <div class="tx"><div class="tt">Ahorros</div><div class="ss">Total ahorrado</div></div>
-      <div class="monto" id="d-ahorros">$ 0</div>
-    </a>
+    <div class="ibtns">
+      <button class="ibtn" id="btn-fuente" aria-label="Letra de los títulos">Aa</button>
+      <button class="ibtn" id="btn-tema" aria-label="Cambiar tema"><svg class="i"><use href="#i-tema"/></svg><span class="dot" id="dot-resp"></span></button>
+    </div>
   </div>
 
-  <p class="pie" id="pie"></p>
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg class="i" style="width:18px;height:18px"><use href="#i-search"/></svg>
+      <input class="busca" id="q" type="text" placeholder="Buscar en todo: objeto, producto, caja…" autocomplete="off" aria-label="Buscar en todo el organizador">
+      <button class="btn-clr" id="btn-clr" aria-label="Limpiar búsqueda"><svg class="i" style="width:16px;height:16px"><use href="#i-x"/></svg></button>
+    </div>
+  </div>
+
+  <!-- Panel de búsquedas recientes / resultados agrupados -->
+  <div class="search-panel" id="search-panel"></div>
+
+  <div class="sec-t" id="lbl-esp">Tus espacios</div>
+  <div class="esp" id="box-esp">
+    <!-- 1. Cajas y Espacios -->
+    <a class="card-esp" href="cajas.html" style="--c:var(--g1)">
+      <div class="ce-top">
+        <div class="ce-ic cajas"><svg class="i"><use href="#i-box"/></svg></div>
+        <div class="ce-tx"><div class="ce-tt">Cajas y Espacios</div><div class="ce-ss">Cajas, cajones y objetos con foto</div></div>
+        <div class="ce-ch">›</div>
+      </div>
+      <div class="ce-mid">
+        <div class="big-stats" id="st-cajas"><span class="big-stat"><b>0</b><span>cajas</span></span><span class="big-stat"><b>0</b><span>objetos</span></span></div>
+        <div class="pills" id="pills-ubis"></div>
+      </div>
+    </a>
+
+    <!-- 2. Reposición y Compras -->
+    <a class="card-esp" href="compras.html" style="--c:var(--g2)">
+      <div class="ce-top">
+        <div class="ce-ic compras"><svg class="i"><use href="#i-bag"/></svg></div>
+        <div class="ce-tx"><div class="ce-tt">Reposición y Compras</div><div class="ce-ss">Higiene, skincare, stock y lugares</div></div>
+        <div class="ce-ch">›</div>
+      </div>
+      <div class="ce-mid">
+        <div class="big-stats" id="st-compras"><span class="big-stat"><b>0</b><span>por comprar</span></span><span class="big-stat"><b>0</b><span>urgentes</span></span></div>
+        <div class="barra"><i id="bar-stock" style="width:100%"></i></div>
+        <div class="ce-ss" id="txt-stock">100% del stock al día</div>
+      </div>
+    </a>
+
+    <!-- 3. Ahorros -->
+    <div class="card-esp" id="card-ahorros" style="--c:var(--ok)">
+      <div class="ce-top">
+        <div class="ce-ic ahorros"><svg class="i"><use href="#i-coin"/></svg></div>
+        <div class="ce-tx"><div class="ce-tt">Ahorros</div><div class="ce-ss">Metas, saldo y reglas de retiro</div></div>
+        <div class="ce-ch">›</div>
+      </div>
+      <div class="ah-row">
+        <div>
+          <div class="ah-val">
+            <span class="ah-monto" id="d-ahorros">$0</span>
+            <button type="button" class="btn-eye" id="btn-eye" aria-label="Ocultar o mostrar monto"><svg class="i" style="width:18px;height:18px"><use id="use-eye" href="#i-eye"/></svg></button>
+          </div>
+          <div class="ah-sub" id="s-ahorros">en 0 cajas</div>
+        </div>
+        <button type="button" class="btn-add-quick" id="btn-agregar">+ Agregar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-  <script>
-    const btn = document.getElementById('btn-tema');
-    const mq = matchMedia('(prefers-color-scheme: dark)');
-    const pref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch (e) { return 'auto'; } };
-    const oscuro = () => pref() === 'oscuro' || (pref() === 'auto' && mq.matches);
-    function aplicar() {
-      document.documentElement.dataset.theme = oscuro() ? 'dark' : 'light';
-      btn.textContent = oscuro() ? '☀️' : '🌙';
-      const m = document.querySelector('meta[name=theme-color]');
-      if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim();
-    }
-    btn.onclick = () => { try { localStorage.setItem('app_tema', oscuro() ? 'claro' : 'oscuro'); } catch (e) {} aplicar(); };
-    if (mq.addEventListener) mq.addEventListener('change', aplicar);
-    aplicar();
-    const FUENTES = {fraunces:"'Fraunces',Georgia,serif",jakarta:"'Plus Jakarta Sans',system-ui,sans-serif",fira:"'Fira Sans',system-ui,sans-serif",chivo:"'Chivo',system-ui,sans-serif",space:"'Space Grotesk',system-ui,sans-serif"};
-    function aplicarFuente() {
-      let f = 'fraunces'; try { f = localStorage.getItem('app_fuente') || localStorage.getItem('estacion_fuente_titulos') || 'fraunces'; } catch (e) {}
-      if (!FUENTES[f]) f = 'fraunces';
-      document.documentElement.style.setProperty('--serif', FUENTES[f]);
-      document.querySelectorAll('#menu-f button').forEach(b => b.classList.toggle('on', b.dataset.f === f));
-    }
-    document.getElementById('btn-fuente').onclick = e => { e.stopPropagation(); document.getElementById('menu-f').classList.toggle('open'); };
-    document.getElementById('menu-f').onclick = e => { e.stopPropagation(); const b = e.target.closest('button'); if (!b) return; try { localStorage.setItem('app_fuente', b.dataset.f); localStorage.setItem('estacion_fuente_titulos', b.dataset.f); } catch (er) {} aplicarFuente(); };
-    document.addEventListener('click', () => document.getElementById('menu-f').classList.remove('open'));
-    aplicarFuente();
-  </script>
-  <script>
-  (function () {
-    const leer = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
-    const norm = x => String(x ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-    const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const money = n => '$ ' + Math.round(n || 0).toLocaleString('es-CL');
-    const cajas = leer('org_cajas', null), compras = leer('org_compras', null), ahorros = leer('org_ahorros', null);
-    const $ = id => document.getElementById(id);
+<!-- Modal: ¿Qué quieres agregar? -->
+<div class="ov" id="ov-add"><div class="dlg">
+  <h3>¿Qué quieres agregar? <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
+  <a class="opt" href="cajas.html#nuevo-obj"><span class="ce-ic cajas" style="width:36px;height:36px;border-radius:10px"><svg class="i"><use href="#i-box"/></svg></span><span class="tx">Objeto en una caja<small>Guardar en Cajas y Espacios</small></span><span style="color:var(--muted)">›</span></a>
+  <a class="opt" href="compras.html#nuevo-prod"><span class="ce-ic compras" style="width:36px;height:36px;border-radius:10px"><svg class="i"><use href="#i-bag"/></svg></span><span class="tx">Producto por comprar<small>Guardar en Reposición y Compras</small></span><span style="color:var(--muted)">›</span></a>
+  <a class="opt" href="ahorros.html#nuevo-mov"><span class="ce-ic ahorros" style="width:36px;height:36px;border-radius:10px"><svg class="i"><use href="#i-coin"/></svg></span><span class="tx">Movimiento de ahorro<small>Ingresar o retirar en Ahorros</small></span><span style="color:var(--muted)">›</span></a>
+</div></div>
 
-    if (Array.isArray(cajas) && cajas.length) {
-      const objs = cajas.reduce((n, c) => n + ((c.items || []).length), 0);
-      $('d-cajas').textContent = cajas.length + (cajas.length === 1 ? ' caja' : ' cajas') + ' · ' + objs + (objs === 1 ? ' objeto' : ' objetos');
-    }
-    let total = 0, falta = 0, urg = 0, porCat = [];
-    if (Array.isArray(compras)) {
-      compras.forEach(c => {
-        let f = 0;
-        (c.items || []).forEach(p => { total++; if (p.tieneRepuesto === 'no') { falta++; f++; if (p.urgente) urg++; } });
-        if (f) porCat.push(c.nombre + ' (' + f + ')');
-      });
-    }
-    if (total) {
-      $('d-compras').textContent = falta + ' por comprar · ' + urg + (urg === 1 ? ' urgente' : ' urgentes');
-      const pct = Math.round((total - falta) / total * 100);
-      $('barra').hidden = false; $('barra').firstElementChild.style.width = pct + '%';
-      $('d-stock').hidden = false; $('d-stock').textContent = pct + '% del stock al día';
-      const a = $('alerta'); a.hidden = false;
-      if (falta) a.textContent = falta + (falta === 1 ? ' producto por reponer' : ' productos por reponer') + ' · ' + porCat.join(', ');
-      else { a.textContent = 'Todo el stock está al día ✓'; a.classList.add('ok'); }
-    }
-    if (Array.isArray(ahorros) && ahorros.length) {
-      const t = ahorros.reduce((n, c) => n + (c.saldo !== undefined ? (+c.saldo || 0) : (+c.b || 0) + (+c.m || 0)), 0);
-      $('d-ahorros').textContent = money(t);
-    }
+<!-- Modal: Cambiar tema -->
+<div class="ov" id="ov-tema"><div class="dlg"><h3>Cambiar tema <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
+  <button class="opt" data-t="auto"><span class="sw auto"></span><span class="tx">Automático<small>Sigue al teléfono</small></span><span class="rad"></span></button>
+  <button class="opt" data-t="claro"><span class="sw claro"></span><span class="tx">Claro<small>Fondo crema y tarjetas blancas</small></span><span class="rad"></span></button>
+  <button class="opt" data-t="oscuro"><span class="sw oscuro"></span><span class="tx">Oscuro<small>Fondo violeta muy oscuro</small></span><span class="rad"></span></button>
+  <p class="note" style="margin:6px 0 10px">Se aplica a todas las páginas a la vez. Cada sección mantiene su color de acento.</p>
+  <button class="opt" id="btn-fuente2"><span style="font:800 .95rem var(--serif);width:26px;text-align:center">Aa</span><span class="tx">Letra de los títulos<small id="f-act">Fraunces</small></span><span style="color:var(--muted);font-size:1.1rem">›</span></button>
+</div></div>
 
-    // Último respaldo + hacer respaldo (descarga todo el sitio, igual que la portada)
-    function pie() {
-      const t = leer('portada_ultimo_respaldo', null);
-      $('pie').innerHTML = 'Último respaldo: ' + (t ? esc(new Date(t).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })) : 'nunca') + ' · <button id="hr">Hacer respaldo</button>';
-      $('hr').onclick = () => {
-        try { localStorage.setItem('portada_ultimo_respaldo', JSON.stringify(new Date().toISOString())); } catch (e) {}
-        MiEspacio.descargar(MiEspacio.exportar(), 'mi-espacio-respaldo-' + MiEspacio.fechaArchivo() + '.json'); pie();
-      };
-    }
-    pie();
+<div class="ov" id="ov-fuente"><div class="dlg"><h3>Letra de los títulos <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3><div id="f-lista"></div></div></div>
 
-    // Búsqueda global
-    const q = $('q'), res = $('res');
-    q.addEventListener('input', () => {
-      const t = norm(q.value);
-      if (!t) { res.hidden = true; res.innerHTML = ''; return; }
-      const out = [];
-      (Array.isArray(cajas) ? cajas : []).forEach(c => (c.items || []).forEach(it => {
-        if (norm(it.nombre).includes(t) || norm(it.detalles).includes(t)) out.push({ href: 'cajas.html', t: it.nombre, s: '📦 ' + c.nombre + (c.ubicacion ? ' · ' + c.ubicacion : '') });
-      }));
-      (Array.isArray(compras) ? compras : []).forEach(c => (c.items || []).forEach(p => {
-        if (norm(p.nombre).includes(t) || norm(p.donde).includes(t)) out.push({ href: 'compras.html', t: p.nombre, s: '🛍️ ' + c.nombre + (p.donde ? ' · ' + p.donde : '') });
-      }));
-      (Array.isArray(cajas) ? cajas : []).forEach(c => { if (norm(c.nombre).includes(t)) out.push({ href: 'cajas.html', t: c.nombre, s: '📦 Caja' + (c.ubicacion ? ' · ' + c.ubicacion : '') }); });
-      res.hidden = false;
-      res.innerHTML = out.length ? out.slice(0, 15).map(r => '<a href="' + r.href + '"><b>' + esc(r.t) + '</b><small>' + esc(r.s) + '</small></a>').join('') : '<div class="vacio">Sin resultados para “' + esc(q.value) + '”.</div>';
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7V5a3 3 0 016 0v2"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.3-1-1.3-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.2 0-2.2-.5-2.5-1.5M12 6.5v11"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 5.2A10.6 10.6 0 0112 5c6.5 0 10 7 10 7a17 17 0 01-4 4.9M6.6 6.6C4 8.3 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-tema" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 010 18z" fill="currentColor"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+</defs></svg>
+
+<script>
+(function () {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const leer = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
+  const norm = x => String(x ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const money = n => '$' + Math.round(n || 0).toLocaleString('es-CL');
+
+  const abrir = id => $('#' + id).classList.add('open');
+  const cerrar = () => $$('.ov').forEach(o => o.classList.remove('open'));
+  $$('.ov').forEach(o => o.addEventListener('click', e => { if (e.target === o || e.target.closest('[data-x]')) cerrar(); }));
+
+  // Tema y fuente
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  const pref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch (e) { return 'auto'; } };
+  function aplicarTema() {
+    const d = pref() === 'oscuro' || (pref() === 'auto' && mq.matches);
+    document.documentElement.dataset.theme = d ? 'dark' : 'light';
+    $$('[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === pref()));
+    const m = document.querySelector('meta[name=theme-color]');
+    if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim();
+    if (window.MiEspacio && MiEspacio.respaldoViejo) $('#dot-resp').classList.toggle('on', MiEspacio.respaldoViejo());
+  }
+  $$('[data-t]').forEach(b => b.onclick = () => { try { localStorage.setItem('app_tema', b.dataset.t); } catch (e) {} aplicarTema(); });
+  if (mq.addEventListener) mq.addEventListener('change', aplicarTema);
+  $('#btn-tema').onclick = () => abrir('ov-tema');
+  aplicarTema();
+
+  const FUENTES = { fraunces: ['Fraunces', "'Fraunces',Georgia,serif"], jakarta: ['Plus Jakarta Sans', "'Plus Jakarta Sans',system-ui,sans-serif"], fira: ['Fira Sans', "'Fira Sans',system-ui,sans-serif"], chivo: ['Chivo', "'Chivo',system-ui,sans-serif"], space: ['Space Grotesk', "'Space Grotesk',system-ui,sans-serif"] };
+  function aplicarFuente() {
+    let f = 'fraunces'; try { f = localStorage.getItem('app_fuente') || localStorage.getItem('estacion_fuente_titulos') || 'fraunces'; } catch (e) {} if (!FUENTES[f]) f = 'fraunces';
+    document.documentElement.style.setProperty('--serif', FUENTES[f][1]); $('#f-act').textContent = FUENTES[f][0];
+    $('#f-lista').innerHTML = Object.keys(FUENTES).map(k => `<button class="opt ${k === f ? 'on' : ''}" data-f="${k}" style="font-family:${FUENTES[k][1]}"><span class="tx">${FUENTES[k][0]}</span><span class="rad"></span></button>`).join('');
+  }
+  $('#f-lista').onclick = e => { const b = e.target.closest('[data-f]'); if (!b) return; try { localStorage.setItem('app_fuente', b.dataset.f); localStorage.setItem('estacion_fuente_titulos', b.dataset.f); } catch (er) {} aplicarFuente(); };
+  $('#btn-fuente').onclick = () => abrir('ov-fuente');
+  $('#btn-fuente2').onclick = () => { cerrar(); abrir('ov-fuente'); };
+  aplicarFuente();
+
+  let cajas = [], compras = [], ahorros = [];
+  let montoOculto = !!leer('org_ahorros_oculto', false);
+
+  function pintarDatos() {
+    cajas = leer('org_cajas', []) || [];
+    compras = leer('org_compras', []) || [];
+    ahorros = leer('org_ahorros', []) || [];
+
+    // 1. Cajas
+    const nCajas = Array.isArray(cajas) ? cajas.length : 0;
+    const nObjs = (Array.isArray(cajas) ? cajas : []).reduce((n, c) => n + ((c.items || []).length), 0);
+    $('#st-cajas').innerHTML = `<span class="big-stat"><b>${nCajas}</b><span>${nCajas === 1 ? 'caja' : 'cajas'}</span></span><span class="big-stat"><b>${nObjs}</b><span>${nObjs === 1 ? 'objeto' : 'objetos'}</span></span>`;
+    const ubis = [];
+    (Array.isArray(cajas) ? cajas : []).forEach(c => {
+      const b = String(c.ubicacion || '').split(',')[0].trim().split(/\s+/)[0];
+      if (b && !ubis.some(u => norm(u) === norm(b))) ubis.push(b.charAt(0).toUpperCase() + b.slice(1).toLowerCase());
     });
-  })();
-  </script>
+    $('#pills-ubis').innerHTML = ubis.slice(0, 5).map(u => `<span class="pill">${esc(u)}</span>`).join('');
+
+    // 2. Compras
+    let total = 0, falta = 0, urg = 0;
+    (Array.isArray(compras) ? compras : []).forEach(c => {
+      (c.items || []).forEach(p => {
+        total++;
+        if (p.tieneRepuesto === 'no') { falta++; if (p.urgente) urg++; }
+      });
+    });
+    $('#st-compras').innerHTML = `<span class="big-stat"><b>${falta}</b><span>por comprar</span></span><span class="big-stat"><b>${urg}</b><span>${urg === 1 ? 'urgente' : 'urgentes'}</span></span>`;
+    const pct = total ? Math.round((total - falta) / total * 100) : 100;
+    $('#bar-stock').style.width = pct + '%';
+    $('#txt-stock').textContent = pct + '% del stock al día';
+
+    // 3. Ahorros
+    const nAh = Array.isArray(ahorros) ? ahorros.length : 0;
+    const totAh = (Array.isArray(ahorros) ? ahorros : []).reduce((n, c) => n + (c.saldo !== undefined ? (+c.saldo || 0) : (+c.b || 0) + (+c.m || 0)), 0);
+    $('#d-ahorros').textContent = montoOculto ? '$ ••••••' : money(totAh);
+    $('#use-eye').setAttribute('href', montoOculto ? '#i-eye-off' : '#i-eye');
+    $('#s-ahorros').textContent = `en ${nAh} ${nAh === 1 ? 'caja' : 'cajas'}`;
+  }
+  pintarDatos();
+
+  $('#btn-eye').onclick = e => {
+    e.stopPropagation();
+    montoOculto = !montoOculto;
+    try { localStorage.setItem('org_ahorros_oculto', JSON.stringify(montoOculto)); } catch (er) {}
+    pintarDatos();
+  };
+  $('#btn-agregar').onclick = e => {
+    e.stopPropagation();
+    abrir('ov-add');
+  };
+  $('#card-ahorros').onclick = e => {
+    if (e.target.closest('#btn-eye') || e.target.closest('#btn-agregar')) return;
+    location.href = 'ahorros.html';
+  };
+
+  /* ── Buscador con búsquedas recientes y resultados agrupados con resaltado ── */
+  const KEY_REC = 'org_busquedas_recientes';
+  const getRec = () => { const r = leer(KEY_REC, []); return Array.isArray(r) ? r.slice(0, 3) : []; };
+  const saveRec = term => {
+    const t = String(term || '').trim(); if (t.length < 2) return;
+    const list = [t, ...getRec().filter(x => norm(x) !== norm(t))].slice(0, 3);
+    try { localStorage.setItem(KEY_REC, JSON.stringify(list)); } catch (e) {}
+  };
+  const delRec = idx => {
+    const list = getRec(); list.splice(idx, 1);
+    try { localStorage.setItem(KEY_REC, JSON.stringify(list)); } catch (e) {}
+    mostrarRecientes();
+  };
+
+  function resaltar(texto, query) {
+    const s = String(texto ?? '');
+    const nq = norm(query);
+    if (!nq) return esc(s);
+    const ns = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const i = ns.indexOf(nq);
+    if (i < 0) return esc(s);
+    return esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + query.trim().length)) + '</mark>' + esc(s.slice(i + query.trim().length));
+  }
+
+  const qInput = $('#q'), panel = $('#search-panel'), btnClr = $('#btn-clr');
+
+  function mostrarModoBusqueda(activo) {
+    panel.classList.toggle('on', activo);
+    $('#box-esp').classList.toggle('hide', activo);
+    $('#lbl-esp').classList.toggle('hide', activo);
+  }
+
+  function mostrarRecientes() {
+    const rec = getRec();
+    if (!rec.length) {
+      panel.innerHTML = `<div class="sec-t">Búsquedas recientes</div><div class="rec-list"><div class="res-empty">Escribe arriba para buscar en Cajas, Compras y Ahorros.</div></div><p class="note" style="text-align:center;margin-top:8px">Se guardan las tres últimas búsquedas en este teléfono.</p>`;
+      return;
+    }
+    panel.innerHTML = `<div class="sec-t">Búsquedas recientes</div><div class="rec-list">` +
+      rec.map((r, i) => `<div class="rec-item" data-rec="${esc(r)}"><svg class="i" style="width:18px;height:18px;color:var(--muted)"><use href="#i-clock"/></svg><span>${esc(r)}</span><button type="button" data-del="${i}" aria-label="Borrar"><svg class="i" style="width:16px;height:16px"><use href="#i-x"/></svg></button></div>`).join('') +
+      `</div><p class="note" style="text-align:center;margin-top:8px">Se guardan las tres últimas búsquedas en este teléfono.</p>`;
+  }
+
+  function ejecutarBusqueda() {
+    const raw = qInput.value, t = norm(raw);
+    btnClr.style.display = raw ? 'grid' : 'none';
+    if (!t) {
+      if (document.activeElement === qInput) { mostrarModoBusqueda(true); mostrarRecientes(); }
+      else mostrarModoBusqueda(false);
+      return;
+    }
+    mostrarModoBusqueda(true);
+    const objs = [], prods = [], cjs = [];
+    (Array.isArray(cajas) ? cajas : []).forEach(c => {
+      if (norm(c.nombre).includes(t) || norm(c.ubicacion).includes(t)) {
+        cjs.push({ href: 'cajas.html', n: c.nombre, s: (c.items || []).length + ' objetos' + (c.ubicacion ? ' · ' + c.ubicacion : '') });
+      }
+      (c.items || []).forEach(it => {
+        if (norm(it.nombre).includes(t) || norm(it.detalles).includes(t)) {
+          objs.push({ href: 'cajas.html', n: it.nombre, s: c.nombre + (c.ubicacion ? ' · ' + c.ubicacion : '') });
+        }
+      });
+    });
+    (Array.isArray(compras) ? compras : []).forEach(c => {
+      (c.items || []).forEach(p => {
+        if (norm(p.nombre).includes(t) || norm(p.donde).includes(t)) {
+          prods.push({ href: 'compras.html', n: p.nombre, s: 'Compras · ' + c.nombre + ' · ' + (p.tieneRepuesto === 'si' ? 'En repuesto' : 'Falta comprar') });
+        }
+      });
+    });
+
+    panel.innerHTML =
+      `<div><div class="sec-t">Objetos · ${objs.length}</div><div class="grp-list">${objs.length ? objs.slice(0, 8).map(x => `<a class="res-item" href="${x.href}" data-save="1"><b>${resaltar(x.n, raw)}</b><small>${esc(x.s)}</small></a>`).join('') : '<div class="res-empty">Ningún objeto coincide.</div>'}</div></div>` +
+      `<div><div class="sec-t">Productos · ${prods.length}</div><div class="grp-list">${prods.length ? prods.slice(0, 8).map(x => `<a class="res-item" href="${x.href}" data-save="1"><b>${resaltar(x.n, raw)}</b><small>${esc(x.s)}</small></a>`).join('') : '<div class="res-empty">Ningún producto coincide.</div>'}</div></div>` +
+      `<div><div class="sec-t">Cajas · ${cjs.length}</div><div class="grp-list">${cjs.length ? cjs.slice(0, 6).map(x => `<a class="res-item" href="${x.href}" data-save="1"><b>${resaltar(x.n, raw)}</b><small>${esc(x.s)}</small></a>`).join('') : '<div class="res-empty">Ninguna caja coincide.</div>'}</div></div>`;
+  }
+
+  qInput.addEventListener('focus', () => {
+    if (!norm(qInput.value)) { mostrarModoBusqueda(true); mostrarRecientes(); btnClr.style.display = 'grid'; }
+  });
+  qInput.addEventListener('input', ejecutarBusqueda);
+  btnClr.onclick = () => { qInput.value = ''; btnClr.style.display = 'none'; mostrarModoBusqueda(false); qInput.blur(); };
+
+  panel.addEventListener('click', e => {
+    const del = e.target.closest('[data-del]');
+    if (del) { e.stopPropagation(); delRec(+del.dataset.del); return; }
+    const rec = e.target.closest('[data-rec]');
+    if (rec) { qInput.value = rec.dataset.rec; ejecutarBusqueda(); return; }
+    const lnk = e.target.closest('[data-save]');
+    if (lnk) saveRec(qInput.value);
+  });
+
+  addEventListener('pageshow', () => { aplicarTema(); pintarDatos(); });
+})();
+</script>
 </body>
 </html>

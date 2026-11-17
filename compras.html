@@ -880,19 +880,52 @@
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    /* Selector de letra en el menú ⋮ */
+    /* Selector de letra en el menú ⋮ y Modo Supermercado / Por cuándo */
     .menu { max-height: 75vh; overflow-y: auto; min-width: 230px; }
     .menu .font-btn.on { background: var(--p-soft); color: var(--p); }
+    .top-bar { grid-template-columns: 44px 1fr 140px; }
+    .sq { width: 44px; height: 44px; border-radius: 14px; }
+    .seg.tabs button { min-height: 44px; }
+    .fbtn { height: 44px; border-radius: 14px; }
+    .view button { width: 44px; height: 42px; }
+    .c-name, .prod-name { white-space: normal !important; overflow-wrap: break-word !important; word-break: normal !important; text-overflow: clip !important; display: block !important; }
+    .sec-when { font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 14px 4px 6px; }
+    .when-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+    .when-card .w-main { flex: 1; min-width: 0; }
+    .when-card .w-tit { font-weight: 700; font-size: .94rem; line-height: 1.3; color: var(--text); }
+    .when-card .w-sub { font-size: .76rem; color: var(--muted); margin-top: 3px; }
+    .when-card .w-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .when-card .w-price { font-family: var(--serif); font-weight: 700; font-size: .95rem; color: var(--text); }
+    /* Modo supermercado */
+    .super-head { display: flex; align-items: center; justify-content: space-between; margin: 14px 2px 8px; }
+    .super-head h4 { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; }
+    .super-pill { font-size: .72rem; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: var(--p-soft); color: var(--p); }
+    .carro-chk { width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--border); background: var(--bg); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; color: transparent; font-weight: 800; font-size: .9rem; transition: .15s; }
+    .carro-chk.on { background: var(--p); border-color: var(--p); color: var(--on-p); }
+    .super-bar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(84px + env(safe-area-inset-bottom)); width: min(94vw, 440px); background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.35); display: none; align-items: center; justify-content: space-between; gap: 12px; z-index: 42; }
+    .super-bar.on { display: flex; }
+    .super-tot-lbl { font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+    .super-tot-val { font-family: var(--serif); font-size: 1.35rem; font-weight: 700; line-height: 1.1; margin-top: 2px; }
+    .super-tot-sub { font-size: .74rem; color: var(--muted); margin-top: 2px; }
+    /* Historial de precios en Marcar como comprado */
+    .comp-pill { display: inline-block; margin-top: 6px; font-size: .74rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: var(--p-soft); color: var(--p); }
+    .hist-box { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .hist-row { display: flex; justify-content: space-between; font-size: .8rem; padding: 4px 0; color: var(--muted); }
+    .hist-row b { color: var(--text); }
   </style>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </head>
 <body>
   <div class="container">
     <!-- Barra superior -->
     <header class="top-bar">
       <a href="organizador.html" class="sq" title="Volver al menú">←</a>
-      <h1>Compras</h1>
+      <div>
+        <h1>Compras</h1>
+        <div id="sub-modo" style="text-align:center;font-size:.72rem;color:var(--muted);display:none">Modo supermercado</div>
+      </div>
       <div class="top-right">
+        <button class="sq" id="btn-share" title="Compartir lista de pendientes" aria-label="Compartir lista"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 002 2h12a2 2 0 002-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></button>
         <button class="sq" id="btn-tema" aria-label="Cambiar tema"></button>
         <button class="sq" id="btn-menu" aria-label="Más opciones">⋮</button>
         <div class="menu" id="menu">
@@ -939,10 +972,11 @@
 
     <!-- Herramientas de vista -->
     <div class="tools">
-      <button class="fbtn" id="btn-filtros">📁 <span id="txt-vista">Por categoría</span> ▾</button>
+      <button class="fbtn" id="btn-filtros"><span id="txt-vista">Ordenar: Por cuándo</span> ▾</button>
       <div class="popover-filtros" id="pop-filtros">
+        <button data-v="cuando">🗓️ Ordenar: Por cuándo</button>
         <button data-v="cat">📁 Vista por categoría</button>
-        <button data-v="tienda">🏪 Vista por tienda (lista de compras)</button>
+        <button data-v="tienda">🛒 Modo supermercado (por tienda)</button>
       </div>
 
       <div class="view" id="view">
@@ -953,6 +987,16 @@
 
     <!-- Cuadrícula / Lista principal -->
     <main id="lista" class="card-list grid"></main>
+  </div>
+
+  <!-- Barra inferior de Modo Supermercado -->
+  <div class="super-bar" id="super-bar">
+    <div>
+      <div class="super-tot-lbl">Total estimado</div>
+      <div class="super-tot-val" id="super-tot">$0</div>
+      <div class="super-tot-sub" id="super-carro">En el carro: $0</div>
+    </div>
+    <button class="btn btn-primary" style="min-height:44px" id="btn-terminar-compra">Terminar compra</button>
   </div>
 
   <!-- Botón flotante ＋ Agregar categoría -->
@@ -1151,22 +1195,43 @@
     </div>
   </div>
 
-  <!-- Modal: Confirmar "Ya lo compré" -->
+  <!-- Modal: Confirmar "Marcar como comprado" con historial de precios -->
   <div class="modal-overlay modal-center" id="modal-bought">
     <div class="modal">
-      <h3 id="bought-titulo">✓ Marcar como comprado</h3>
+      <div class="pop-header" style="margin-bottom:8px">
+        <div>
+          <h3 id="bought-titulo" style="margin:0">Marcar como comprado</h3>
+          <div id="bought-prod-name" style="font-size:.84rem;color:var(--muted);font-weight:700;margin-top:2px"></div>
+        </div>
+        <button class="pop-close" data-close aria-label="Cerrar">✕</button>
+      </div>
       <div class="form-group">
-        <label class="form-label">¿Cuánto compraste / queda de repuesto?</label>
+        <label class="form-label">Precio pagado ($)</label>
+        <input type="text" id="b-precio" class="form-input" inputmode="numeric" placeholder="Ej: 5.200" style="font-size:1.15rem;font-weight:800">
+        <div id="b-comp-wrap"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cuánto queda ahora</label>
+        <div class="chips-group" id="b-chips-cant" style="margin-bottom:6px">
+          <button type="button" class="chip-choice on" data-c="Casi lleno">Casi lleno</button>
+          <button type="button" class="chip-choice" data-c="La mitad">La mitad</button>
+          <button type="button" class="chip-choice" data-c="1 unidad">1 unidad</button>
+          <button type="button" class="chip-choice" data-c="2 unidades">2 unidades</button>
+        </div>
         <input type="text" id="b-cant" class="form-input" placeholder="Ej: 1 frasco, 2 cajas selladas...">
       </div>
       <div class="form-group">
-        <label class="form-label">¿En qué caja o lugar lo guardaste?</label>
+        <label class="form-label">Guardar repuesto en</label>
         <select id="b-lugar" class="form-select"></select>
         <input type="text" id="b-lugar-otro" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: En la cómoda...">
       </div>
+      <div class="hist-box" id="b-hist-box" style="display:none">
+        <label class="form-label">Historial de precios</label>
+        <div id="b-hist-list"></div>
+      </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-close>Cancelar</button>
-        <button class="btn btn-primary" id="btn-confirmar-compra">Confirmar</button>
+        <button class="btn btn-secondary" style="flex:1;min-height:44px" data-close>Cancelar</button>
+        <button class="btn btn-primary" style="flex:1;min-height:44px" id="btn-confirmar-compra">Confirmar</button>
       </div>
     </div>
   </div>
@@ -1361,10 +1426,13 @@
       ];
     }
 
-    let vista = 'cat', filtro = 'todos', catId = null, itemId = null, detId = null, popProdObj = null;
+    let vista = 'cuando', filtro = 'todos', catId = null, itemId = null, detId = null, popProdObj = null;
+    if (location.hash === '#falta') filtro = 'falta';
     let disp = 'grid';
     try { disp = localStorage.getItem(VKEY) === 'list' ? 'list' : 'grid'; } catch(e){}
     const fotos = { foto: null, fotoTienda: null };
+    const fotoReal = ref => (window.MiEspacio && MiEspacio.fotos ? MiEspacio.fotos.obtener(ref) : ref) || null;
+    const fmtMiles = n => String(n || '').replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
     function guardar() {
       try {
@@ -1608,7 +1676,8 @@
 
       $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.f === filtro));
       $$('#pop-filtros button').forEach(b => b.classList.toggle('on', b.dataset.v === vista));
-      $('#txt-vista').textContent = vista === 'cat' ? 'Por categoría' : 'Por tienda';
+      $('#txt-vista').textContent = vista === 'cuando' ? 'Ordenar: Por cuándo' : (vista === 'cat' ? 'Por categoría' : 'Por tienda');
+      $('#sub-modo').style.display = vista === 'tienda' ? 'block' : 'none';
 
       $('#view').style.display = (vista === 'cat' && ws.length === 0 && filtro === 'todos') ? 'flex' : 'none';
       $$('#view button').forEach(b => b.classList.toggle('on', b.dataset.v === disp));
@@ -1619,23 +1688,67 @@
       let html = '';
       const filtrando = ws.length > 0 || filtro !== 'todos';
 
-      if (vista === 'cat' && !filtrando) {
-        // "Desde Cajas" siempre primero
-        [...db].sort((a, b) => (b.nombre === 'Desde Cajas') - (a.nombre === 'Desde Cajas')).forEach(c => {
-          html += tarjetaCat(c);
+      if (vista === 'cuando') {
+        $('#super-bar').classList.remove('on');
+        const grupos = {
+          semana: { t: 'Esta semana', list: [] },
+          fin: { t: 'A fin de mes', list: [] },
+          otro: { t: 'El otro mes', list: [] },
+          resto: { t: 'Más adelante / En stock', list: [] }
+        };
+        all.forEach(([c, it]) => {
+          if (!cumpleBusq(c, it, ws)) return;
+          const cw = norm(it.cuando || '');
+          if (it.tieneRepuesto !== 'si' && (it.urgente || cw.includes('semana') || cw.includes('pronto') || cw.includes('hoy'))) grupos.semana.list.push([c, it]);
+          else if (it.tieneRepuesto !== 'si' && (cw.includes('fin') || cw.includes('quincena'))) grupos.fin.list.push([c, it]);
+          else if (it.tieneRepuesto !== 'si' && cw.includes('otro')) grupos.otro.list.push([c, it]);
+          else grupos.resto.list.push([c, it]);
         });
+        Object.values(grupos).forEach(g => {
+          if (!g.list.length) return;
+          html += `<div class="sec-when">${esc(g.t)}</div>`;
+          g.list.forEach(([c, it]) => {
+            const d = `data-c="${esc(c.id)}" data-i="${esc(it.id)}"`;
+            const si = it.tieneRepuesto === 'si';
+            const pr = num(it.precio) ? '$' + fmtMiles(it.precio) : '';
+            const sub = [c.nombre, it.donde || (si ? ('En ' + (it.lugarRepuesto || 'repuesto')) : (it.cuando || 'Sin tienda'))].filter(Boolean).join(' · ');
+            html += `<div class="when-card" ${d} data-act="abrir-pop">
+              <button class="circle-check ${si ? 'checked' : ''}" data-act="check-buy" ${d} onclick="event.stopPropagation()" title="${si ? 'Desmarcar' : 'Marcar como comprado'}">${si ? '✓' : ''}</button>
+              <div class="w-main">
+                <div class="w-tit" style="${si ? 'text-decoration:line-through;opacity:.6' : ''}">${esc(it.nombre)}</div>
+                <div class="w-sub">${esc(sub)}</div>
+              </div>
+              <div class="w-right">
+                ${pr ? `<span class="w-price">${esc(pr)}</span>` : ''}
+                ${!si && it.urgente ? '<span class="badge bad">Urgente</span>' : ''}
+              </div>
+            </div>`;
+          });
+        });
+      } else if (vista === 'cat' && !filtrando) {
+        $('#super-bar').classList.remove('on');
+        // Ocultar "Desde Cajas" cuando está vacía
+        [...db]
+          .filter(c => c.nombre !== 'Desde Cajas' || (c.items && c.items.length > 0))
+          .sort((a, b) => (b.nombre === 'Desde Cajas') - (a.nombre === 'Desde Cajas'))
+          .forEach(c => { html += tarjetaCat(c); });
       } else if (vista === 'cat') {
-        // Búsqueda o filtro: se muestran los productos, no las categorías
+        $('#super-bar').classList.remove('on');
         cont.className = 'card-list list';
         all.forEach(([c, it]) => {
           if (cumpleBusq(c, it, ws)) html += productoFilaHTML(c, it, true, 'plano');
         });
         if (html) html = `<div class="group-card" style="cursor:default;padding:6px 8px;">${html}</div>`;
       } else {
-        // Vista por tienda
+        // Modo supermercado (Vista por tienda)
         const tiendasMap = {};
+        let totalEst = 0, totalCarro = 0, hayItems = false;
         all.forEach(([c, it]) => {
           if (it.tieneRepuesto === 'si' || !cumpleBusq(c, it, ws)) return;
+          hayItems = true;
+          const pVal = num(it.precio);
+          totalEst += pVal;
+          if (it.enCarro) totalCarro += pVal;
           const tName = (it.donde || '').trim() || 'Sin tienda definida';
           (tiendasMap[norm(tName)] = tiendasMap[norm(tName)] || { n: tName, list: [] }).list.push([c, it]);
         });
@@ -1645,21 +1758,37 @@
         );
 
         ordenadas.forEach(x => {
+          const enCar = x.list.filter(([, it]) => it.enCarro).length;
           html += `
-            <div class="group-card" style="cursor:default;">
-              <div class="c-head">
-                <div class="c-name">🏪 ${esc(x.n)}</div>
-              </div>
-              <div class="c-sub">${x.list.length} producto${x.list.length === 1 ? '' : 's'} por comprar aquí</div>
-              <div style="margin-top:8px;">
-                ${x.list.map(([c, it]) => productoFilaHTML(c, it, true, 'tienda')).join('')}
-              </div>
+            <div class="super-head">
+              <h4>${esc(x.n)}</h4>
+              <span class="super-pill">${enCar} de ${x.list.length} en el carro</span>
+            </div>
+            <div class="group-card" style="cursor:default;padding:6px 10px;">
+              ${x.list.map(([c, it]) => {
+                const d = `data-c="${esc(c.id)}" data-i="${esc(it.id)}"`;
+                const pr = num(it.precio) ? '$' + fmtMiles(it.precio) : '';
+                return `<div class="compact-product-item" ${d} data-act="toggle-carro">
+                  <button type="button" class="carro-chk ${it.enCarro ? 'on' : ''}" ${d} data-act="toggle-carro">${it.enCarro ? '✓' : ''}</button>
+                  <div class="prod-info">
+                    <div class="prod-name" style="${it.enCarro ? 'text-decoration:line-through;opacity:.6' : ''}">${esc(it.nombre)}</div>
+                    <div class="prod-subline">${esc(c.nombre)}</div>
+                  </div>
+                  ${pr ? `<span style="font-family:var(--serif);font-weight:700;font-size:.92rem">${esc(pr)}</span>` : ''}
+                </div>`;
+              }).join('')}
             </div>
           `;
         });
+
+        const sBar = $('#super-bar');
+        sBar.classList.toggle('on', hayItems);
+        $('#super-tot').textContent = '$' + totalEst.toLocaleString('es-CL');
+        $('#super-carro').textContent = 'En el carro: $' + totalCarro.toLocaleString('es-CL');
       }
 
       if (!html) {
+        $('#super-bar').classList.remove('on');
         html = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 10px;font-size:.9rem;">
           ${!db.length ? 'No hay categorías creadas.<br>Toca <b>＋ Agregar</b> para comenzar.' : 'Sin productos que coincidan con el filtro o la búsqueda.'}
         </div>`;
@@ -1810,18 +1939,27 @@
         return abrirCat(c.id);
       }
 
-      // Eliminar categoría
-      if (act === 'delcat' && c) {
+      // Toggle "En el carro" en Modo Supermercado
+      if (act === 'toggle-carro' && c && it) {
         vibrar();
-        if (confirm(`¿Eliminar la categoría "${c.nombre}" y todos sus productos?`)) {
-          db = db.filter(x => x.id !== c.id);
-          guardar();
-          toast('Categoría eliminada');
-        }
+        it.enCarro = !it.enCarro;
+        guardar();
         return;
       }
 
-      // Checkbox circular para comprar o devolver a falta comprar
+      // Eliminar categoría con Deshacer
+      if (act === 'delcat' && c) {
+        vibrar();
+        const idx = db.indexOf(c);
+        db = db.filter(x => x.id !== c.id);
+        guardar();
+        if (window.MiEspacio && MiEspacio.toast) {
+          MiEspacio.toast(`Categoría "${c.nombre}" eliminada`, () => { db.splice(idx, 0, c); guardar(); });
+        } else toast('Categoría eliminada');
+        return;
+      }
+
+      // Checkbox circular para comprar (con historial de precios) o devolver a falta comprar
       if (act === 'check-buy' && c && it) {
         vibrar();
         if (it.tieneRepuesto === 'si') {
@@ -1829,12 +1967,7 @@
           guardar();
           toast('Marcado como "Falta comprar"');
         } else {
-          catId = c.id;
-          itemId = it.id;
-          $('#bought-titulo').textContent = `✓ Marcar "${it.nombre}" como comprado`;
-          $('#b-cant').value = '1 unidad';
-          llenarLugar('#b-lugar', '#b-lugar-otro', it.lugarRepuesto || '');
-          abrir('#modal-bought');
+          abrirModalComprado(c, it);
         }
         return;
       }
@@ -1850,14 +1983,15 @@
         return abrirItem(c.id, it.id);
       }
 
-      // Eliminar producto
+      // Eliminar producto con Deshacer
       if (act === 'del' && c && it) {
         vibrar();
-        if (confirm(`¿Eliminar "${it.nombre}"?`)) {
-          c.items = c.items.filter(x => x.id !== it.id);
-          guardar();
-          toast('Producto eliminado');
-        }
+        const idx = c.items.indexOf(it);
+        c.items = c.items.filter(x => x.id !== it.id);
+        guardar();
+        if (window.MiEspacio && MiEspacio.toast) {
+          MiEspacio.toast(`"${it.nombre}" eliminado`, () => { c.items.splice(idx, 0, it); guardar(); });
+        } else toast('Producto eliminado');
         return;
       }
     }
@@ -1869,7 +2003,49 @@
       if (detId) abrirItem(detId);
     };
 
-    // Confirmación del modal "Ya lo compré"
+    // Modal "Marcar como comprado" con comparación e historial de precios
+    function actualizarComparacionPrecio(it) {
+      const wrap = $('#b-comp-wrap');
+      const pagado = num($('#b-precio').value);
+      const hist = Array.isArray(it.historialPrecios) ? it.historialPrecios : [];
+      const ant = hist.length ? num(hist[0].precio) : num(it.precio);
+      if (!pagado || !ant) { wrap.innerHTML = ''; return; }
+      const diff = Math.round(((pagado - ant) / ant) * 100);
+      const txt = diff > 0 ? `subió ${diff}%` : (diff < 0 ? `bajó ${Math.abs(diff)}%` : 'mismo precio');
+      wrap.innerHTML = `<span class="comp-pill">Última vez: $${fmtMiles(ant)} · ${txt}</span>`;
+    }
+
+    function abrirModalComprado(c, it) {
+      catId = c.id;
+      itemId = it.id;
+      $('#bought-prod-name').textContent = it.nombre;
+      $('#b-precio').value = it.precio ? fmtMiles(it.precio) : '';
+      $('#b-cant').value = 'Casi lleno';
+      $$('#b-chips-cant button').forEach(b => b.classList.toggle('on', b.dataset.c === 'Casi lleno'));
+      llenarLugar('#b-lugar', '#b-lugar-otro', it.lugarRepuesto || '');
+      actualizarComparacionPrecio(it);
+      $('#b-precio').oninput = () => {
+        const d = $('#b-precio').value.replace(/\D/g, '');
+        $('#b-precio').value = d ? fmtMiles(d) : '';
+        actualizarComparacionPrecio(it);
+      };
+      const hist = Array.isArray(it.historialPrecios) ? it.historialPrecios : [];
+      const hBox = $('#b-hist-box');
+      if (hist.length) {
+        hBox.style.display = 'block';
+        $('#b-hist-list').innerHTML = hist.slice(0, 5).map(h => `<div class="hist-row"><span>${esc(h.fecha)}</span><b>$${esc(fmtMiles(h.precio))}</b></div>`).join('');
+      } else {
+        hBox.style.display = 'none';
+      }
+      abrir('#modal-bought');
+    }
+
+    $('#b-chips-cant').onclick = e => {
+      const b = e.target.closest('button'); if (!b) return;
+      $$('#b-chips-cant button').forEach(x => x.classList.toggle('on', x === b));
+      $('#b-cant').value = b.dataset.c;
+    };
+
     $('#btn-confirmar-compra').onclick = () => {
       const c = db.find(x => x.id === catId);
       const it = c && (c.items || []).find(x => x.id === itemId);
@@ -1877,15 +2053,60 @@
 
       vibrar();
       const lugar = $('#b-lugar').value === '__otro' ? $('#b-lugar-otro').value.trim() : $('#b-lugar').value;
+      const pagado = fmtMiles($('#b-precio').value);
+      if (pagado) {
+        if (!Array.isArray(it.historialPrecios)) {
+          it.historialPrecios = it.precio ? [{ fecha: 'anterior', precio: fmtMiles(it.precio) }] : [];
+        }
+        const mesActual = new Date().toLocaleDateString('es-CL', { month: 'short', year: 'numeric' });
+        it.historialPrecios.unshift({ fecha: mesActual, precio: pagado });
+        it.precio = pagado;
+      }
       it.tieneRepuesto = 'si';
       it.cantidadRepuesto = $('#b-cant').value.trim() || '1 unidad';
       it.lugarRepuesto = lugar;
       it.queda = '';
       it.urgente = false;
+      it.enCarro = false;
 
       cerrarUno($('#modal-bought'));
       guardar();
-      toast('¡Listo! Guardado en Repuesto');
+      toast('Guardado en Repuesto');
+    };
+
+    // Terminar compra en Modo supermercado
+    $('#btn-terminar-compra').onclick = () => {
+      let count = 0;
+      db.forEach(c => (c.items || []).forEach(it => {
+        if (it.tieneRepuesto !== 'si' && it.enCarro) {
+          it.tieneRepuesto = 'si';
+          it.enCarro = false;
+          it.urgente = false;
+          count++;
+        }
+      }));
+      if (!count) return toast('Marca primero los productos en el carro');
+      vibrar();
+      guardar();
+      toast(`${count} producto${count === 1 ? ' comprado' : 's comprados'}`);
+    };
+
+    // Compartir lista de pendientes en texto
+    $('#btn-share').onclick = async () => {
+      const lineas = [];
+      db.forEach(c => (c.items || []).forEach(it => {
+        if (it.tieneRepuesto === 'no') {
+          lineas.push(`• ${it.nombre}${it.donde ? ' (' + it.donde + ')' : ''}${it.precio ? ' — $' + fmtMiles(it.precio) : ''}`);
+        }
+      }));
+      const txt = lineas.length ? `Lista de compras:\n${lineas.join('\n')}` : 'Todo el stock está al día.';
+      if (navigator.share) {
+        try { await navigator.share({ title: 'Lista de compras', text: txt }); return; } catch (e) {}
+      }
+      if (navigator.clipboard) {
+        try { await navigator.clipboard.writeText(txt); toast('Lista copiada al portapapeles'); return; } catch (e) {}
+      }
+      alert(txt);
     };
 
     $('#pop-prod-img').onclick = () => { if (popProdObj && popProdObj.it.foto) verFoto(popProdObj.it.foto, popProdObj.it.nombre); };
@@ -2271,6 +2492,11 @@
     aplicarFuente();
     aplicarAcc();
     render();
+    if (location.hash === '#nuevo-prod' && db.length) {
+      const targetCat = db.find(c => c.nombre !== 'Desde Cajas') || db[0];
+      history.replaceState(null, '', location.pathname);
+      setTimeout(() => abrirItem(targetCat.id), 150);
+    }
   </script>
 </body>
 </html>

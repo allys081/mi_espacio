@@ -79,9 +79,9 @@
       gap: 8px;
     }
     .hd a.back, .hd button {
-      height: 38px;
-      min-width: 38px;
-      border-radius: 12px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 14px;
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       color: var(--text-main);
@@ -361,12 +361,12 @@
     .nota-wrapper { display: flex; align-items: center; }
 
     .input-nota {
-      width: 48px;
-      height: 32px;
+      width: 56px;
+      height: 44px;
       border: 1.5px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: 10px;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: var(--text-main);
       background: var(--card-bg);
@@ -469,7 +469,7 @@
     .btn-cancel { background: var(--item-blocked); color: var(--text-muted); }
     .btn-save { background: var(--accent-purple); color: #ffffff; }
   </style>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </head>
 <body>
 
@@ -478,7 +478,7 @@
       <a class="back" href="index.html" aria-label="Volver a Mi Espacio">←</a>
       <h1>Malla Curricular</h1>
       <button class="btn-fuente" id="btn-fuente" aria-label="Cambiar la letra de los títulos">Aa</button>
-      <button class="btn-tema" id="btn-tema" aria-label="Cambiar entre modo claro y oscuro"></button>
+      <button class="btn-tema" id="btn-tema" aria-label="Cambiar entre modo claro y oscuro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
     </div>
     <div class="menu-f" id="menu-f">
       <div class="t">Letra de los títulos</div>
@@ -549,7 +549,7 @@
     const esOscuro = () => prefTema() === 'oscuro' || (prefTema() === 'auto' && mq.matches);
     function aplicarTema() {
       document.documentElement.dataset.theme = esOscuro() ? 'dark' : 'light';
-      btnTema.textContent = esOscuro() ? '☀️' : '🌙';
+      btnTema.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>';
       const m = document.querySelector('meta[name=theme-color]');
       if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
     }
@@ -765,7 +765,7 @@
           <h2 class="semestre-title">${semestre}</h2>
           <div class="semestre-meta">
             <span class="badge-status ${completado ? 'badge-complete' : ''}">
-              ${completado ? '✓ Completado' : `${aprobadasCount}/${totalMaterias}`}
+              ${completado ? `${aprobadasCount}/${totalMaterias} aprobados` : `${aprobadasCount}/${totalMaterias}`}
             </span>
             <span class="chevron ${estaColapsado ? 'rotated' : ''}">▼</span>
           </div>

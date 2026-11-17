@@ -253,8 +253,20 @@
     [data-theme=dark][data-acc] .sum-card .sum-label,[data-theme=dark][data-acc] .sum-card .sum-sub{color:rgba(255,255,255,.85)}
     [data-theme=dark][data-acc] .sum-card .sum-value{color:#fff}
     [data-theme=dark][data-acc] .btn-green{color:#14121a}
+    .sum-card{position:relative}
+    .btn-eye-top{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:11px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.12);color:inherit;display:grid;place-items:center;cursor:pointer}
+    .spark{width:100%;height:26px;display:block;margin:4px 0 2px;overflow:visible}
+    .den-counter{background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-bottom:12px}
+    .den-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:.82rem;border-bottom:1px solid rgba(128,128,128,.1)}
+    .den-row:last-of-type{border-bottom:0}
+    .den-stepper{display:inline-flex;align-items:center;gap:6px}
+    .den-stepper button{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-weight:800;cursor:pointer}
+    .den-stepper b{min-width:28px;text-align:center;font-size:.82rem}
+    .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+    .numpad button{height:42px;border-radius:11px;border:1px solid var(--border);background:var(--soft);color:var(--text);font:700 1.05rem inherit;cursor:pointer}
+    .numpad button:active{background:var(--hover);transform:scale(.96)}
   </style>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </head>
 <body>
   <div class="container">
@@ -287,6 +299,9 @@
       <div class="sum-label">Total ahorrado</div>
       <div class="sum-value" id="s-total">$0</div>
       <div class="sum-sub" id="s-sub"></div>
+      <button type="button" class="btn-eye-top" id="btn-ocultar" aria-label="Ocultar o mostrar montos" title="Ocultar o mostrar montos">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="svg-ocultar"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
 
     <div class="tools">
@@ -402,13 +417,26 @@
       <div class="form-group" id="mov-monto-box">
         <label class="form-label">Monto ($)</label>
         <input class="form-input big money" id="mov-monto" inputmode="numeric" placeholder="5.000" autocomplete="off">
+        <div class="numpad" id="mov-numpad">
+          <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button>
+          <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button>
+          <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button>
+          <button type="button" data-k="000">.000</button><button type="button" data-k="0">0</button><button type="button" data-k="del">⌫</button>
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">¿Fue en billetes o monedas?</label>
+        <label class="form-label">Modo de conteo</label>
         <div class="chips" id="mov-fmt">
-          <button class="chip" data-v="b"> Billetes</button>
-          <button class="chip" data-v="m"> Monedas</button>
+          <button class="chip" data-v="b">Total / Billetes</button>
+          <button class="chip" data-v="c">Contador billetes y monedas</button>
           <button class="chip" data-v="x">Mixto</button>
+        </div>
+      </div>
+      <div class="den-counter" id="mov-counter" style="display:none">
+        <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Contador por denominación</div>
+        <div id="mov-den-rows"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-weight:800;font-size:.9rem">
+          <span>Suma</span><span id="mov-counter-sum" style="color:var(--green)">$0</span>
         </div>
       </div>
       <div id="mov-mix" style="display:none">
@@ -554,6 +582,78 @@
     }
     ['caja', 'mov'].forEach(p => { $(`#${p}-monto`).addEventListener('input', () => hintDen(p)); $(`#${p}-den`).addEventListener('input', () => hintDen(p)); });
 
+    /* ── Ocultar montos, mini gráfico y contador de denominaciones ── */
+    let ocultarMontos = false;
+    try { ocultarMontos = !!JSON.parse(localStorage.getItem('org_ahorros_oculto') || 'false'); } catch (e) {}
+    const moneyVis = (n, isTotal) => ocultarMontos ? (isTotal ? '$ ••••••' : '$ ••••') : money(n);
+
+    $('#btn-ocultar').onclick = () => {
+      vibrar();
+      ocultarMontos = !ocultarMontos;
+      try { localStorage.setItem('org_ahorros_oculto', JSON.stringify(ocultarMontos)); } catch (e) {}
+      $('#svg-ocultar').innerHTML = ocultarMontos
+        ? '<path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 5.2A10.6 10.6 0 0112 5c6.5 0 10 7 10 7a17 17 0 01-4 4.9M6.6 6.6C4 8.3 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.2"/>'
+        : '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/>';
+      render();
+    };
+
+    function sparkHTML(c) {
+      const movs = (c.movs || []).slice(0, 10);
+      const pts = [c.saldo];
+      let cur = c.saldo;
+      for (const m of movs) {
+        cur = Math.max(0, cur + (m.tipo === 'in' ? -m.monto : m.monto));
+        pts.unshift(cur);
+      }
+      if (pts.length < 2) pts.unshift(0);
+      const min = Math.min(...pts), max = Math.max(...pts), span = (max - min) || 1;
+      const coords = pts.map((v, i) => {
+        const x = Math.round((i / (pts.length - 1)) * 116) + 2;
+        const y = Math.round(22 - ((v - min) / span) * 18);
+        return `${x},${y}`;
+      }).join(' ');
+      return `<svg class="spark" viewBox="0 0 120 26" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${coords}"/></svg>`;
+    }
+
+    const DENS = [20000, 10000, 5000, 2000, 1000, 500, 100];
+    let denCounts = {};
+    function renderDenCounter() {
+      const box = $('#mov-den-rows'); if (!box) return;
+      let sum = 0;
+      box.innerHTML = DENS.map(d => {
+        const k = denCounts[d] || 0;
+        const sub = d * k;
+        sum += sub;
+        return `<div class="den-row">
+          <span style="font-weight:700">${money(d)}</span>
+          <div class="den-stepper">
+            <button type="button" data-d="${d}" data-op="-1">−</button>
+            <b>× ${k}</b>
+            <button type="button" data-d="${d}" data-op="1">+</button>
+          </div>
+          <span style="min-width:68px;text-align:right;color:var(--muted);font-weight:700">${money(sub)}</span>
+        </div>`;
+      }).join('');
+      $('#mov-counter-sum').textContent = money(sum);
+      if (fmt === 'c') $('#mov-monto').value = sum ? fmtN(sum) : '';
+    }
+    $('#mov-den-rows').onclick = e => {
+      const b = e.target.closest('button[data-d]'); if (!b) return;
+      const d = +b.dataset.d, op = +b.dataset.op;
+      denCounts[d] = Math.max(0, (denCounts[d] || 0) + op);
+      renderDenCounter();
+    };
+    $('#mov-numpad').onclick = e => {
+      const b = e.target.closest('button[data-k]'); if (!b) return;
+      vibrar();
+      const k = b.dataset.k, inp = $('#mov-monto');
+      let raw = inp.value.replace(/\D/g, '');
+      if (k === 'del') raw = raw.slice(0, -1);
+      else raw = (raw + k).replace(/^0+/, '');
+      inp.value = raw ? fmtN(raw) : '';
+      hintDen('mov');
+    };
+
     /* ── Render ── */
     const cumple = (c, f) => { const m = c.meta || 0; return f === 'todas' || (f === 'progreso' && m > 0 && c.saldo < m) || (f === 'cumplida' && m > 0 && c.saldo >= m) || (f === 'sin' && !m); };
 
@@ -561,17 +661,18 @@
       const meta = c.meta || 0, pct = meta ? Math.min(100, Math.round(c.saldo / meta * 100)) : 0, d = `data-id="${esc(c.id)}"`;
       return `<div class="group-card" ${d}><div class="c-head"><div class="c-name"> ${esc(c.nombre)}</div>
         <div class="c-ic"><button class="btn-icon" data-act="edit" ${d} aria-label="Editar">✎</button><button class="btn-icon" data-act="del" ${d} aria-label="Eliminar">🗑</button></div></div>
-        <div class="c-line">Actual: <b class="v">${money(c.saldo)}</b></div>
-        <div class="c-line">Meta: <b>${meta ? money(meta) : 'sin meta'}</b>${meta ? ` · ${pct}%` : ''}</div>
+        <div class="c-line">Actual: <b class="v">${moneyVis(c.saldo)}</b></div>
+        <div class="c-line">Meta: <b>${meta ? moneyVis(meta) : 'sin meta'}</b>${meta ? ` · ${pct}%` : ''}</div>
         ${meta ? `<div class="bar"><i style="width:${pct}%"></i></div>` : ''}
-        ${meta && c.saldo >= meta ? '<div><span class="badge ok">🎉 Meta cumplida</span></div>' : ''}
+        ${sparkHTML(c)}
+        ${meta && c.saldo >= meta ? '<div><span class="badge ok">Meta cumplida</span></div>' : ''}
         ${c.detalle ? `<div class="c-sub rule"> ${esc(c.detalle)}</div>` : ''}
-        <div class="c-acts t3"><button class="btn btn-det" data-act="detalles" ${d}>Detalles</button><button class="btn btn-in" data-act="in" ${d}>+ Ingresar</button><button class="btn btn-red" data-act="out" ${d}>− Sacar</button></div></div>`;
+        <div class="c-acts t3"><button class="btn btn-det" data-act="detalles" ${d}>Detalles</button><button class="btn btn-in" data-act="in" ${d}>Ingresar</button><button class="btn btn-red" data-act="out" ${d}>Sacar</button></div></div>`;
     }
 
     function render() {
       const total = db.reduce((s, c) => s + c.saldo, 0);
-      $('#s-total').textContent = money(total);
+      $('#s-total').textContent = moneyVis(total, true);
       $('#s-sub').textContent = db.length ? `en ${db.length} caja${db.length === 1 ? '' : 's'}` : '';
       $('#btn-filtros').classList.toggle('has', filtro !== 'todas');
       $$('#pop button').forEach(b => b.classList.toggle('on', b.dataset.v === filtro));
@@ -589,7 +690,7 @@
     function movHTML(c, m) {
       const det = m.formato ? (m.detalle ? (m.formato === 'x' ? '' : EMO[m.formato] + ' ') + m.detalle : FMT[m.formato]) : m.detalle;
       return `<div class="mov ${m.tipo}">
-        <div><div class="mov-main">${m.tipo === 'in' ? ' +' : ' −'} ${money(m.monto)}</div>
+        <div><div class="mov-main">${m.tipo === 'in' ? ' +' : ' −'} ${moneyVis(m.monto)}</div>
         ${det ? `<div class="mov-det">${esc(det)}</div>` : ''}
         <div class="mov-sub">${m.nota ? esc(m.nota) + ' · ' : ''}${esc(m.fecha)}</div></div>
         <button class="btn-icon" data-act="delmov" data-id="${esc(c.id)}" data-mid="${esc(m.id)}" aria-label="Deshacer movimiento">🗑</button></div>`;
@@ -603,9 +704,9 @@
       const meta = c.meta || 0, pct = meta ? Math.min(100, Math.round(c.saldo / meta * 100)) : 0, d = `data-id="${esc(c.id)}"`;
       $('#det-titulo').textContent = ' ' + c.nombre;
       $('#det-body').innerHTML = `
-        <div class="c-line">Actual: <b class="v">${money(c.saldo)}</b></div>
-        <div class="c-line" style="margin-bottom:6px">Meta: <b>${meta ? money(meta) : 'sin meta'}</b>${meta ? ` · ${pct}%` : ''}</div>
-        ${meta ? `<div class="bar"><i style="width:${pct}%"></i></div><div class="c-sub" style="margin-top:6px">${c.saldo >= meta ? '🎉 ¡Meta cumplida!' : 'Faltan ' + money(meta - c.saldo)}</div>` : ''}
+        <div class="c-line">Actual: <b class="v">${moneyVis(c.saldo)}</b></div>
+        <div class="c-line" style="margin-bottom:6px">Meta: <b>${meta ? moneyVis(meta) : 'sin meta'}</b>${meta ? ` · ${pct}%` : ''}</div>
+        ${meta ? `<div class="bar"><i style="width:${pct}%"></i></div><div class="c-sub" style="margin-top:6px">${c.saldo >= meta ? '¡Meta cumplida!' : 'Faltan ' + moneyVis(meta - c.saldo)}</div>` : ''}
         ${c.detalle ? `<div class="g-info"> ${esc(c.detalle)}</div>` : ''}
         <div class="g-btns"><button class="btn btn-in" data-act="in" ${d}>+ Ingresar</button><button class="btn btn-red" data-act="out" ${d}>− Sacar</button></div>
         <div class="sec">Movimientos (${c.movs.length})</div>
@@ -625,7 +726,17 @@
       if (a === 'detalles') return abrirDet(id);
       if (a === 'in' || a === 'out') return abrirMov(id, a);
       if (a === 'edit') return abrirCaja(id);
-      if (a === 'del') { const c = db.find(x => x.id === id); if (c && confirm(`¿Eliminar "${c.nombre}" y su historial?`)) { db = db.filter(x => x.id !== id); guardar(); } return; }
+      if (a === 'del') {
+        const c = db.find(x => x.id === id);
+        if (!c) return;
+        const idx = db.indexOf(c);
+        db = db.filter(x => x.id !== id);
+        guardar();
+        if (window.MiEspacio && MiEspacio.toast) {
+          MiEspacio.toast(`Caja "${c.nombre}" eliminada`, () => { db.splice(idx, 0, c); guardar(); });
+        }
+        return;
+      }
       if (a === 'delmov') return deshacerMov(id, b.dataset.mid);
     }
     $('#lista').addEventListener('click', acc);
@@ -682,43 +793,64 @@
       $$('#mov-tipo .chip').forEach(c => { c.classList.toggle('on', c.dataset.v === tipo); c.classList.toggle('out', tipo === 'out'); });
       $$('#mov-fmt .chip').forEach(c => c.classList.toggle('on', c.dataset.v === fmt));
       const c = db.find(x => x.id === cajaId) || {};
-      $('#mov-titulo').textContent = (tipo === 'in' ? 'Ingresar plata' : 'Sacar plata') + ' · ' + (c.nombre || '');
-      const info = $('#mov-info');   /* al retirar, se recuerda qué hay guardado en la caja */
+      $('#mov-titulo').textContent = (tipo === 'in' ? 'Ingresar a ' : 'Sacar de ') + (c.nombre || '');
+      const info = $('#mov-info');
       info.style.display = tipo === 'out' && c.detalle ? 'block' : 'none';
       info.textContent = c.detalle ? `Recuerda: ${c.detalle}` : '';
+      $('#mov-counter').style.display = fmt === 'c' ? 'block' : 'none';
+      $('#mov-numpad').style.display = fmt === 'b' ? 'grid' : 'none';
       actDen('mov');
     }
     function abrirMov(id, t) {
       cajaId = id; tipo = t; fmt = 'b';
+      denCounts = {}; renderDenCounter();
       ['#mov-monto', '#mov-den', '#mov-mb', '#mov-mm'].forEach(s => $(s).value = '');
       $('#mov-error').style.display = 'none';
       setChips(); abrir('#modal-mov');
       setVal('#mov-det', ''); setVal('#mov-nota', ''); setVal('#mov-mbd', ''); setVal('#mov-mmd', ''); totMix('mov');
-      setTimeout(() => $('#mov-monto').focus(), 150);
     }
     $('#mov-tipo').onclick = e => { const c = e.target.closest('.chip'); if (c) { tipo = c.dataset.v; setChips(); } };
-    $('#mov-fmt').onclick = e => { const c = e.target.closest('.chip'); if (c) { fmt = c.dataset.v; setChips(); } };
+    $('#mov-fmt').onclick = e => { const c = e.target.closest('.chip'); if (c) { fmt = c.dataset.v; setChips(); renderDenCounter(); } };
     const error = t => { const el = $('#mov-error'); el.textContent = t; el.style.display = 'block'; };
 
     $('#btn-confirmar').onclick = () => {
       const c = db.find(x => x.id === cajaId); if (!c) return;
       let monto = num($('#mov-monto').value), detMov = '';
       if (fmt === 'x') { const mb = num($('#mov-mb').value), mm = num($('#mov-mm').value); monto = mb + mm; detMov = textoMixto(mb, $('#mov-mbd').value.trim(), mm, $('#mov-mmd').value.trim()); }
-      else detMov = textoDinero(monto, fmt, num($('#mov-den').value), $('#mov-det').value.trim());
+      else if (fmt === 'c') {
+        monto = DENS.reduce((s, d) => s + d * (denCounts[d] || 0), 0);
+        detMov = DENS.filter(d => denCounts[d] > 0).map(d => `${denCounts[d]}×${money(d)}`).join(' + ');
+      } else detMov = textoDinero(monto, fmt, num($('#mov-den').value), $('#mov-det').value.trim());
       if (!monto) return error('Escribe un monto mayor a $0.');
       if (tipo === 'out' && monto > c.saldo) return error(`No alcanza: esta caja tiene ${money(c.saldo)}.`);
       vibrar();
-      c.saldo += tipo === 'in' ? monto : -monto;
-      c.movs.unshift({ id: uid('m_'), tipo, monto, formato: fmt, detalle: detMov, nota: $('#mov-nota').value.trim(), fecha: fecha() });
+      const movId = uid('m_');
+      const movTipo = tipo;
+      c.saldo += movTipo === 'in' ? monto : -monto;
+      c.movs.unshift({ id: movId, tipo: movTipo, monto, formato: fmt === 'c' ? 'b' : fmt, detalle: detMov, nota: $('#mov-nota').value.trim(), fecha: fecha() });
       cerrar(); guardar();
+      if (window.MiEspacio && MiEspacio.toast) {
+        MiEspacio.toast(`${movTipo === 'in' ? 'Ingreso' : 'Retiro'} de ${money(monto)} registrado`, () => {
+          c.saldo += movTipo === 'in' ? -monto : monto;
+          c.movs = c.movs.filter(x => x.id !== movId);
+          guardar();
+        });
+      }
     };
 
     function deshacerMov(id, mid) {
       const c = db.find(x => x.id === id), m = c && c.movs.find(x => x.id === mid); if (!m) return;
       const nuevo = c.saldo + (m.tipo === 'in' ? -m.monto : m.monto);
       if (nuevo < 0) return alert('No se puede deshacer: el saldo quedaría negativo.');
-      if (!confirm('¿Deshacer este movimiento? El saldo se ajusta.')) return;
+      const idx = c.movs.indexOf(m);
       c.saldo = nuevo; c.movs = c.movs.filter(x => x.id !== mid); guardar();
+      if (window.MiEspacio && MiEspacio.toast) {
+        MiEspacio.toast('Movimiento eliminado', () => {
+          c.saldo += m.tipo === 'in' ? m.monto : -m.monto;
+          c.movs.splice(idx, 0, m);
+          guardar();
+        });
+      }
     }
 
     /* ── Modales (el de Detalles queda abierto cuando se cierra uno que se abrió encima) ── */
@@ -784,6 +916,10 @@
     if (mq.addEventListener) mq.addEventListener('change', aplicarTema);
     aplicarTema();
     render();
+    if (location.hash === '#nuevo-mov' && db.length) {
+      history.replaceState(null, '', location.pathname);
+      setTimeout(() => abrirMov(db[0].id, 'in'), 150);
+    }
   </script>
   <script>
     /* ── Letra de los títulos y color (se guardan en el navegador) ── */

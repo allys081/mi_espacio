@@ -1,17 +1,17 @@
-/* Mi Espacio · código común: service worker + respaldo total + barra inferior */
+/* Mi Espacio · código común: service worker + IndexedDB para fotos + respaldo total + avisos con Deshacer + barra inferior */
 (function () {
   var s = document.currentScript;
   var base = s ? s.src.replace(/app\.js.*$/, '') : './';
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     addEventListener('load', function () {
-      navigator.serviceWorker.register(base + 'sw.js?v=4').then(function (reg) {
+      navigator.serviceWorker.register(base + 'sw.js?v=5').then(function (reg) {
         if (reg && reg.update) reg.update().catch(function () {});
       }).catch(function () {});
     });
   }
 
-  // Todas las claves que usa el proyecto (ver README, sección "Datos")
+  // Todas las claves que usa el proyecto
   var PREF = /^(org_|vista_|color_|estacion_|malla|app_|portada_)/;
 
   function claves() {
@@ -25,12 +25,154 @@
     return k;
   }
 
+  /* ── IndexedDB para fotos (así dejan de consumir el límite de 5 MB de localStorage) ── */
+  var DB_NAME = 'mi_espacio_fotos_db', STORE = 'fotos';
+  var memFotos = {}; // caché en memoria para lectura síncrona inmediata
+  var fotosBytesTotal = 0;
+  var dbProm = null;
+
+  function abrirDB() {
+    if (dbProm) return dbProm;
+    dbProm = new Promise(function (ok) {
+      if (!window.indexedDB) return ok(null);
+      try {
+        var req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = function (e) {
+          var db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
+        };
+        req.onsuccess = function (e) { ok(e.target.result); };
+        req.onerror = function () { ok(null); };
+      } catch (e) { ok(null); }
+    });
+    return dbProm;
+  }
+
+  function recalcularBytesFotos() {
+    var chars = 0;
+    Object.keys(memFotos).forEach(function (k) {
+      if (typeof memFotos[k] === 'string') chars += memFotos[k].length;
+    });
+    fotosBytesTotal = chars;
+  }
+
+  var fotosReadyProm = abrirDB().then(function (db) {
+    if (!db) return;
+    return new Promise(function (ok) {
+      try {
+        var tx = db.transaction(STORE, 'readonly');
+        var st = tx.objectStore(STORE);
+        var reqK = st.getAllKeys();
+        var reqV = st.getAll();
+        tx.oncomplete = function () {
+          var ks = reqK.result || [], vs = reqV.result || [];
+          for (var i = 0; i < ks.length; i++) memFotos[ks[i]] = vs[i];
+          recalcularBytesFotos();
+          migrarFotosLocalStorage();
+          dispatchEvent(new CustomEvent('miespacio:fotos-listas'));
+          ok();
+        };
+        tx.onerror = function () { ok(); };
+      } catch (e) { ok(); }
+    });
+  });
+
+  function guardarFoto(id, dataUrl) {
+    if (!id) return '';
+    if (!dataUrl) {
+      delete memFotos[id];
+      recalcularBytesFotos();
+      abrirDB().then(function (db) {
+        if (!db) return;
+        try { var tx = db.transaction(STORE, 'readwrite'); tx.objectStore(STORE).delete(id); } catch (e) {}
+      });
+      return '';
+    }
+    if (String(dataUrl).indexOf('idb:') === 0) return dataUrl;
+    memFotos[id] = dataUrl;
+    recalcularBytesFotos();
+    abrirDB().then(function (db) {
+      if (!db) return;
+      try { var tx = db.transaction(STORE, 'readwrite'); tx.objectStore(STORE).put(dataUrl, id); } catch (e) {}
+    });
+    return 'idb:' + id;
+  }
+
+  function obtenerFoto(ref) {
+    if (!ref || typeof ref !== 'string') return null;
+    if (ref.indexOf('idb:') === 0) {
+      var id = ref.slice(4);
+      return memFotos[id] || null;
+    }
+    return ref;
+  }
+
+  // Migra automáticamente fotos base64 guardadas en org_cajas, org_compras y estacion_cosas a IndexedDB
+  function migrarFotosLocalStorage() {
+    try {
+      // 1. org_cajas
+      var cajas = JSON.parse(localStorage.getItem('org_cajas') || 'null');
+      var modCajas = false;
+      if (Array.isArray(cajas)) {
+        cajas.forEach(function (c) {
+          if (c && typeof c.foto === 'string' && c.foto.indexOf('data:') === 0) {
+            c.foto = guardarFoto('caja_' + c.id, c.foto);
+            modCajas = true;
+          }
+          (c && c.items || []).forEach(function (it) {
+            if (it && typeof it.foto === 'string' && it.foto.indexOf('data:') === 0) {
+              it.foto = guardarFoto('obj_' + it.id, it.foto);
+              modCajas = true;
+            }
+          });
+        });
+        if (modCajas) localStorage.setItem('org_cajas', JSON.stringify(cajas));
+      }
+      // 2. org_compras
+      var compras = JSON.parse(localStorage.getItem('org_compras') || 'null');
+      var modComp = false;
+      if (Array.isArray(compras)) {
+        compras.forEach(function (c) {
+          (c && c.items || []).forEach(function (p) {
+            if (p && typeof p.foto === 'string' && p.foto.indexOf('data:') === 0) {
+              p.foto = guardarFoto('prod_' + p.id, p.foto);
+              modComp = true;
+            }
+            if (p && typeof p.fotoTienda === 'string' && p.fotoTienda.indexOf('data:') === 0) {
+              p.fotoTienda = guardarFoto('tienda_' + p.id, p.fotoTienda);
+              modComp = true;
+            }
+          });
+        });
+        if (modComp) localStorage.setItem('org_compras', JSON.stringify(compras));
+      }
+      // 3. estacion_cosas
+      var cosas = JSON.parse(localStorage.getItem('estacion_cosas') || 'null');
+      var modCosas = false;
+      if (cosas && typeof cosas === 'object') {
+        ['renaico', 'hualqui'].forEach(function (lug) {
+          (cosas[lug] || []).forEach(function (cs) {
+            if (cs && typeof cs.foto === 'string' && cs.foto.indexOf('data:') === 0) {
+              cs.foto = guardarFoto('cosa_' + cs.id, cs.foto);
+              modCosas = true;
+            }
+          });
+        });
+        if (modCosas) localStorage.setItem('estacion_cosas', JSON.stringify(cosas));
+      }
+    } catch (e) {}
+  }
+
   function exportar(filtro) {
     var datos = {};
     claves().forEach(function (k) {
       if (!filtro || filtro.test(k)) datos[k] = localStorage.getItem(k);
     });
-    return { app: 'mi-espacio', version: 4, fecha: new Date().toISOString(), datos: datos };
+    var fotos = {};
+    if (!filtro) {
+      Object.keys(memFotos).forEach(function (k) { fotos[k] = memFotos[k]; });
+    }
+    return { app: 'mi-espacio', version: 5, fecha: new Date().toISOString(), datos: datos, fotos: fotos };
   }
 
   function descargar(obj, nombre) {
@@ -48,7 +190,6 @@
     return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
   }
 
-  // Lee un archivo de respaldo y devuelve {clave: valor}.
   function leerArchivo(file, filtro) {
     return new Promise(function (ok, fail) {
       var r = new FileReader();
@@ -57,13 +198,16 @@
         try {
           var o = JSON.parse(r.result), d = null;
           if (o && o.datos && typeof o.datos === 'object') d = o.datos;
-          else if (o && (o.estacion_detallada_data || o.org_cajas)) d = o; // claves sueltas
+          else if (o && (o.estacion_detallada_data || o.org_cajas)) d = o;
           if (!d) throw new Error('Formato no reconocido.');
           var out = {};
           Object.keys(d).forEach(function (k) {
             if (PREF.test(k) && (!filtro || filtro.test(k)) && typeof d[k] === 'string') out[k] = d[k];
           });
           if (!Object.keys(out).length) throw new Error('El archivo no trae datos de esta sección.');
+          if (o && o.fotos && typeof o.fotos === 'object') {
+            Object.keys(o.fotos).forEach(function (id) { guardarFoto(id, o.fotos[id]); });
+          }
           ok(out);
         } catch (e) { fail(e); }
       };
@@ -73,6 +217,7 @@
 
   function aplicar(datos) {
     Object.keys(datos).forEach(function (k) { localStorage.setItem(k, datos[k]); });
+    migrarFotosLocalStorage();
   }
 
   function uso() {
@@ -84,7 +229,14 @@
       }
     } catch (e) {}
     var bytes = chars * 2, limite = 5 * 1024 * 1024;
-    return { bytes: bytes, limite: limite, pct: Math.min(100, Math.round(bytes / limite * 100)) };
+    // También suma fotos base64 que aún estén inline
+    var fBytes = Math.round(fotosBytesTotal * 0.75);
+    return {
+      bytes: bytes,
+      limite: limite,
+      pct: Math.min(100, Math.round(bytes / limite * 100)),
+      fotosBytes: fBytes
+    };
   }
 
   function leerJSON(k, d) {
@@ -92,6 +244,51 @@
       var v = JSON.parse(localStorage.getItem(k));
       return v !== null && v !== undefined ? v : d;
     } catch (e) { return d; }
+  }
+
+  /* ── Aviso inferior con botón "Deshacer" por 6 segundos (reemplaza confirm) ── */
+  var undoTimer = null, currentUndoFn = null;
+  function mostrarToast(texto, onUndo, ms) {
+    var box = document.getElementById('mi-undo-toast');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'mi-undo-toast';
+      box.style.cssText = 'position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);width:min(92vw,420px);background:var(--text,#efeaf7);color:var(--bg,#14121a);padding:11px 15px;border-radius:14px;font:700 .84rem "Plus Jakarta Sans",system-ui,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 28px rgba(0,0,0,.35);z-index:250;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s';
+      document.body.appendChild(box);
+    }
+    clearTimeout(undoTimer);
+    currentUndoFn = typeof onUndo === 'function' ? onUndo : null;
+    var dur = ms || (currentUndoFn ? 6000 : 2500);
+    box.innerHTML = '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+      String(texto).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }) +
+      '</span>' +
+      (currentUndoFn ? '<button type="button" id="mi-undo-btn" style="background:none;border:0;color:var(--g1,#7c5cd6);font:800 .84rem inherit;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:4px 6px;border-radius:8px;white-space:nowrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 010 11H11"/></svg>Deshacer</button>' : '');
+    box.style.opacity = '1';
+    box.style.transform = 'translate(-50%,0)';
+    box.style.pointerEvents = 'auto';
+    var btn = document.getElementById('mi-undo-btn');
+    if (btn) {
+      btn.onclick = function () {
+        clearTimeout(undoTimer);
+        box.style.opacity = '0';
+        box.style.transform = 'translate(-50%,16px)';
+        box.style.pointerEvents = 'none';
+        if (currentUndoFn) { var fn = currentUndoFn; currentUndoFn = null; fn(); }
+      };
+    }
+    undoTimer = setTimeout(function () {
+      box.style.opacity = '0';
+      box.style.transform = 'translate(-50%,16px)';
+      box.style.pointerEvents = 'none';
+      currentUndoFn = null;
+    }, dur);
+  }
+
+  function respaldoViejo() {
+    var t = leerJSON('portada_ultimo_respaldo', null);
+    if (!t) return false;
+    var d = Math.floor((Date.now() - new Date(t)) / 864e5);
+    return d >= 30;
   }
 
   function actualizarNav() {
@@ -157,7 +354,14 @@
     leerArchivo: leerArchivo,
     aplicar: aplicar,
     uso: uso,
-    actualizarNav: actualizarNav
+    actualizarNav: actualizarNav,
+    toast: mostrarToast,
+    respaldoViejo: respaldoViejo,
+    fotos: {
+      guardar: guardarFoto,
+      obtener: obtenerFoto,
+      listo: fotosReadyProm
+    }
   };
 
   /* Barra inferior común (todas las páginas menos la portada, que trae la suya) */

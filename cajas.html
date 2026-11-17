@@ -824,26 +824,53 @@
     .menu { max-height: 75vh; overflow-y: auto; min-width: 230px; }
     .menu .font-btn.on { background: var(--p-soft); color: var(--p); }
 
-    /* ===== Cajas: tarjetas con color, ubicación corta y filtros ===== */
+    /* ===== Cajas: tarjetas con color, inicial, ubicación corta, orden, selección múltiple y etiqueta imprimible ===== */
+    .top-bar { grid-template-columns: 44px 1fr 96px; }
+    .sq { width: 44px; height: 44px; border-radius: 14px; }
     .chips-ubi { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 12px; scrollbar-width: none; }
     .chips-ubi::-webkit-scrollbar { display: none; }
-    .chips-ubi button { flex: none; padding: 7px 14px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font: 700 .78rem inherit; font-family: inherit; cursor: pointer; }
+    .chips-ubi button { flex: none; min-height: 38px; padding: 7px 14px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font: 700 .78rem inherit; font-family: inherit; cursor: pointer; }
     .chips-ubi button.on { background: var(--p); border-color: var(--p); color: var(--on-p, #14121a); }
+    .sort-sel { height: 36px; border-radius: 11px; border: 1px solid var(--border); background: var(--card); color: var(--text); font: 700 .78rem inherit; padding: 0 10px; cursor: pointer; outline: none; }
     .group-card.tile { padding: 0; gap: 0; overflow: hidden; }
-    .tile-band { height: 54px; display: flex; align-items: flex-end; gap: 5px; padding: 0 12px 7px; background-size: cover; background-position: center; }
+    .tile-band { height: 64px; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 0 12px; background-size: cover; background-position: center; position: relative; }
+    .tile-band.bars { align-items: flex-end; justify-content: flex-start; padding-bottom: 8px; }
     .tile-band s { width: 16px; border-radius: 5px 5px 0 0; background: rgba(255,255,255,.62); text-decoration: none; }
-    .tile-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+    .tile-init { font-family: var(--serif); font-size: 2rem; font-weight: 700; color: rgba(255,255,255,.92); line-height: 1; text-shadow: 0 2px 6px rgba(0,0,0,.18); }
+    .tile-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
     .tile-body .c-name { font-size: .98rem; line-height: 1.2; }
-    .tile-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; }
+    .tile-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: auto; padding-top: 6px; }
     .tile-foot .loc-pill { flex: 0 1 auto; }
-    .tile-act { margin-left: auto; }
+    .tile-act { margin-left: auto; display: flex; gap: 4px; flex: none; }
     .loc-pill { font-size: .7rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: var(--p-soft); color: var(--p); border: 1px solid var(--p-line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
     .loc-pill.vacia { background: transparent; color: var(--muted); border-style: dashed; }
-    .tile-act { display: flex; gap: 4px; flex: none; }
-    .tile-act button { width: 30px; height: 30px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-elevated, var(--bg)); color: var(--text); cursor: pointer; font-size: .85rem; }
-    .card-list:not(.grid) .tile-band { height: 38px; }
+    .tile-act button { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-elevated, var(--bg)); color: var(--text); cursor: pointer; font-size: .85rem; display: grid; place-items: center; }
+    .card-list:not(.grid) .tile-band { height: 44px; }
+    /* Selección múltiple de objetos */
+    .sel-top-bar { display: none; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; margin-bottom: 8px; border-radius: 12px; background: var(--p-soft); color: var(--p); font-weight: 700; font-size: .82rem; }
+    .sel-top-bar.on { display: flex; }
+    .sel-top-bar button { border: 0; background: none; color: var(--p); font: 800 .8rem inherit; cursor: pointer; padding: 4px 8px; border-radius: 8px; }
+    .sel-chk { width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--border); background: var(--bg); display: grid; place-items: center; flex-shrink: 0; color: transparent; font-weight: 800; font-size: .8rem; transition: .14s; }
+    .sel-chk.on { background: var(--p); border-color: var(--p); color: var(--on-p); }
+    .sel-foot-bar { display: none; align-items: center; gap: 8px; padding-top: 10px; margin-top: 6px; border-top: 1px solid var(--border); }
+    .sel-foot-bar.on { display: flex; }
+    /* Etiqueta imprimible */
+    .lbl-sheet { background: #ffffff; color: #1a1a1a; border-radius: 14px; padding: 18px 20px; border: 1px solid var(--border); margin-bottom: 10px; }
+    .lbl-sheet h2 { font-family: var(--serif); font-size: 1.55rem; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: #111; margin: 0; }
+    .lbl-sheet .lbl-sub { font-size: .82rem; font-weight: 600; color: #555; padding-bottom: 10px; margin: 3px 0 10px; border-bottom: 1.5px solid #e5e5e5; }
+    .lbl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 14px; font-size: .82rem; color: #222; font-weight: 600; }
+    .lbl-cols span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lbl-cols span.more { color: #777; font-style: italic; }
+    @media print {
+      body * { visibility: hidden !important; }
+      #modal-etiqueta, #modal-etiqueta .lbl-sheet, #modal-etiqueta .lbl-sheet * { visibility: visible !important; }
+      #modal-etiqueta { position: absolute !important; inset: 0 !important; background: #fff !important; display: block !important; padding: 0 !important; }
+      #modal-etiqueta .modal { box-shadow: none !important; border: 0 !important; max-width: 100% !important; padding: 0 !important; }
+      #modal-etiqueta .lbl-sheet { border: 2px solid #000 !important; max-width: 14cm !important; margin: 1cm auto !important; }
+      #modal-etiqueta .no-print { display: none !important; }
+    }
   </style>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </head>
 <body>
   <div class="container">
@@ -894,12 +921,19 @@
       <div id="search-items" class="minimal-list" style="background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 6px 12px;"></div>
     </div>
 
-    <!-- Barra de conteo y vista -->
+    <!-- Barra de conteo, orden y vista -->
     <div class="tools">
       <span class="tot">Total cajas: <b id="tot-cajas">0</b><span id="tot-objs"></span></span>
-      <div class="view" id="view">
-        <button data-v="list" aria-label="Vista de lista">☰</button>
-        <button data-v="grid" class="on" aria-label="Vista de cuadrícula">⊞</button>
+      <div style="display:flex;align-items:center;gap:6px">
+        <select class="sort-sel" id="sel-orden" aria-label="Ordenar cajas">
+          <option value="nombre">Ordenar: Nombre</option>
+          <option value="cantidad">Ordenar: Cantidad</option>
+          <option value="edicion">Ordenar: Recientes</option>
+        </select>
+        <div class="view" id="view">
+          <button data-v="list" aria-label="Vista de lista">☰</button>
+          <button data-v="grid" class="on" aria-label="Vista de cuadrícula">⊞</button>
+        </div>
       </div>
     </div>
 
@@ -921,10 +955,20 @@
         <div id="det-foto"></div>
         <div style="flex:1; min-width:0">
           <h3 id="det-titulo">Nombre Caja</h3>
-          <div class="c-sub" id="det-sub">0 objetos · 📍 Ubicación</div>
+          <div class="c-sub" id="det-sub">0 objetos · Ubicación</div>
         </div>
-        <button class="sq" id="det-edit" data-act="editcaja" aria-label="Editar caja" title="Editar caja">✎</button>
-        <button class="sq" data-close aria-label="Cerrar">✕</button>
+        <button class="sq" id="det-sel" title="Seleccionar varios objetos" aria-label="Seleccionar varios" style="width:38px;height:38px">⇄</button>
+        <button class="sq" id="det-print" title="Etiqueta imprimible" aria-label="Etiqueta de la caja" style="width:38px;height:38px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="6" y="14" width="12" height="7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/></svg></button>
+        <button class="sq" id="det-edit" data-act="editcaja" aria-label="Editar caja" title="Editar caja" style="width:38px;height:38px">✎</button>
+        <button class="sq" data-close aria-label="Cerrar" style="width:38px;height:38px">✕</button>
+      </div>
+
+      <div class="sel-top-bar" id="sel-top-bar">
+        <span id="sel-count">0 seleccionados</span>
+        <div>
+          <button type="button" id="btn-sel-all">Seleccionar todos</button>
+          <button type="button" id="btn-sel-cancel">✕</button>
+        </div>
       </div>
 
       <button class="btn-add-item-bar" id="btn-add-obj-inside">
@@ -935,6 +979,27 @@
         <div class="minimal-list" id="det-items-list">
           <!-- Filas de objetos sin recuadros pesados -->
         </div>
+      </div>
+
+      <div class="sel-foot-bar" id="sel-foot-bar">
+        <button class="btn btn-primary" style="flex:1;height:44px" id="btn-sel-mover">→ Mover a otra caja</button>
+        <button class="btn btn-secondary btn-danger" style="height:44px;padding:0 14px" id="btn-sel-del" aria-label="Eliminar seleccionados">🗑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Etiqueta imprimible de la caja -->
+  <div class="modal-overlay modal-center" id="modal-etiqueta" style="z-index:135">
+    <div class="modal">
+      <div class="pop-header no-print">
+        <h4 class="pop-title">Etiqueta de la caja</h4>
+        <button class="pop-close" data-close aria-label="Cerrar">✕</button>
+      </div>
+      <div class="lbl-sheet" id="etiqueta-content"></div>
+      <p class="no-print" style="font-size:.75rem;color:var(--muted);line-height:1.4;margin-bottom:14px">Tamaño media hoja. Se actualiza sola si cambias el contenido de la caja.</p>
+      <div class="modal-footer no-print" style="margin-top:0">
+        <button class="btn btn-secondary" style="flex:1;height:44px" data-close>Cerrar</button>
+        <button class="btn btn-primary" style="flex:1;height:44px" id="btn-imprimir-etiqueta">🖨 Imprimir</button>
       </div>
     </div>
   </div>
@@ -1333,8 +1398,11 @@
       r.readAsDataURL(file);
     }
 
+    const fotoReal = ref => (window.MiEspacio && MiEspacio.fotos ? MiEspacio.fotos.obtener(ref) : ref) || null;
+    const guardarFotoIDB = (id, data) => (window.MiEspacio && MiEspacio.fotos ? MiEspacio.fotos.guardar(id, data) : data) || null;
+
     function setPrev(k) {
-      const b = $(`.pbox[data-k="${k}"]`), src = fotos[k], im = b.querySelector('img');
+      const b = $(`.pbox[data-k="${k}"]`), src = fotoReal(fotos[k]), im = b.querySelector('img');
       im.src = src || ''; im.style.display = src ? 'block' : 'none';
       b.querySelector('.ph').style.display = src ? 'none' : 'block';
       b.querySelector('.rm').style.display = src ? 'flex' : 'none';
@@ -1353,32 +1421,36 @@
       const f = e.target.files[0]; if (!f) return;
       comprimir(f, 480, d => { fotos[inp.dataset.k] = d; setPrev(inp.dataset.k); });
     });
-    function verFoto(src, titulo) { $('#viewer-img').src = src; $('#viewer-title').textContent = titulo || 'Foto'; abrir('#modal-viewer'); }
+    function verFoto(src, titulo) { $('#viewer-img').src = fotoReal(src) || ''; $('#viewer-title').textContent = titulo || 'Foto'; abrir('#modal-viewer'); }
 
     /* ═══════════════════════════════════════════════════
-       RENDERIZADO: TARJETAS DE CAJAS & FILAS MINIMALISTAS
+        RENDERIZADO: TARJETAS DE CAJAS & FILAS MINIMALISTAS
        ═══════════════════════════════════════════════════ */
+    let modoSel = false;
+    let selIds = new Set();
+    let ordenCajas = 'nombre';
+    let moverMultiple = false;
 
-    /* Fila limpia minimalista para cada objeto (sin cajas pesadas) */
+    /* Fila limpia minimalista para cada objeto */
     function filaObjetoHTML(c, it, showCajaNombre) {
       const d = `data-c="${esc(c.id)}" data-i="${esc(it.id)}"`;
       const tieneCant = it.cantidad !== null;
-      const reponer = it.porReponer ? `<span class="mini-tag buy">🛒 Reponer</span>` : '';
+      const reponer = it.porReponer ? `<span class="mini-tag buy">Reponer</span>` : '';
       const cantTag = tieneCant ? `<span class="mini-tag qty">${it.cantidad} un.</span>` : '';
-      const prestadoTag = it.prestadoA ? `<span class="mini-tag" style="background:var(--warn-soft);color:var(--warn)">🤝 ${esc(it.prestadoA)}</span>` : '';
+      const prestadoTag = it.prestadoA ? `<span class="mini-tag" style="background:var(--warn-soft);color:var(--warn)">Prestado: ${esc(it.prestadoA)}</span>` : '';
       const detTag = it.detalles ? `<span class="mini-tag detail">${esc(it.detalles)}</span>` : '';
-      const cajaTag = showCajaNombre ? `<span class="mini-tag" style="background:var(--badge);color:var(--muted)">📦 ${esc(c.nombre)}</span>` : '';
+      const cajaTag = showCajaNombre ? `<span class="mini-tag" style="background:var(--badge);color:var(--muted)">${esc(c.nombre)}</span>` : '';
 
       if (showCajaNombre) {
-        const estado = (it.porReponer ? `<span class="mini-tag buy">🛒 Reponer</span>` : '') +
-                       (it.prestadoA ? `<span class="mini-tag" style="background:var(--warn-soft);color:var(--warn)">🤝 ${esc(it.prestadoA)}</span>` : '');
+        const estado = (it.porReponer ? `<span class="mini-tag buy">Reponer</span>` : '') +
+                       (it.prestadoA ? `<span class="mini-tag" style="background:var(--warn-soft);color:var(--warn)">Prestado: ${esc(it.prestadoA)}</span>` : '');
         return `
         <div class="item-row-simple" ${d} data-act="abrir-pop">
           <div class="item-left">
             <span class="item-bullet"></span>
             <div class="item-title-wrap">
               <div class="item-name">${esc(it.nombre)}</div>
-              <div class="item-sub"><span class="mini-tag" style="background:var(--badge);color:var(--muted)">📦 ${esc(c.nombre)}</span>${estado}</div>
+              <div class="item-sub"><span class="mini-tag" style="background:var(--badge);color:var(--muted)">${esc(c.nombre)}</span>${estado}</div>
             </div>
           </div>
           <div class="item-quick-btns" onclick="event.stopPropagation()">
@@ -1388,27 +1460,28 @@
         </div>`;
       }
 
+      const selOn = selIds.has(it.id);
       return `
-        <div class="item-row-simple" ${d} data-act="abrir-pop">
+        <div class="item-row-simple" ${d} data-act="${modoSel ? 'toggle-sel' : 'abrir-pop'}">
           <div class="item-left">
-            <span class="item-bullet"></span>
+            ${modoSel ? `<span class="sel-chk ${selOn ? 'on' : ''}">${selOn ? '✓' : ''}</span>` : '<span class="item-bullet"></span>'}
             <div class="item-title-wrap">
               <div class="item-name">${esc(it.nombre)}</div>
               ${ (cantTag || reponer || prestadoTag || detTag || cajaTag) ? `<div class="item-badges-mini">${cantTag}${reponer}${prestadoTag}${detTag}${cajaTag}</div>` : '' }
             </div>
           </div>
-          <div class="item-quick-btns" onclick="event.stopPropagation()">
+          ${modoSel ? '' : `<div class="item-quick-btns" onclick="event.stopPropagation()">
             <button class="btn-icon" data-act="edit" ${d} title="Editar">✎</button>
             <button class="btn-icon del" data-act="del" ${d} title="Eliminar">🗑</button>
-          </div>
+          </div>`}
         </div>
       `;
     }
 
-    /* Color propio por caja, ubicación corta y filtro por ubicación */
+    /* Color propio por caja, inicial cuando no hay foto, ubicación corta y filtro por ubicación */
     const BANDAS = ['#c8643f', '#5f8f7a', '#b9567a', '#4f7fb5', '#8a6fb0', '#b98524'];
     const hashId = id => { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
-    const nombreCorto = n => String(n).replace(/^caja\s+/i, '').replace(/^./, m => m.toUpperCase()) || n;
+    const nombreCorto = n => String(n).replace(/^caja\s+(de\s+)?/i, '').replace(/^./, m => m.toUpperCase()) || n;
     const ubiBase = u => String(u || '').split(',')[0].trim().split(/\s+/)[0] || '';
     const ubiCorta = u => { const p = String(u || '').split(',').map(x => x.trim()).filter(Boolean); if (!p.length) return ''; const b = ubiBase(u); const b2 = b.charAt(0).toUpperCase() + b.slice(1).toLowerCase(); return [b2].concat(p.slice(1).map(x => x.replace(/^(\d+)\s+(\S+)$/, '$2 $1'))).join(' · '); };
     let ubiFiltro = '';
@@ -1422,17 +1495,18 @@
       box.innerHTML = ['', ...ubis].map(u => `<button data-u="${esc(u)}" class="${norm(u) === norm(ubiFiltro) ? 'on' : ''}">${u ? esc(u) : 'Todas'}</button>`).join('');
     }
 
-    /* Tarjeta de cada caja (toca cualquier parte para ver los objetos) */
     function tarjetaCaja(c) {
       const d = `data-c="${esc(c.id)}"`, n = c.items.length, col = BANDAS[hashId(c.id) % BANDAS.length];
-      const barras = [0.55, 0.9, 0.4].map(f => `<s style="height:${Math.max(8, Math.round((10 + Math.min(n, 12) * 2.6) * f))}px"></s>`).join('');
-      const fondo = c.foto ? `background-image:linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.18)),url('${c.foto}')` : `background:${col}`;
+      const fSrc = fotoReal(c.foto);
+      const nc = nombreCorto(c.nombre);
+      const ini = (nc.charAt(0) || 'C').toUpperCase();
+      const fondo = fSrc ? `background-image:linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.18)),url('${fSrc}')` : `background:${col}`;
       const ubi = c.ubicacion ? `<span class="loc-pill" title="${esc(c.ubicacion)}">${esc(ubiCorta(c.ubicacion))}</span>` : '<span class="loc-pill vacia">Sin ubicación</span>';
       return `
         <div class="group-card tile" ${d} data-act="detalles">
-          <div class="tile-band" style="${fondo}">${c.foto ? '' : barras}</div>
+          <div class="tile-band" style="${fondo}">${fSrc ? '' : `<span class="tile-init">${esc(ini)}</span>`}</div>
           <div class="tile-body">
-            <div class="c-name">${esc(nombreCorto(c.nombre))}</div>
+            <div class="c-name">${esc(nc)}</div>
             <div class="c-sub">${n} objeto${n === 1 ? '' : 's'}</div>
             <div class="tile-foot">${ubi}
               <span class="tile-act"><button data-act="newitem" ${d} title="Agregar objeto" aria-label="Agregar objeto">＋</button><button data-act="delcaja" ${d} title="Eliminar caja" aria-label="Eliminar caja">🗑</button></span>
@@ -1451,7 +1525,9 @@
       $('#tot-objs').textContent = db.length ? ` · ${nIt} objeto${nIt === 1 ? '' : 's'}` : '';
 
       chipsUbi();
-      const vis = ubiFiltro ? db.filter(c => norm(ubiBase(c.ubicacion)) === norm(ubiFiltro)) : db;
+      let vis = ubiFiltro ? db.filter(c => norm(ubiBase(c.ubicacion)) === norm(ubiFiltro)) : [...db];
+      if (ordenCajas === 'nombre') vis.sort((a, b) => nombreCorto(a.nombre).localeCompare(nombreCorto(b.nombre), 'es'));
+      else if (ordenCajas === 'cantidad') vis.sort((a, b) => b.items.length - a.items.length);
       cont.innerHTML = db.length
         ? vis.map(tarjetaCaja).join('')
         : `<div style="grid-column:1/-1; text-align:center; color:var(--muted); padding:48px 0; font-size:.9rem;">No tienes cajas creadas.<br>Toca <b>＋ Caja</b> para comenzar.</div>`;
@@ -1461,21 +1537,34 @@
       if (popObj) actualizarPopCenter();
     }
 
+    $('#sel-orden').onchange = e => { ordenCajas = e.target.value; render(); };
+
     /* Hoja de objetos de la caja */
     function abrirDet(id) {
       detId = id;
+      modoSel = false;
+      selIds.clear();
       renderDet();
       abrir('#modal-det');
+    }
+
+    function actualizarBarraSel() {
+      $('#sel-top-bar').classList.toggle('on', modoSel);
+      $('#sel-foot-bar').classList.toggle('on', modoSel);
+      $('#btn-add-obj-inside').style.display = modoSel ? 'none' : 'flex';
+      $('#sel-count').textContent = `${selIds.size} seleccionado${selIds.size === 1 ? '' : 's'}`;
     }
 
     function renderDet() {
       const c = db.find(x => x.id === detId);
       if (!c) { detId = null; $('#modal-det').classList.remove('active'); return; }
       const d = `data-c="${esc(c.id)}"`, n = c.items.length;
+      const fSrc = fotoReal(c.foto);
       $('#det-edit').dataset.c = c.id;
       $('#det-titulo').textContent = c.nombre;
-      $('#det-sub').textContent = `${n} objeto${n === 1 ? '' : 's'} · 📍 ${c.ubicacion || 'Sin ubicación'}`;
-      $('#det-foto').innerHTML = c.foto ? `<img src="${c.foto}" class="caja-thumb" data-act="fotocaja" ${d} alt="Foto">` : '';
+      $('#det-sub').textContent = `${n} objeto${n === 1 ? '' : 's'} · ${c.ubicacion || 'Sin ubicación'}`;
+      $('#det-foto').innerHTML = fSrc ? `<img src="${fSrc}" class="caja-thumb" data-act="fotocaja" ${d} alt="Foto">` : '';
+      actualizarBarraSel();
 
       const listContainer = $('#det-items-list');
       if (n === 0) {
@@ -1484,6 +1573,82 @@
         listContainer.innerHTML = c.items.map(it => filaObjetoHTML(c, it, false)).join('');
       }
     }
+
+    // Selección múltiple: botón ⇄ o mantener presionado un objeto
+    $('#det-sel').onclick = () => {
+      const c = db.find(x => x.id === detId);
+      if (!c || !c.items.length) return toast('No hay objetos para seleccionar');
+      modoSel = !modoSel;
+      selIds.clear();
+      renderDet();
+    };
+    $('#btn-sel-cancel').onclick = () => { modoSel = false; selIds.clear(); renderDet(); };
+    $('#btn-sel-all').onclick = () => {
+      const c = db.find(x => x.id === detId); if (!c) return;
+      if (selIds.size === c.items.length) selIds.clear();
+      else c.items.forEach(it => selIds.add(it.id));
+      renderDet();
+    };
+    {
+      let lpTimer = null;
+      const listEl = $('#det-items-list');
+      const startLP = e => {
+        const row = e.target.closest('.item-row-simple');
+        if (!row || modoSel) return;
+        lpTimer = setTimeout(() => {
+          vibrar();
+          modoSel = true;
+          selIds.clear();
+          selIds.add(row.dataset.i);
+          renderDet();
+        }, 480);
+      };
+      const clearLP = () => clearTimeout(lpTimer);
+      listEl.addEventListener('touchstart', startLP, { passive: true });
+      listEl.addEventListener('touchend', clearLP);
+      listEl.addEventListener('touchmove', clearLP);
+      listEl.addEventListener('mousedown', startLP);
+      listEl.addEventListener('mouseup', clearLP);
+    }
+
+    $('#btn-sel-mover').onclick = () => {
+      if (!selIds.size) return toast('Selecciona al menos un objeto');
+      const otras = db.filter(x => x.id !== detId);
+      if (!otras.length) return toast('Crea otra caja primero para mover objetos');
+      moverMultiple = true;
+      cajaId = detId;
+      $('#mover-titulo').textContent = `Mover ${selIds.size} objeto${selIds.size === 1 ? '' : 's'}`;
+      $('#mover-destino').innerHTML = otras.map(x => `<option value="${esc(x.id)}">${esc(x.nombre)}${x.ubicacion ? ' — ' + esc(x.ubicacion) : ''}</option>`).join('');
+      abrir('#modal-mover');
+    };
+
+    $('#btn-sel-del').onclick = () => {
+      if (!selIds.size) return toast('Selecciona al menos un objeto');
+      const c = db.find(x => x.id === detId); if (!c) return;
+      const backup = [...c.items];
+      const count = selIds.size;
+      c.items = c.items.filter(it => !selIds.has(it.id));
+      modoSel = false; selIds.clear();
+      guardar();
+      if (window.MiEspacio && MiEspacio.toast) {
+        MiEspacio.toast(`${count} objeto${count === 1 ? ' eliminado' : 's eliminados'}`, () => { c.items = backup; guardar(); });
+      } else toast('Objetos eliminados');
+    };
+
+    // Etiqueta imprimible de la caja
+    $('#det-print').onclick = () => {
+      const c = db.find(x => x.id === detId); if (!c) return;
+      const maxShow = 9;
+      const shown = c.items.slice(0, maxShow).map(it => `<span>${esc(it.nombre)}${it.cantidad !== null ? ' (' + it.cantidad + ')' : ''}</span>`).join('');
+      const extra = c.items.length > maxShow ? `<span class="more">y ${c.items.length - maxShow} más</span>` : '';
+      $('#etiqueta-content').innerHTML = `
+        <h2>${esc(nombreCorto(c.nombre))}</h2>
+        <div class="lbl-sub">${esc(c.ubicacion || 'Sin ubicación')} · ${c.items.length} objeto${c.items.length === 1 ? '' : 's'}</div>
+        <div class="lbl-cols">${shown}${extra || (c.items.length === 0 ? '<span class="more">Caja vacía</span>' : '')}</div>
+      `;
+      abrir('#modal-etiqueta');
+    };
+    $('#btn-imprimir-etiqueta').onclick = () => window.print();
 
     /* ═══════════════════════════════════════════════════
        VENTANA EMERGENTE EN EL MEDIO (CENTRO DE PANTALLA)
@@ -1517,8 +1682,8 @@
       }
 
       // Foto del objeto (marco horizontal)
-      const pf = $('#pop-photo-box');
-      if (it.foto) { $('#pop-photo').src = it.foto; pf.style.display = 'block'; }
+      const pf = $('#pop-photo-box'), fObj = fotoReal(it.foto);
+      if (fObj) { $('#pop-photo').src = fObj; pf.style.display = 'block'; }
       else { $('#pop-photo').removeAttribute('src'); pf.style.display = 'none'; }
 
       // Contador numérico
@@ -1604,14 +1769,24 @@
         return abrirCaja(c.id);
       }
 
-      // Eliminar caja
+      // Seleccionar / deseleccionar objeto en modo selección múltiple
+      if (act === 'toggle-sel' && c && it) {
+        vibrar();
+        if (selIds.has(it.id)) selIds.delete(it.id);
+        else selIds.add(it.id);
+        renderDet();
+        return;
+      }
+
+      // Eliminar caja con Deshacer
       if (act === 'delcaja' && c) {
         vibrar();
-        if (confirm(`¿Eliminar la caja "${c.nombre}" y todo su contenido?`)) {
-          db = db.filter(x => x.id !== c.id);
-          guardar();
-          toast('Caja eliminada');
-        }
+        const idx = db.indexOf(c);
+        db = db.filter(x => x.id !== c.id);
+        guardar();
+        if (window.MiEspacio && MiEspacio.toast) {
+          MiEspacio.toast(`Caja "${c.nombre}" eliminada`, () => { db.splice(idx, 0, c); guardar(); });
+        } else toast('Caja eliminada');
         return;
       }
 
@@ -1626,15 +1801,21 @@
         return abrirItem(c.id, it.id);
       }
 
-      // Eliminar objeto desde la fila
+      // Eliminar objeto desde la fila con Deshacer
       if (act === 'del' && c && it) {
         vibrar();
-        if (confirm(`¿Eliminar "${it.nombre}"?`)) {
-          if (it.porReponer) setReponer(c, it, false);
-          c.items = c.items.filter(x => x.id !== it.id);
-          guardar();
-          toast('Objeto eliminado');
-        }
+        const idx = c.items.indexOf(it);
+        const eraRep = it.porReponer;
+        if (eraRep) setReponer(c, it, false);
+        c.items = c.items.filter(x => x.id !== it.id);
+        guardar();
+        if (window.MiEspacio && MiEspacio.toast) {
+          MiEspacio.toast(`"${it.nombre}" eliminado`, () => {
+            c.items.splice(idx, 0, it);
+            if (eraRep) setReponer(c, it, true);
+            guardar();
+          });
+        } else toast('Objeto eliminado');
         return;
       }
     }
@@ -1738,10 +1919,12 @@
       if (!nombre) return;
       vibrar();
       const ubicacion = $('#caja-ubi').value.trim();
+      const id = cajaId || uid('c_');
+      const fotoRef = fotos.cajaFoto ? guardarFotoIDB('caja_' + id, fotos.cajaFoto) : null;
       if (cajaId) {
-        Object.assign(db.find(x => x.id === cajaId), { nombre, ubicacion, foto: fotos.cajaFoto });
+        Object.assign(db.find(x => x.id === cajaId), { nombre, ubicacion, foto: fotoRef });
       } else {
-        db.unshift({ id: uid('c_'), nombre, ubicacion, foto: fotos.cajaFoto, items: [] });
+        db.unshift({ id, nombre, ubicacion, foto: fotoRef, items: [] });
       }
       cerrar();
       guardar();
@@ -1777,12 +1960,14 @@
       const c = db.find(x => x.id === cajaId);
       if (!c) return;
 
+      const idObj = itemId || uid('it_');
+      const fotoRef = fotos.itemFoto ? guardarFotoIDB('obj_' + idObj, fotos.itemFoto) : null;
       const datos = {
         nombre,
         detalles: $('#item-detalles').value.trim(),
         cantidad: cantN($('#item-cantidad').value),
         prestadoA: $('#item-prestado').value.trim(),
-        foto: fotos.itemFoto,
+        foto: fotoRef,
         fecha: fechaActual()
       };
 
@@ -1791,7 +1976,7 @@
         it = c.items.find(x => x.id === itemId);
         Object.assign(it, datos);
       } else {
-        it = normItem({ id: uid('it_'), ...datos });
+        it = normItem({ id: idObj, ...datos });
         c.items.unshift(it);
       }
 
@@ -1807,6 +1992,7 @@
        MOVER OBJETO A OTRA CAJA
        ═══════════════════════════════════════════════════ */
     function abrirMover(cid, iid) {
+      moverMultiple = false;
       cajaId = cid;
       itemId = iid;
       const c = db.find(x => x.id === cid), it = c.items.find(x => x.id === iid);
@@ -1821,8 +2007,23 @@
     $('#btn-confirmar-mover').onclick = () => {
       const c = db.find(x => x.id === cajaId);
       const dest = db.find(x => x.id === $('#mover-destino').value);
+      if (!c || !dest) return;
+
+      if (moverMultiple) {
+        const movidos = c.items.filter(x => selIds.has(x.id));
+        if (!movidos.length) return;
+        vibrar();
+        c.items = c.items.filter(x => !selIds.has(x.id));
+        movidos.forEach(m => { m.fecha = fechaActual(); dest.items.unshift(m); });
+        const count = movidos.length;
+        modoSel = false; selIds.clear(); moverMultiple = false;
+        cerrar(); guardar();
+        toast(`${count} objeto${count === 1 ? ' movido' : 's movidos'} a ${dest.nombre}`);
+        return;
+      }
+
       const it = c && c.items.find(x => x.id === itemId);
-      if (!it || !dest) return;
+      if (!it) return;
 
       vibrar();
       c.items = c.items.filter(x => x.id !== itemId);
@@ -1980,6 +2181,11 @@
     aplicarAcc();
     if (sincronizar()) { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch(e){} }
     render();
+    addEventListener('miespacio:fotos-listas', render);
+    if (location.hash === '#nuevo-obj' && db.length) {
+      history.replaceState(null, '', location.pathname);
+      setTimeout(() => abrirItem(db[0].id), 150);
+    }
   </script>
 </body>
 </html>

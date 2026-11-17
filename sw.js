@@ -1,10 +1,10 @@
 /* Mi Espacio · service worker
    - Páginas y código: primero la red con cache:'no-cache' (así ves siempre la versión nueva al instante) y, sin internet, lo guardado.
    - Tipografías de Google: se guardan la primera vez y se reutilizan. */
-const VERSION = 'mi-espacio-v4';
+const VERSION = 'mi-espacio-v5';
 const PRECACHE = [
   './', 'index.html', 'organizador.html', 'cajas.html', 'compras.html', 'ahorros.html', 'traslado.html', 'instituto.html', 'malla.html',
-  'app.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'
+  'app.js', 'estacion.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'
 ];
 
 self.addEventListener('install', e => {

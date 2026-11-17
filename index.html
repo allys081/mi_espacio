@@ -27,12 +27,12 @@
     .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;flex-shrink:0}
     .eyebrow{font-size:.66rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
     .ibtns{display:flex;gap:8px;position:relative}
-    .ibtn{width:40px;height:40px;border-radius:13px;background:var(--card);border:1.5px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font:800 .92rem var(--serif);position:relative}
+    .ibtn{width:44px;height:44px;border-radius:14px;background:var(--card);border:1.5px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font:800 .95rem var(--serif);position:relative}
     .ibtn .dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--warn);display:none}
     .ibtn .dot.on{display:block}
     h1{text-align:center;font-family:var(--serif);font-size:clamp(1.45rem,4.5vh,1.8rem);font-weight:700;line-height:1.12;margin-top:0;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
     .sub{text-align:center;font-size:.8rem;color:var(--muted);margin:1px 0 8px;flex-shrink:0}
-    .stack{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px; justify-content:space-between}
+    .stack{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;justify-content:space-between}
     .hero{flex:1;min-height:0;overflow:hidden;border-radius:24px;padding:14px 16px 12px;color:#fff;background:linear-gradient(135deg,#7c5cd6 0%,#a04aa0 55%,#c2417a 100%);display:flex;flex-direction:column;justify-content:center;box-shadow:var(--shadow);text-decoration:none}
     .hero .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:0}
     .lbl{font-size:.64rem;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;opacity:.88}
@@ -50,40 +50,63 @@
     @media (max-height: 670px) {
       .lst .row:nth-of-type(2) { display: none; }
     }
-    .mini{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:9px 14px 9px 18px;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .mini{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:10px 14px 10px 18px;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
     .mini::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
-    .mini .tx{flex:1;min-width:0}
+    .mini .tx{flex:1;min-width:0;text-decoration:none;color:inherit;display:block}
     .mini .k{font-size:.62rem;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--muted)}
-    .mini .v{font-size:.9rem;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .mini .s{font-size:.7rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .btn{min-height:38px;padding:0 14px;border-radius:11px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .8rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;flex-shrink:0}
+    .mini .v{font-size:.92rem;font-weight:800;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mini .s{font-size:.72rem;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .btn{min-height:40px;padding:0 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .8rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;flex-shrink:0}
     .btn.p{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;color:#fff}
     .btn.d{background:none;border-color:var(--border);color:var(--muted)}
-    .resp{flex-shrink:0;background:none;border:0;color:var(--muted);font:600 .74rem 'Plus Jakarta Sans',system-ui,sans-serif;text-align:center;min-height:26px;padding:2px 0;cursor:pointer}
+    .resp{flex-shrink:0;background:none;border:0;color:var(--muted);font:600 .75rem 'Plus Jakarta Sans',system-ui,sans-serif;text-align:center;min-height:28px;padding:2px 0;cursor:pointer}
     .resp.w{color:var(--warn)}
     nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
     nav.bar div{max-width:440px;margin:0 auto;display:flex;background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:6px}
     nav.bar a{flex:1;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.62rem;font-weight:700;color:var(--muted);text-decoration:none;border-radius:16px;position:relative}
     nav.bar a.on{background:color-mix(in srgb,var(--g1) 16%,var(--card));color:var(--g1)}
     nav.bar a b{position:absolute;top:2px;left:calc(50% + 4px);min-width:16px;height:16px;border-radius:99px;background:var(--g1);color:#fff;font-size:.6rem;display:none;align-items:center;justify-content:center;padding:0 4px}
+    [data-theme=dark] nav.bar a b{color:#14121a;font-weight:800}
     nav.bar a b.on{display:flex}
-    .ov{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:18px}
+    .ov{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.58);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px}
     .ov.open{display:flex}
-    .dlg{width:100%;max-width:380px;max-height:88dvh;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+    .dlg{width:100%;max-width:380px;max-height:88dvh;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
     .dlg h3{font-family:var(--serif);font-size:1.15rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-    .dlg h3 button{width:44px;height:44px;margin:-8px -8px -8px 0;border:0;background:none;color:var(--muted);cursor:pointer}
-    .dlg label{display:block;font-size:.64rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
-    .dlg input[type=text],.dlg textarea{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:600 .92rem 'Plus Jakarta Sans',system-ui,sans-serif}
+    .dlg h3 button{width:44px;height:44px;margin:-8px -8px -8px 0;border:0;background:none;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+    .dlg label.lbl-in{display:block;font-size:.64rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+    .dlg input[type=text],.dlg textarea{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:600 .92rem 'Plus Jakarta Sans',system-ui,sans-serif;outline:none}
+    .dlg input[type=text]:focus,.dlg textarea:focus{border-color:var(--g1)}
     .dlg textarea{min-height:90px;resize:vertical}
-    .acts{display:flex;gap:8px;margin-top:14px}.acts .btn{flex:1}
-    .cols{display:flex;gap:10px}
-    .cols button{width:44px;height:44px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+    .acts{display:flex;gap:8px;margin-top:14px}.acts .btn{flex:1;min-height:44px}
+    .cols{display:flex;gap:10px;margin:4px 0 6px}
+    .cols button{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer}
     .cols button.on{border-color:var(--text)}
-    .chk{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700;font-size:.9rem;margin-top:6px}
-    .chk input{width:22px;height:22px;accent-color:var(--g1)}
-    .opt{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;padding:0 12px;margin-bottom:6px;border-radius:14px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .9rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-align:left}
-    .opt.on{border-color:var(--g1)}
-    .opt small{display:block;font-weight:500;color:var(--muted);font-size:.72rem}
+    /* Casilla dibujada sin chincheta */
+    .chk-draw{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700;font-size:.9rem;margin-top:6px;cursor:pointer;user-select:none}
+    .chk-draw input{display:none}
+    .chk-draw i{width:24px;height:24px;border-radius:7px;border:2px solid var(--border);background:var(--soft);display:inline-flex;align-items:center;justify-content:center;color:transparent;transition:.15s}
+    .chk-draw input:checked + i{background:var(--g1);border-color:var(--g1);color:#fff}
+    [data-theme=dark] .chk-draw input:checked + i{color:#14121a}
+    /* Switch para recordar cada 7 días */
+    .sw-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);cursor:pointer}
+    .sw-row b{display:block;font-size:.86rem}
+    .sw-row small{display:block;font-size:.72rem;color:var(--muted);margin-top:2px}
+    .sw-in{appearance:none;-webkit-appearance:none;width:44px;height:26px;border-radius:99px;background:var(--soft);border:1.5px solid var(--border);position:relative;cursor:pointer;flex-shrink:0;transition:.18s}
+    .sw-in::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:var(--muted);transition:.18s}
+    .sw-in:checked{background:var(--g1);border-color:var(--g1)}
+    .sw-in:checked::after{transform:translateX(18px);background:#fff}
+    /* Opciones de tema con muestra y círculo radio */
+    .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:8px 12px;margin-bottom:8px;border-radius:14px;border:1.5px solid var(--border);background:var(--soft);color:var(--text);font:700 .88rem 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-align:left}
+    .opt.on{border-color:var(--g1);background:color-mix(in srgb,var(--g1) 12%,var(--soft))}
+    .opt .sw{width:26px;height:26px;border-radius:8px;border:1px solid var(--border);flex-shrink:0}
+    .opt .sw.auto{background:linear-gradient(90deg,#fbf5ee 50%,#14121a 50%)}
+    .opt .sw.claro{background:#fbf5ee}
+    .opt .sw.oscuro{background:#14121a}
+    .opt .tx{flex:1;min-width:0}
+    .opt small{display:block;font-weight:500;color:var(--muted);font-size:.72rem;margin-top:1px}
+    .opt .rad{width:20px;height:20px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;flex-shrink:0}
+    .opt.on .rad{border-color:var(--g1)}
+    .opt.on .rad::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--g1)}
     .meter{height:6px;border-radius:99px;background:var(--soft);margin:8px 0;overflow:hidden}.meter i{display:block;height:100%;background:var(--ok)}.meter i.w{background:var(--warn)}
     .note{font-size:.76rem;color:var(--muted);line-height:1.45}
     .toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:12px;font-size:.8rem;font-weight:700;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center;z-index:80}
@@ -104,8 +127,8 @@
 
     <div class="stack">
       <section class="hero" id="hero"></section>
-      <div class="mini" style="--c:#3b82f6"><div class="tx"><div class="k" id="n-k">Notas importantes</div><div class="v" id="n-v"></div></div><button class="btn p" id="btn-nota">Nueva nota</button></div>
-      <div class="mini" style="--c:#e11d48"><div class="tx"><div class="k">Me falta comprar</div><div class="v" id="c-v"></div><div class="s" id="c-s"></div></div><a class="btn" id="c-b" href="compras.html">Agregar</a></div>
+      <div class="mini" style="--c:#6366f1"><a class="tx" href="instituto.html#notas"><div class="k" id="n-k">Notas importantes</div><div class="v" id="n-v"></div></a><button class="btn p" id="btn-nota">Nueva nota</button></div>
+      <div class="mini" style="--c:#ec4899"><a class="tx" href="compras.html#falta"><div class="k">Me falta comprar</div><div class="v" id="c-v"></div><div class="s" id="c-s"></div></a><a class="btn" id="c-b" href="compras.html">Agregar</a></div>
       <button class="resp" id="resp-linea">Respaldo total · último: nunca</button>
     </div>
   </div>
@@ -120,24 +143,24 @@
 
   <!-- Ventanas en medio -->
   <div class="ov" id="ov-nota"><div class="dlg"><h3>Nueva nota importante <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
-    <label for="nt">Título</label><input type="text" id="nt" maxlength="80">
-    <label for="nx">Nota</label><textarea id="nx"></textarea>
-    <label>Color</label><div class="cols" id="nc"></div>
-    <label class="chk"><input type="checkbox" id="nf" checked> Fijar arriba</label>
+    <label class="lbl-in" for="nt">Título</label><input type="text" id="nt" maxlength="80" placeholder="Ej: Entregar informe ABP">
+    <label class="lbl-in" for="nx">Nota</label><textarea id="nx" placeholder="Escribe el detalle..."></textarea>
+    <label class="lbl-in">Color</label><div class="cols" id="nc"></div>
+    <label class="chk-draw"><input type="checkbox" id="nf" checked><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><span>Fijar arriba</span></label>
     <div class="acts"><button class="btn" data-x>Cancelar</button><button class="btn p" id="ng">Guardar en Instituto</button></div></div></div>
 
   <div class="ov" id="ov-resp"><div class="dlg"><h3>Respaldo total <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
     <p class="note" id="r-est" style="font-weight:700"></p><div class="meter"><i id="r-bar"></i></div><p class="note" id="r-txt"></p>
     <div class="acts"><button class="btn p" id="btn-resp">Respaldar todo</button><button class="btn" id="btn-rest">Restaurar</button></div>
-    <label class="chk"><input type="checkbox" id="r-rec"> Recordarme cada 7 días</label><p class="note">Abre el menú de compartir del teléfono.</p>
+    <label class="sw-row"><div><b>Recordarme cada 7 días</b><small>Abre el menú de compartir del teléfono</small></div><input type="checkbox" class="sw-in" id="r-rec"></label>
     <input type="file" id="file-rest" accept=".json,application/json" style="display:none"></div></div>
 
   <div class="ov" id="ov-tema"><div class="dlg"><h3>Cambiar tema <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3>
-    <button class="opt" data-t="auto">Automático<small>Sigue al teléfono</small></button>
-    <button class="opt" data-t="claro">Claro<small>Fondo crema y tarjetas blancas</small></button>
-    <button class="opt" data-t="oscuro">Oscuro<small>Fondo violeta muy oscuro</small></button>
-    <p class="note" style="margin:6px 0 10px">Se aplica a todas las páginas. Cada sección mantiene su color de acento.</p>
-    <button class="opt" id="btn-fuente2">Letra de los títulos<small id="f-act">Fraunces</small></button></div></div>
+    <button class="opt" data-t="auto"><span class="sw auto"></span><span class="tx">Automático<small>Sigue al teléfono</small></span><span class="rad"></span></button>
+    <button class="opt" data-t="claro"><span class="sw claro"></span><span class="tx">Claro<small>Fondo crema y tarjetas blancas</small></span><span class="rad"></span></button>
+    <button class="opt" data-t="oscuro"><span class="sw oscuro"></span><span class="tx">Oscuro<small>Fondo violeta muy oscuro</small></span><span class="rad"></span></button>
+    <p class="note" style="margin:6px 0 10px">Se aplica a todas las páginas a la vez: portada, Organizador, Traslado, Instituto y Malla. Cada sección mantiene su color de acento.</p>
+    <button class="opt" id="btn-fuente2"><span style="font:800 .95rem var(--serif);width:26px;text-align:center">Aa</span><span class="tx">Letra de los títulos<small id="f-act">Fraunces</small></span><span style="color:var(--muted);font-size:1.1rem">›</span></button></div></div>
 
   <div class="ov" id="ov-fuente"><div class="dlg"><h3>Letra de los títulos <button data-x aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></h3><div id="f-lista"></div></div></div>
   <div class="toast" id="toast"></div>
@@ -152,7 +175,7 @@
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   </defs></svg>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
   <script>
     const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
     const leer = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
@@ -162,7 +185,7 @@
     const cerrar = () => $$('.ov').forEach(o => o.classList.remove('open'));
     $$('.ov').forEach(o => o.addEventListener('click', e => { if (e.target === o || e.target.closest('[data-x]')) cerrar(); }));
 
-    /* ---------- Tema (se guarda una vez en app_tema y todas las páginas lo leen) ---------- */
+    /* ---------- Tema ---------- */
     const mq = matchMedia('(prefers-color-scheme: dark)');
     const pref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch (e) { return 'auto'; } };
     function aplicarTema() {
@@ -180,7 +203,7 @@
     function aplicarFuente() {
       let f = 'fraunces'; try { f = localStorage.getItem('app_fuente') || localStorage.getItem('estacion_fuente_titulos') || 'fraunces'; } catch (e) {} if (!FUENTES[f]) f = 'fraunces';
       document.documentElement.style.setProperty('--serif', FUENTES[f][1]); $('#f-act').textContent = FUENTES[f][0];
-      $('#f-lista').innerHTML = Object.keys(FUENTES).map(k => `<button class="opt ${k === f ? 'on' : ''}" data-f="${k}" style="font-family:${FUENTES[k][1]}">${FUENTES[k][0]}</button>`).join('');
+      $('#f-lista').innerHTML = Object.keys(FUENTES).map(k => `<button class="opt ${k === f ? 'on' : ''}" data-f="${k}" style="font-family:${FUENTES[k][1]}"><span class="tx">${FUENTES[k][0]}</span><span class="rad"></span></button>`).join('');
     }
     $('#f-lista').onclick = e => { const b = e.target.closest('[data-f]'); if (!b) return; try { localStorage.setItem('app_fuente', b.dataset.f); localStorage.setItem('estacion_fuente_titulos', b.dataset.f); } catch (er) {} aplicarFuente(); };
     $('#btn-fuente').onclick = () => abrir('ov-fuente');
@@ -195,7 +218,7 @@
     const fechaLarga = s => new Date(u(s) + 12 * 36e5).toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
     const cuando = n => n === 0 ? 'Hoy' : n === 1 ? 'Mañana' : 'En ' + n + ' días';
 
-    /* ---------- Próximo (compacto: el principal + solo 1 siguiente para que la portada quede fija) ---------- */
+    /* ---------- Próximo ---------- */
     const RAMOS_PESADOS = ['matemática', 'análisis y diseño', 'inglés i', 'taller integrado', 'taller de programación'];
     const ANTELACION = { trabajo: 7, presentacion: 5, certamen: 3 };
     const FORMA = { certamen: 'c', trabajo: '', presentacion: 't' };
@@ -211,9 +234,7 @@
         return { apr, tot: 50 };
       }
       const res = leer('mallaResumen', null);
-      if (res && typeof res === 'object') {
-        return { apr: res.a || 0, tot: res.t || 50 };
-      }
+      if (res && typeof res === 'object') return { apr: res.a || 0, tot: res.t || 50 };
       return { apr: 0, tot: 50 };
     }
     function pintarProximo() {
@@ -243,8 +264,8 @@
     }
     pintarProximo();
 
-    /* ---------- Notas importantes (misma lista de Instituto) ---------- */
-    const COL = ['#e11d48', '#eab308', '#10b981', '#3b82f6', '#8b5cf6']; let ncol = COL[1];
+    /* ---------- Notas importantes ---------- */
+    const COL = ['#e11d48', '#eab308', '#10b981', '#3b82f6', '#8b5cf6']; let ncol = COL[0];
     function pintarNotas() {
       const n = leer('estacion_notas_importantes', []), l = Array.isArray(n) ? n : [];
       const f = l.find(x => x.pin) || l[l.length - 1];
@@ -253,11 +274,11 @@
     }
     function pintarColores() { $('#nc').innerHTML = COL.map(c => `<button type="button" class="${c === ncol ? 'on' : ''}" style="background:${c}" data-c="${c}" aria-label="Color"></button>`).join(''); }
     $('#nc').onclick = e => { const b = e.target.closest('[data-c]'); if (b) { ncol = b.dataset.c; pintarColores(); } };
-    $('#btn-nota').onclick = () => { $('#nt').value = ''; $('#nx').value = ''; $('#nf').checked = true; ncol = COL[1]; pintarColores(); abrir('ov-nota'); };
+    $('#btn-nota').onclick = () => { $('#nt').value = ''; $('#nx').value = ''; $('#nf').checked = true; ncol = COL[0]; pintarColores(); abrir('ov-nota'); setTimeout(() => $('#nt').focus(), 100); };
     $('#ng').onclick = () => {
       const t = $('#nt').value.trim(); if (!t) { $('#nt').focus(); return toast('Escribe un título'); }
       const l = leer('estacion_notas_importantes', []); const arr = Array.isArray(l) ? l : [];
-      arr.push({ id: 'n' + Date.now().toString(36), ts: Date.now(), title: t, text: $('#nx').value.trim(), color: ncol, pin: $('#nf').checked });
+      arr.push({ id: 'n' + Date.now().toString(36), ts: Date.now(), title: t, text: $('#nx').value.trim(), color: ncol, pin: $('#nf').checked, tareas: [] });
       try { localStorage.setItem('estacion_notas_importantes', JSON.stringify(arr)); } catch (e) { return toast('Almacenamiento lleno'); }
       cerrar(); pintarNotas(); toast('Nota guardada en Instituto');
     };
@@ -267,7 +288,9 @@
       const comp = leer('org_compras', []), por = {}; let n = 0;
       (Array.isArray(comp) ? comp : []).forEach(c => (c.items || []).forEach(p => { if (p.tieneRepuesto === 'no') { n++; por[c.nombre] = (por[c.nombre] || 0) + 1; } }));
       $('#c-v').textContent = n ? n + (n === 1 ? ' producto por reponer' : ' productos por reponer') : 'Nada por comprar';
-      $('#c-s').textContent = Object.entries(por).map(([k, v]) => k + ' (' + v + ')').join(' · ');
+      const sEl = $('#c-s');
+      sEl.textContent = Object.entries(por).map(([k, v]) => k + ' (' + v + ')').join(' · ');
+      sEl.style.display = n ? 'block' : 'none';
       $('#c-b').textContent = n ? 'Ver lista' : 'Agregar'; $('#c-b').href = n ? 'compras.html#falta' : 'compras.html';
       if (window.MiEspacio && MiEspacio.actualizarNav) MiEspacio.actualizarNav();
     }
@@ -276,11 +299,14 @@
     function pintarRespaldo() {
       const t = leer('portada_ultimo_respaldo', null), d = t ? Math.floor((Date.now() - new Date(t)) / 864e5) : null;
       const txt = t ? (d <= 0 ? 'hoy' : 'hace ' + d + (d === 1 ? ' día' : ' días')) : 'nunca', viejo = d !== null && d >= 30;
-      $('#resp-linea').textContent = 'Respaldo total · último: ' + txt; $('#resp-linea').classList.toggle('w', viejo);
+      $('#resp-linea').textContent = t ? ('Respaldo total · ' + txt) : 'Respaldo total · último: nunca';
+      $('#resp-linea').classList.toggle('w', viejo);
       $('#dot-resp').classList.toggle('on', viejo);
       $('#r-est').textContent = 'Último respaldo: ' + txt; $('#r-est').style.color = viejo ? 'var(--warn)' : '';
-      const m = MiEspacio.uso(); $('#r-bar').style.width = Math.max(2, m.pct) + '%'; $('#r-bar').className = m.pct >= 80 ? 'w' : '';
-      $('#r-txt').textContent = 'Textos: ' + (m.bytes / 1048576).toFixed(1) + ' MB de unos 5 MB' + (m.pct >= 80 ? ' · cerca del límite: respalda y revisa las fotos.' : '.');
+      const m = MiEspacio.uso(); $('#r-bar').style.width = Math.max(4, m.pct) + '%'; $('#r-bar').className = m.pct >= 80 ? 'w' : '';
+      const fMB = ((m.fotosBytes || 0) / 1048576).toFixed(1).replace('.', ',');
+      const tMB = (m.bytes / 1048576).toFixed(1).replace('.', ',');
+      $('#r-txt').textContent = `Textos: ${tMB} MB de unos 5 MB. Fotos: ${fMB} MB guardadas aparte, sin ese límite.`;
       $('#r-rec').checked = !!leer('portada_recordar', false);
     }
     $('#resp-linea').onclick = () => { pintarRespaldo(); abrir('ov-resp'); };
@@ -298,12 +324,12 @@
       const f = e.target.files[0]; e.target.value = ''; if (!f) return;
       try {
         const datos = await MiEspacio.leerArchivo(f);
-        if (!confirm('Se reemplazarán los datos de este dispositivo con los del archivo (' + Object.keys(datos).length + ' elementos). ¿Continuar?')) return;
         MiEspacio.aplicar(datos); toast('Datos restaurados'); setTimeout(() => location.reload(), 700);
       } catch (er) { toast('No se pudo restaurar: ' + er.message); }
     };
 
     pintarNotas(); pintarCompras(); pintarRespaldo();
+    addEventListener('miespacio:fotos-listas', pintarRespaldo);
     if (window.MiEspacio && MiEspacio.actualizarNav) MiEspacio.actualizarNav();
     { const t = leer('portada_ultimo_respaldo', null), r = leer('portada_recordar', false); if (r && t && Date.now() - new Date(t) >= 7 * 864e5) setTimeout(() => toast('Toca "Respaldo total" para guardar tu respaldo'), 800); }
     addEventListener('pageshow', () => { pintarProximo(); pintarNotas(); pintarCompras(); pintarRespaldo(); if (window.MiEspacio && MiEspacio.actualizarNav) MiEspacio.actualizarNav(); });
