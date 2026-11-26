@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark" data-acc="rosa">
 <head>
+<script>try{var L=localStorage,a=L.getItem('app_tema'),e=L.getItem('estacion_tema'),M={oscuro:'dark',claro:'light',auto:'auto'};if(a&&M[a]&&M[a]!==e)L.setItem('estacion_tema',M[a]);else if(!a&&e)L.setItem('app_tema',e==='light'?'claro':e==='dark'?'oscuro':'auto')}catch(x){}</script>
+
   <meta charset="UTF-8">
   <title>Reposición & Compras</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -14,7 +16,7 @@
   <script>
     /* Prevención de parpadeo de tema y color de acento */
     try {
-      var t = localStorage.getItem('app_tema') || 'auto';
+      var t = localStorage.getItem('app_tema') || 'oscuro';
       var d = t === 'oscuro' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.dataset.theme = d ? 'dark' : 'light';
       var a = localStorage.getItem('color_compras') || 'rosa';
@@ -864,7 +866,7 @@
     .toast {
       position: fixed;
       left: 50%;
-      bottom: calc(92px + env(safe-area-inset-bottom));
+      bottom: calc(24px + env(safe-area-inset-bottom));
       transform: translate(-50%, 20px);
       opacity: 0;
       pointer-events: none;
@@ -880,57 +882,26 @@
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    /* Selector de letra en el menú ⋮ y Modo Supermercado / Por cuándo */
+    /* Selector de letra en el menú ⋮ */
     .menu { max-height: 75vh; overflow-y: auto; min-width: 230px; }
     .menu .font-btn.on { background: var(--p-soft); color: var(--p); }
-    .top-bar { grid-template-columns: 44px 1fr 140px; }
-    .sq { width: 44px; height: 44px; border-radius: 14px; }
-    .seg.tabs button { min-height: 44px; }
-    .fbtn { height: 44px; border-radius: 14px; }
-    .view button { width: 44px; height: 42px; }
-    .c-name, .prod-name { white-space: normal !important; overflow-wrap: break-word !important; word-break: normal !important; text-overflow: clip !important; display: block !important; }
-    .sec-when { font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 14px 4px 6px; }
-    .when-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
-    .when-card .w-main { flex: 1; min-width: 0; }
-    .when-card .w-tit { font-weight: 700; font-size: .94rem; line-height: 1.3; color: var(--text); }
-    .when-card .w-sub { font-size: .76rem; color: var(--muted); margin-top: 3px; }
-    .when-card .w-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-    .when-card .w-price { font-family: var(--serif); font-weight: 700; font-size: .95rem; color: var(--text); }
-    /* Modo supermercado */
-    .super-head { display: flex; align-items: center; justify-content: space-between; margin: 14px 2px 8px; }
-    .super-head h4 { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; }
-    .super-pill { font-size: .72rem; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: var(--p-soft); color: var(--p); }
-    .carro-chk { width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--border); background: var(--bg); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; color: transparent; font-weight: 800; font-size: .9rem; transition: .15s; }
-    .carro-chk.on { background: var(--p); border-color: var(--p); color: var(--on-p); }
-    .super-bar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(84px + env(safe-area-inset-bottom)); width: min(94vw, 440px); background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.35); display: none; align-items: center; justify-content: space-between; gap: 12px; z-index: 42; }
-    .super-bar.on { display: flex; }
-    .super-tot-lbl { font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
-    .super-tot-val { font-family: var(--serif); font-size: 1.35rem; font-weight: 700; line-height: 1.1; margin-top: 2px; }
-    .super-tot-sub { font-size: .74rem; color: var(--muted); margin-top: 2px; }
-    /* Historial de precios en Marcar como comprado */
-    .comp-pill { display: inline-block; margin-top: 6px; font-size: .74rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: var(--p-soft); color: var(--p); }
-    .hist-box { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-    .hist-row { display: flex; justify-content: space-between; font-size: .8rem; padding: 4px 0; color: var(--muted); }
-    .hist-row b { color: var(--text); }
+      .c-name{overflow-wrap:anywhere;hyphens:auto}
   </style>
-  <script src="app.js?v=5"></script>
+  <script src="app.js"></script>
+<link rel="stylesheet" href="iconos.css">
 </head>
 <body>
   <div class="container">
     <!-- Barra superior -->
     <header class="top-bar">
-      <a href="organizador.html" class="sq" title="Volver al menú">←</a>
-      <div>
-        <h1>Compras</h1>
-        <div id="sub-modo" style="text-align:center;font-size:.72rem;color:var(--muted);display:none">Modo supermercado</div>
-      </div>
+      <a href="organizador.html" class="sq" title="Volver al menú"><i class=ic-atras></i></a>
+      <h1>Compras</h1>
       <div class="top-right">
-        <button class="sq" id="btn-share" title="Compartir lista de pendientes" aria-label="Compartir lista"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 002 2h12a2 2 0 002-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></button>
         <button class="sq" id="btn-tema" aria-label="Cambiar tema"></button>
         <button class="sq" id="btn-menu" aria-label="Más opciones">⋮</button>
         <div class="menu" id="menu">
-          <button id="btn-exportar">💾 Respaldar</button>
-          <button id="btn-importar">📂 Cargar</button>
+          <button id="btn-exportar">Respaldar</button>
+          <button id="btn-importar">Cargar</button>
           <hr>
           <div class="menu-sec">
             <div class="menu-t">Letra de los títulos</div>
@@ -957,9 +928,9 @@
 
     <!-- Búsqueda rápida -->
     <div class="search-box">
-      <span>🔍</span>
+      <span><i class=ic-lupa></i></span>
       <input type="text" id="busqueda" class="search-input" placeholder="Buscar producto, tienda, instrucción..." autocomplete="off">
-      <button id="btn-limpiar" class="btn-clear">✕</button>
+      <button id="btn-limpiar" class="btn-clear"><i class=ic-cerrar></i></button>
     </div>
 
     <!-- Pestañas de filtrado -->
@@ -972,31 +943,20 @@
 
     <!-- Herramientas de vista -->
     <div class="tools">
-      <button class="fbtn" id="btn-filtros"><span id="txt-vista">Ordenar: Por cuándo</span> ▾</button>
+      <button class="fbtn" id="btn-filtros"><i class=ic-carpeta></i> <span id="txt-vista">Por categoría</span> ▾</button>
       <div class="popover-filtros" id="pop-filtros">
-        <button data-v="cuando">🗓️ Ordenar: Por cuándo</button>
-        <button data-v="cat">📁 Vista por categoría</button>
-        <button data-v="tienda">🛒 Modo supermercado (por tienda)</button>
+        <button data-v="cat">Vista por categoría</button>
+        <button data-v="tienda">Vista por tienda (lista de compras)</button>
       </div>
 
       <div class="view" id="view">
-        <button data-v="list" aria-label="Vista de lista">☰</button>
+        <button data-v="list" aria-label="Vista de lista"><i class=ic-lista></i></button>
         <button data-v="grid" class="on" aria-label="Vista de cuadrícula">⊞</button>
       </div>
     </div>
 
     <!-- Cuadrícula / Lista principal -->
     <main id="lista" class="card-list grid"></main>
-  </div>
-
-  <!-- Barra inferior de Modo Supermercado -->
-  <div class="super-bar" id="super-bar">
-    <div>
-      <div class="super-tot-lbl">Total estimado</div>
-      <div class="super-tot-val" id="super-tot">$0</div>
-      <div class="super-tot-sub" id="super-carro">En el carro: $0</div>
-    </div>
-    <button class="btn btn-primary" style="min-height:44px" id="btn-terminar-compra">Terminar compra</button>
   </div>
 
   <!-- Botón flotante ＋ Agregar categoría -->
@@ -1014,7 +974,7 @@
           <h3 id="det-titulo">Higiene</h3>
           <div class="c-sub" id="det-sub">4 productos</div>
         </div>
-        <button class="sq" data-close aria-label="Cerrar">✕</button>
+        <button class="sq" data-close aria-label="Cerrar"><i class=ic-cerrar></i></button>
       </div>
 
       <button class="btn-add-item-bar" id="btn-add-prod-inside">
@@ -1040,7 +1000,7 @@
           <h4 class="pop-title" id="pop-prod-title">Nombre del Producto</h4>
           <div class="badges" id="pop-badges-row" style="margin-top:6px;"></div>
         </div>
-        <button class="pop-close" data-close aria-label="Cerrar">✕</button>
+        <button class="pop-close" data-close aria-label="Cerrar"><i class=ic-cerrar></i></button>
       </div>
 
       <div class="pop-body">
@@ -1065,7 +1025,7 @@
         <!-- Enlace web o maps -->
         <div class="pop-field" id="pop-link-box" style="display:none;">
           <label>Enlace</label>
-          <p><a id="pop-link-href" href="#" target="_blank" rel="noopener noreferrer" style="color:var(--p);font-weight:700;">🔗 Abrir enlace externo</a></p>
+          <p><a id="pop-link-href" href="#" target="_blank" rel="noopener noreferrer" style="color:var(--p);font-weight:700;">Abrir enlace externo</a></p>
         </div>
 
         <!-- Foto de la tienda -->
@@ -1076,8 +1036,8 @@
 
         <!-- Botones de acción rápida -->
         <div style="display:flex; gap:8px; margin-top:6px;">
-          <button class="btn btn-primary" style="flex:1;" id="pop-btn-edit">✎ Editar</button>
-          <button class="btn btn-secondary btn-danger" style="padding:0 16px;" id="pop-btn-del">🗑</button>
+          <button class="btn btn-primary" style="flex:1;" id="pop-btn-edit">Editar</button>
+          <button class="btn btn-secondary btn-danger" style="padding:0 16px;" id="pop-btn-del"><i class=ic-papelera></i></button>
         </div>
       </div>
     </div>
@@ -1112,7 +1072,7 @@
             <button type="button" class="chip-choice" data-val="La mitad">La mitad</button>
             <button type="button" class="chip-choice" data-val="Casi lleno">Casi lleno</button>
             <button type="button" class="chip-choice" data-val="Muchos">Muchos</button>
-            <button type="button" class="chip-choice" data-val="otro">✏️ Escribir otro...</button>
+            <button type="button" class="chip-choice" data-val="otro">Escribir otro...</button>
           </div>
           <input type="text" id="p-queda-custom" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: Queda un cuarto...">
         </div>
@@ -1123,13 +1083,13 @@
             <button type="button" class="chip-choice" data-val="Esta semana">Esta semana</button>
             <button type="button" class="chip-choice" data-val="A fin de mes">A fin de mes</button>
             <button type="button" class="chip-choice" data-val="El otro mes">El otro mes</button>
-            <button type="button" class="chip-choice" data-val="otro">✏️ Escribir...</button>
+            <button type="button" class="chip-choice" data-val="otro">Escribir...</button>
           </div>
           <input type="text" id="p-cuando-custom" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: Próxima quincena...">
         </div>
 
         <label class="switch-urgente">
-          <span><b>⚡ Comprar pronto (urgente)</b><br><small style="color:var(--muted);font-size:.74rem">Destacar al tope de la lista</small></span>
+          <span><b>Comprar pronto (urgente)</b><br><small style="color:var(--muted);font-size:.74rem">Destacar al tope de la lista</small></span>
           <input type="checkbox" id="p-urgente">
         </label>
       </div>
@@ -1174,13 +1134,13 @@
           <div class="form-group">
             <label class="form-label">Fotos (Producto y Tienda)</label>
             <div class="photo-row">
-              <div class="pbox" data-k="foto"><span style="color:var(--muted);font-size:1.1rem">📷</span><img alt=""><button type="button" class="rm" data-rm="foto">✕</button></div>
-              <button type="button" class="btn btn-secondary" data-pick="foto" data-cam="1">📸 Producto</button>
-              <button type="button" class="btn btn-secondary" data-pick="foto" title="Elegir de mis archivos">🖼️</button>
+              <div class="pbox" data-k="foto"><span style="color:var(--muted);font-size:1.1rem"><i class=ic-foto></i></span><img alt=""><button type="button" class="rm" data-rm="foto"><i class=ic-cerrar></i></button></div>
+              <button type="button" class="btn btn-secondary" data-pick="foto" data-cam="1">Producto</button>
+              <button type="button" class="btn btn-secondary" data-pick="foto" title="Elegir de mis archivos"><i class=ic-imagen></i></button>
             </div>
             <div class="photo-row">
-              <div class="pbox" data-k="fotoTienda"><span style="color:var(--muted);font-size:1.1rem">🏪</span><img alt=""><button type="button" class="rm" data-rm="fotoTienda">✕</button></div>
-              <button type="button" class="btn btn-secondary" id="btn-pick-tienda">🏪 Tienda</button>
+              <div class="pbox" data-k="fotoTienda"><span style="color:var(--muted);font-size:1.1rem"><i class=ic-tienda></i></span><img alt=""><button type="button" class="rm" data-rm="fotoTienda"><i class=ic-cerrar></i></button></div>
+              <button type="button" class="btn btn-secondary" id="btn-pick-tienda">Tienda</button>
               <input type="file" class="pfile" data-k="foto" accept="image/*" hidden>
               <input type="file" class="pfile" data-k="fotoTienda" accept="image/*" hidden>
             </div>
@@ -1195,43 +1155,22 @@
     </div>
   </div>
 
-  <!-- Modal: Confirmar "Marcar como comprado" con historial de precios -->
+  <!-- Modal: Confirmar "Ya lo compré" -->
   <div class="modal-overlay modal-center" id="modal-bought">
     <div class="modal">
-      <div class="pop-header" style="margin-bottom:8px">
-        <div>
-          <h3 id="bought-titulo" style="margin:0">Marcar como comprado</h3>
-          <div id="bought-prod-name" style="font-size:.84rem;color:var(--muted);font-weight:700;margin-top:2px"></div>
-        </div>
-        <button class="pop-close" data-close aria-label="Cerrar">✕</button>
-      </div>
+      <h3 id="bought-titulo">✓ Marcar como comprado</h3>
       <div class="form-group">
-        <label class="form-label">Precio pagado ($)</label>
-        <input type="text" id="b-precio" class="form-input" inputmode="numeric" placeholder="Ej: 5.200" style="font-size:1.15rem;font-weight:800">
-        <div id="b-comp-wrap"></div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Cuánto queda ahora</label>
-        <div class="chips-group" id="b-chips-cant" style="margin-bottom:6px">
-          <button type="button" class="chip-choice on" data-c="Casi lleno">Casi lleno</button>
-          <button type="button" class="chip-choice" data-c="La mitad">La mitad</button>
-          <button type="button" class="chip-choice" data-c="1 unidad">1 unidad</button>
-          <button type="button" class="chip-choice" data-c="2 unidades">2 unidades</button>
-        </div>
+        <label class="form-label">¿Cuánto compraste / queda de repuesto?</label>
         <input type="text" id="b-cant" class="form-input" placeholder="Ej: 1 frasco, 2 cajas selladas...">
       </div>
       <div class="form-group">
-        <label class="form-label">Guardar repuesto en</label>
+        <label class="form-label">¿En qué caja o lugar lo guardaste?</label>
         <select id="b-lugar" class="form-select"></select>
         <input type="text" id="b-lugar-otro" class="form-input" style="display:none; margin-top:6px;" placeholder="Ej: En la cómoda...">
       </div>
-      <div class="hist-box" id="b-hist-box" style="display:none">
-        <label class="form-label">Historial de precios</label>
-        <div id="b-hist-list"></div>
-      </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" style="flex:1;min-height:44px" data-close>Cancelar</button>
-        <button class="btn btn-primary" style="flex:1;min-height:44px" id="btn-confirmar-compra">Confirmar</button>
+        <button class="btn btn-secondary" data-close>Cancelar</button>
+        <button class="btn btn-primary" id="btn-confirmar-compra">Confirmar</button>
       </div>
     </div>
   </div>
@@ -1257,7 +1196,7 @@
       <h3>Elegir foto de tienda</h3>
       <div class="store-pick-grid" id="store-pick-grid"></div>
       <div class="modal-footer" style="justify-content:space-between;">
-        <button class="btn btn-secondary" id="btn-tienda-galeria">🖼️ Mi galería</button>
+        <button class="btn btn-secondary" id="btn-tienda-galeria">Mi galería</button>
         <button class="btn btn-secondary" data-close>Cerrar</button>
       </div>
     </div>
@@ -1426,13 +1365,10 @@
       ];
     }
 
-    let vista = 'cuando', filtro = 'todos', catId = null, itemId = null, detId = null, popProdObj = null;
-    if (location.hash === '#falta') filtro = 'falta';
+    let vista = 'cat', filtro = 'todos', catId = null, itemId = null, detId = null, popProdObj = null;
     let disp = 'grid';
     try { disp = localStorage.getItem(VKEY) === 'list' ? 'list' : 'grid'; } catch(e){}
     const fotos = { foto: null, fotoTienda: null };
-    const fotoReal = ref => (window.MiEspacio && MiEspacio.fotos ? MiEspacio.fotos.obtener(ref) : ref) || null;
-    const fmtMiles = n => String(n || '').replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
     function guardar() {
       try {
@@ -1503,8 +1439,8 @@
     function llenarLugar(sel, otro, valor) {
       const cajas = cajasGuardadas(), s = $(sel), o = $(otro);
       s.innerHTML = '<option value="">Elegir caja...</option>' +
-        cajas.map(c => `<option value="${esc(c.nombre)}">${esc(c.nombre)}${c.ubicacion ? ' — 📍 ' + esc(c.ubicacion) : ''}</option>`).join('') +
-        '<option value="__otro">✏️ Otro lugar...</option>';
+        cajas.map(c => `<option value="${esc(c.nombre)}">${esc(c.nombre)}${c.ubicacion ? ' — ' + esc(c.ubicacion) : ''}</option>`).join('') +
+        '<option value="__otro">Otro lugar...</option>';
       const hay = cajas.some(c => c.nombre === valor);
       s.value = !valor ? '' : (hay ? valor : '__otro');
       o.value = (!valor || hay) ? '' : valor;
@@ -1531,8 +1467,8 @@
       tiendasCache = [...m.values()].sort((a, b) => a.n.localeCompare(b.n, 'es'));
       const s = $('#p-tienda-sel');
       s.disabled = !tiendasCache.length;
-      s.innerHTML = `<option value="">${tiendasCache.length ? '🏪 Elegir tienda existente...' : 'Sin tiendas guardadas'}</option>` +
-        tiendasCache.map((t, i) => `<option value="${i}">${esc(t.n)}${t.foto ? ' 📷' : ''}</option>`).join('');
+      s.innerHTML = `<option value="">${tiendasCache.length ? 'Elegir tienda existente...' : 'Sin tiendas guardadas'}</option>` +
+        tiendasCache.map((t, i) => `<option value="${i}">${esc(t.n)}${t.foto ? '' : ''}</option>`).join('');
     }
 
     $('#p-tienda-sel').onchange = e => {
@@ -1595,8 +1531,8 @@
         : '';
       const btns = `
           <div class="item-quick-btns ${modo === 'popup' ? '' : 'stack'}">
-            <button class="btn-icon" data-act="edit" ${d} title="Editar">✎</button>
-            <button class="btn-icon del" data-act="del" ${d} title="Eliminar">🗑</button>
+            <button class="btn-icon" data-act="edit" ${d} title="Editar"><i class=ic-lapiz></i></button>
+            <button class="btn-icon del" data-act="del" ${d} title="Eliminar"><i class=ic-papelera></i></button>
           </div>`;
 
       if (modo === 'tienda' || modo === 'plano') {
@@ -1635,7 +1571,7 @@
           <div class="prod-info">
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
               <span class="prod-name">${esc(it.nombre)}</span>
-              ${!si && it.urgente ? '<span class="badge bad">⚡ Urgente</span>' : ''}
+              ${!si && it.urgente ? '<span class="badge bad">Urgente</span>' : ''}
               ${si ? '<span class="badge ok">Repuesto</span>' : '<span class="badge bad">Falta</span>'}
               ${showCat ? `<span class="badge cat">${esc(c.nombre)}</span>` : ''}
             </div>
@@ -1656,13 +1592,13 @@
         <div class="group-card ${esCaja ? 'cajas' : ''}" ${d} data-act="detalles">
           <div class="c-head">
             <div class="c-name">${esc(c.nombre)}</div>
-            ${esCaja ? '' : `<button class="c-edit" data-act="editcat" ${d} title="Cambiar nombre">✎</button>`}
+            ${esCaja ? '' : `<button class="c-edit" data-act="editcat" ${d} title="Cambiar nombre"><i class=ic-lapiz></i></button>`}
           </div>
           <div class="c-sub">${total} producto${total === 1 ? '' : 's'}</div>
           ${esCaja ? '' : `
           <div class="card-btns">
             <button class="btn-card add" data-act="newitem" ${d} title="Agregar producto">＋</button>
-            <button class="btn-card del" data-act="delcat" ${d} title="Eliminar categoría">🗑</button>
+            <button class="btn-card del" data-act="delcat" ${d} title="Eliminar categoría"><i class=ic-papelera></i></button>
           </div>`}
         </div>
       `;
@@ -1676,8 +1612,7 @@
 
       $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.f === filtro));
       $$('#pop-filtros button').forEach(b => b.classList.toggle('on', b.dataset.v === vista));
-      $('#txt-vista').textContent = vista === 'cuando' ? 'Ordenar: Por cuándo' : (vista === 'cat' ? 'Por categoría' : 'Por tienda');
-      $('#sub-modo').style.display = vista === 'tienda' ? 'block' : 'none';
+      $('#txt-vista').textContent = vista === 'cat' ? 'Por categoría' : 'Por tienda';
 
       $('#view').style.display = (vista === 'cat' && ws.length === 0 && filtro === 'todos') ? 'flex' : 'none';
       $$('#view button').forEach(b => b.classList.toggle('on', b.dataset.v === disp));
@@ -1688,67 +1623,23 @@
       let html = '';
       const filtrando = ws.length > 0 || filtro !== 'todos';
 
-      if (vista === 'cuando') {
-        $('#super-bar').classList.remove('on');
-        const grupos = {
-          semana: { t: 'Esta semana', list: [] },
-          fin: { t: 'A fin de mes', list: [] },
-          otro: { t: 'El otro mes', list: [] },
-          resto: { t: 'Más adelante / En stock', list: [] }
-        };
-        all.forEach(([c, it]) => {
-          if (!cumpleBusq(c, it, ws)) return;
-          const cw = norm(it.cuando || '');
-          if (it.tieneRepuesto !== 'si' && (it.urgente || cw.includes('semana') || cw.includes('pronto') || cw.includes('hoy'))) grupos.semana.list.push([c, it]);
-          else if (it.tieneRepuesto !== 'si' && (cw.includes('fin') || cw.includes('quincena'))) grupos.fin.list.push([c, it]);
-          else if (it.tieneRepuesto !== 'si' && cw.includes('otro')) grupos.otro.list.push([c, it]);
-          else grupos.resto.list.push([c, it]);
+      if (vista === 'cat' && !filtrando) {
+        // "Desde Cajas" siempre primero
+        [...db].sort((a, b) => (b.nombre === 'Desde Cajas') - (a.nombre === 'Desde Cajas')).forEach(c => {
+          html += tarjetaCat(c);
         });
-        Object.values(grupos).forEach(g => {
-          if (!g.list.length) return;
-          html += `<div class="sec-when">${esc(g.t)}</div>`;
-          g.list.forEach(([c, it]) => {
-            const d = `data-c="${esc(c.id)}" data-i="${esc(it.id)}"`;
-            const si = it.tieneRepuesto === 'si';
-            const pr = num(it.precio) ? '$' + fmtMiles(it.precio) : '';
-            const sub = [c.nombre, it.donde || (si ? ('En ' + (it.lugarRepuesto || 'repuesto')) : (it.cuando || 'Sin tienda'))].filter(Boolean).join(' · ');
-            html += `<div class="when-card" ${d} data-act="abrir-pop">
-              <button class="circle-check ${si ? 'checked' : ''}" data-act="check-buy" ${d} onclick="event.stopPropagation()" title="${si ? 'Desmarcar' : 'Marcar como comprado'}">${si ? '✓' : ''}</button>
-              <div class="w-main">
-                <div class="w-tit" style="${si ? 'text-decoration:line-through;opacity:.6' : ''}">${esc(it.nombre)}</div>
-                <div class="w-sub">${esc(sub)}</div>
-              </div>
-              <div class="w-right">
-                ${pr ? `<span class="w-price">${esc(pr)}</span>` : ''}
-                ${!si && it.urgente ? '<span class="badge bad">Urgente</span>' : ''}
-              </div>
-            </div>`;
-          });
-        });
-      } else if (vista === 'cat' && !filtrando) {
-        $('#super-bar').classList.remove('on');
-        // Ocultar "Desde Cajas" cuando está vacía
-        [...db]
-          .filter(c => c.nombre !== 'Desde Cajas' || (c.items && c.items.length > 0))
-          .sort((a, b) => (b.nombre === 'Desde Cajas') - (a.nombre === 'Desde Cajas'))
-          .forEach(c => { html += tarjetaCat(c); });
       } else if (vista === 'cat') {
-        $('#super-bar').classList.remove('on');
+        // Búsqueda o filtro: se muestran los productos, no las categorías
         cont.className = 'card-list list';
         all.forEach(([c, it]) => {
           if (cumpleBusq(c, it, ws)) html += productoFilaHTML(c, it, true, 'plano');
         });
         if (html) html = `<div class="group-card" style="cursor:default;padding:6px 8px;">${html}</div>`;
       } else {
-        // Modo supermercado (Vista por tienda)
+        // Vista por tienda
         const tiendasMap = {};
-        let totalEst = 0, totalCarro = 0, hayItems = false;
         all.forEach(([c, it]) => {
           if (it.tieneRepuesto === 'si' || !cumpleBusq(c, it, ws)) return;
-          hayItems = true;
-          const pVal = num(it.precio);
-          totalEst += pVal;
-          if (it.enCarro) totalCarro += pVal;
           const tName = (it.donde || '').trim() || 'Sin tienda definida';
           (tiendasMap[norm(tName)] = tiendasMap[norm(tName)] || { n: tName, list: [] }).list.push([c, it]);
         });
@@ -1758,37 +1649,21 @@
         );
 
         ordenadas.forEach(x => {
-          const enCar = x.list.filter(([, it]) => it.enCarro).length;
           html += `
-            <div class="super-head">
-              <h4>${esc(x.n)}</h4>
-              <span class="super-pill">${enCar} de ${x.list.length} en el carro</span>
-            </div>
-            <div class="group-card" style="cursor:default;padding:6px 10px;">
-              ${x.list.map(([c, it]) => {
-                const d = `data-c="${esc(c.id)}" data-i="${esc(it.id)}"`;
-                const pr = num(it.precio) ? '$' + fmtMiles(it.precio) : '';
-                return `<div class="compact-product-item" ${d} data-act="toggle-carro">
-                  <button type="button" class="carro-chk ${it.enCarro ? 'on' : ''}" ${d} data-act="toggle-carro">${it.enCarro ? '✓' : ''}</button>
-                  <div class="prod-info">
-                    <div class="prod-name" style="${it.enCarro ? 'text-decoration:line-through;opacity:.6' : ''}">${esc(it.nombre)}</div>
-                    <div class="prod-subline">${esc(c.nombre)}</div>
-                  </div>
-                  ${pr ? `<span style="font-family:var(--serif);font-weight:700;font-size:.92rem">${esc(pr)}</span>` : ''}
-                </div>`;
-              }).join('')}
+            <div class="group-card" style="cursor:default;">
+              <div class="c-head">
+                <div class="c-name">${esc(x.n)}</div>
+              </div>
+              <div class="c-sub">${x.list.length} producto${x.list.length === 1 ? '' : 's'} por comprar aquí</div>
+              <div style="margin-top:8px;">
+                ${x.list.map(([c, it]) => productoFilaHTML(c, it, true, 'tienda')).join('')}
+              </div>
             </div>
           `;
         });
-
-        const sBar = $('#super-bar');
-        sBar.classList.toggle('on', hayItems);
-        $('#super-tot').textContent = '$' + totalEst.toLocaleString('es-CL');
-        $('#super-carro').textContent = 'En el carro: $' + totalCarro.toLocaleString('es-CL');
       }
 
       if (!html) {
-        $('#super-bar').classList.remove('on');
         html = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 10px;font-size:.9rem;">
           ${!db.length ? 'No hay categorías creadas.<br>Toca <b>＋ Agregar</b> para comenzar.' : 'Sin productos que coincidan con el filtro o la búsqueda.'}
         </div>`;
@@ -1856,7 +1731,7 @@
       // Etiquetas
       let bHtml = `<span class="badge cat">${esc(c.nombre)}</span>`;
       if (!si && it.queda) bHtml += `<span class="badge">Queda: <b>${esc(it.queda)}</b></span>`;
-      if (!si && it.urgente) bHtml += '<span class="badge bad">⚡ Urgente</span>';
+      if (!si && it.urgente) bHtml += '<span class="badge bad">Urgente</span>';
       bHtml += si ? '<span class="badge ok">✓ En Repuesto</span>' : '<span class="badge bad">Falta comprar</span>';
       $('#pop-badges-row').innerHTML = bHtml;
 
@@ -1939,27 +1814,18 @@
         return abrirCat(c.id);
       }
 
-      // Toggle "En el carro" en Modo Supermercado
-      if (act === 'toggle-carro' && c && it) {
-        vibrar();
-        it.enCarro = !it.enCarro;
-        guardar();
-        return;
-      }
-
-      // Eliminar categoría con Deshacer
+      // Eliminar categoría
       if (act === 'delcat' && c) {
         vibrar();
-        const idx = db.indexOf(c);
-        db = db.filter(x => x.id !== c.id);
-        guardar();
-        if (window.MiEspacio && MiEspacio.toast) {
-          MiEspacio.toast(`Categoría "${c.nombre}" eliminada`, () => { db.splice(idx, 0, c); guardar(); });
-        } else toast('Categoría eliminada');
+        if (confirm(`¿Eliminar la categoría "${c.nombre}" y todos sus productos?`)) {
+          db = db.filter(x => x.id !== c.id);
+          guardar();
+          toast('Categoría eliminada');
+        }
         return;
       }
 
-      // Checkbox circular para comprar (con historial de precios) o devolver a falta comprar
+      // Checkbox circular para comprar o devolver a falta comprar
       if (act === 'check-buy' && c && it) {
         vibrar();
         if (it.tieneRepuesto === 'si') {
@@ -1967,7 +1833,12 @@
           guardar();
           toast('Marcado como "Falta comprar"');
         } else {
-          abrirModalComprado(c, it);
+          catId = c.id;
+          itemId = it.id;
+          $('#bought-titulo').textContent = `✓ Marcar "${it.nombre}" como comprado`;
+          $('#b-cant').value = '1 unidad';
+          llenarLugar('#b-lugar', '#b-lugar-otro', it.lugarRepuesto || '');
+          abrir('#modal-bought');
         }
         return;
       }
@@ -1983,15 +1854,14 @@
         return abrirItem(c.id, it.id);
       }
 
-      // Eliminar producto con Deshacer
+      // Eliminar producto
       if (act === 'del' && c && it) {
         vibrar();
-        const idx = c.items.indexOf(it);
-        c.items = c.items.filter(x => x.id !== it.id);
-        guardar();
-        if (window.MiEspacio && MiEspacio.toast) {
-          MiEspacio.toast(`"${it.nombre}" eliminado`, () => { c.items.splice(idx, 0, it); guardar(); });
-        } else toast('Producto eliminado');
+        if (confirm(`¿Eliminar "${it.nombre}"?`)) {
+          c.items = c.items.filter(x => x.id !== it.id);
+          guardar();
+          toast('Producto eliminado');
+        }
         return;
       }
     }
@@ -2003,49 +1873,7 @@
       if (detId) abrirItem(detId);
     };
 
-    // Modal "Marcar como comprado" con comparación e historial de precios
-    function actualizarComparacionPrecio(it) {
-      const wrap = $('#b-comp-wrap');
-      const pagado = num($('#b-precio').value);
-      const hist = Array.isArray(it.historialPrecios) ? it.historialPrecios : [];
-      const ant = hist.length ? num(hist[0].precio) : num(it.precio);
-      if (!pagado || !ant) { wrap.innerHTML = ''; return; }
-      const diff = Math.round(((pagado - ant) / ant) * 100);
-      const txt = diff > 0 ? `subió ${diff}%` : (diff < 0 ? `bajó ${Math.abs(diff)}%` : 'mismo precio');
-      wrap.innerHTML = `<span class="comp-pill">Última vez: $${fmtMiles(ant)} · ${txt}</span>`;
-    }
-
-    function abrirModalComprado(c, it) {
-      catId = c.id;
-      itemId = it.id;
-      $('#bought-prod-name').textContent = it.nombre;
-      $('#b-precio').value = it.precio ? fmtMiles(it.precio) : '';
-      $('#b-cant').value = 'Casi lleno';
-      $$('#b-chips-cant button').forEach(b => b.classList.toggle('on', b.dataset.c === 'Casi lleno'));
-      llenarLugar('#b-lugar', '#b-lugar-otro', it.lugarRepuesto || '');
-      actualizarComparacionPrecio(it);
-      $('#b-precio').oninput = () => {
-        const d = $('#b-precio').value.replace(/\D/g, '');
-        $('#b-precio').value = d ? fmtMiles(d) : '';
-        actualizarComparacionPrecio(it);
-      };
-      const hist = Array.isArray(it.historialPrecios) ? it.historialPrecios : [];
-      const hBox = $('#b-hist-box');
-      if (hist.length) {
-        hBox.style.display = 'block';
-        $('#b-hist-list').innerHTML = hist.slice(0, 5).map(h => `<div class="hist-row"><span>${esc(h.fecha)}</span><b>$${esc(fmtMiles(h.precio))}</b></div>`).join('');
-      } else {
-        hBox.style.display = 'none';
-      }
-      abrir('#modal-bought');
-    }
-
-    $('#b-chips-cant').onclick = e => {
-      const b = e.target.closest('button'); if (!b) return;
-      $$('#b-chips-cant button').forEach(x => x.classList.toggle('on', x === b));
-      $('#b-cant').value = b.dataset.c;
-    };
-
+    // Confirmación del modal "Ya lo compré"
     $('#btn-confirmar-compra').onclick = () => {
       const c = db.find(x => x.id === catId);
       const it = c && (c.items || []).find(x => x.id === itemId);
@@ -2053,60 +1881,15 @@
 
       vibrar();
       const lugar = $('#b-lugar').value === '__otro' ? $('#b-lugar-otro').value.trim() : $('#b-lugar').value;
-      const pagado = fmtMiles($('#b-precio').value);
-      if (pagado) {
-        if (!Array.isArray(it.historialPrecios)) {
-          it.historialPrecios = it.precio ? [{ fecha: 'anterior', precio: fmtMiles(it.precio) }] : [];
-        }
-        const mesActual = new Date().toLocaleDateString('es-CL', { month: 'short', year: 'numeric' });
-        it.historialPrecios.unshift({ fecha: mesActual, precio: pagado });
-        it.precio = pagado;
-      }
       it.tieneRepuesto = 'si';
       it.cantidadRepuesto = $('#b-cant').value.trim() || '1 unidad';
       it.lugarRepuesto = lugar;
       it.queda = '';
       it.urgente = false;
-      it.enCarro = false;
 
       cerrarUno($('#modal-bought'));
       guardar();
-      toast('Guardado en Repuesto');
-    };
-
-    // Terminar compra en Modo supermercado
-    $('#btn-terminar-compra').onclick = () => {
-      let count = 0;
-      db.forEach(c => (c.items || []).forEach(it => {
-        if (it.tieneRepuesto !== 'si' && it.enCarro) {
-          it.tieneRepuesto = 'si';
-          it.enCarro = false;
-          it.urgente = false;
-          count++;
-        }
-      }));
-      if (!count) return toast('Marca primero los productos en el carro');
-      vibrar();
-      guardar();
-      toast(`${count} producto${count === 1 ? ' comprado' : 's comprados'}`);
-    };
-
-    // Compartir lista de pendientes en texto
-    $('#btn-share').onclick = async () => {
-      const lineas = [];
-      db.forEach(c => (c.items || []).forEach(it => {
-        if (it.tieneRepuesto === 'no') {
-          lineas.push(`• ${it.nombre}${it.donde ? ' (' + it.donde + ')' : ''}${it.precio ? ' — $' + fmtMiles(it.precio) : ''}`);
-        }
-      }));
-      const txt = lineas.length ? `Lista de compras:\n${lineas.join('\n')}` : 'Todo el stock está al día.';
-      if (navigator.share) {
-        try { await navigator.share({ title: 'Lista de compras', text: txt }); return; } catch (e) {}
-      }
-      if (navigator.clipboard) {
-        try { await navigator.clipboard.writeText(txt); toast('Lista copiada al portapapeles'); return; } catch (e) {}
-      }
-      alert(txt);
+      toast('¡Listo! Guardado en Repuesto');
     };
 
     $('#pop-prod-img').onclick = () => { if (popProdObj && popProdObj.it.foto) verFoto(popProdObj.it.foto, popProdObj.it.nombre); };
@@ -2431,12 +2214,12 @@
 
     /* Cambios de tema y acento */
     const mq = matchMedia('(prefers-color-scheme: dark)');
-    const temaPref = () => { try { return localStorage.getItem('app_tema') || 'auto'; } catch(e){ return 'oscuro'; } };
+    const temaPref = () => { try { return localStorage.getItem('app_tema') || 'oscuro'; } catch(e){ return 'oscuro'; } };
     const oscuro = () => temaPref() === 'oscuro' || (temaPref() === 'auto' && mq.matches);
 
     function aplicarTema() {
       document.documentElement.dataset.theme = oscuro() ? 'dark' : 'light';
-      $('#btn-tema').textContent = oscuro() ? '☀️' : '🌙';
+      $('#btn-tema').innerHTML = oscuro() ? '<i class=ic-sol></i>' : '<i class=ic-luna></i>';
       const m = $('meta[name=theme-color]');
       if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
     }
@@ -2492,11 +2275,6 @@
     aplicarFuente();
     aplicarAcc();
     render();
-    if (location.hash === '#nuevo-prod' && db.length) {
-      const targetCat = db.find(c => c.nombre !== 'Desde Cajas') || db[0];
-      history.replaceState(null, '', location.pathname);
-      setTimeout(() => abrirItem(targetCat.id), 150);
-    }
   </script>
 </body>
 </html>

@@ -1,16 +1,16 @@
 /* Mi Espacio · service worker
-   - Páginas y código: primero la red con cache:'no-cache' (así ves siempre la versión nueva al instante) y, sin internet, lo guardado.
+   - Páginas y código: primero la red (así ves siempre la versión nueva) y, sin internet, lo guardado.
    - Tipografías de Google: se guardan la primera vez y se reutilizan. */
-const VERSION = 'mi-espacio-v5';
+const VERSION = 'mi-espacio-v3';
 const PRECACHE = [
   './', 'index.html', 'organizador.html', 'cajas.html', 'compras.html', 'ahorros.html', 'traslado.html', 'instituto.html', 'malla.html',
-  'app.js', 'estacion.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'
+  'app.js', 'iconos.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'
 ];
 
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(VERSION)
-      .then(c => Promise.all(PRECACHE.map(u => c.add(new Request(u, { cache: 'reload' })).catch(() => {}))))
+      .then(c => Promise.all(PRECACHE.map(u => c.add(u).catch(() => {}))))
       .then(() => self.skipWaiting())
   );
 });
@@ -30,7 +30,7 @@ self.addEventListener('fetch', e => {
 
   if (url.origin === location.origin) {
     e.respondWith(
-      fetch(req, { cache: 'no-cache' })
+      fetch(req)
         .then(res => {
           if (res && res.ok) { const copia = res.clone(); caches.open(VERSION).then(c => c.put(req, copia)); }
           return res;
